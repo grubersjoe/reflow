@@ -1,0 +1,40 @@
+{
+  "name": "babel-plugin-overflow",
+  "version": "0.0.1",
+  "description": "Babel Plugin to migrate Flow typed JavaScript to TypeScript",
+  "author": "Jonathan Gruber <jogu@spreadshirt.net>",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-typescript": "^7.1.0",
+    "@types/babel-core": "^6.25.5",
+    "@types/babel-types": "^7.0.4",
+    "@types/node": "^10.12.19",
+    "@typescript-eslint/eslint-plugin": "^1.1.1",
+    "@typescript-eslint/parser": "^1.1.1",
+    "babel-loader": "^8.0.5",
+    "eslint": "^5.12.1",
+    "eslint-plugin-node": "^8.0.1",
+    "prettier": "1.16.2",
+    "ts-loader": "^5.3.3",
+    "typescript": "^3.2.4",
+    "webpack": "^4.29.0",
+    "webpack-cli": "^3.2.1"
+  },
+  "dependencies": {
+    "@babel/helper-plugin-utils": "^7.0.0",
+    "@babel/types": "^7.3.0"
+  },
+  "scripts": {
+    "build": "yarn run lint && yarn run prettier && tsc && webpack --mode=production --progress",
+    "build:dev": "webpack --progress",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint --fix src/**/*.ts",
+    "prettier": "prettier --write src/**/*",
+    "typecheck": "tsc",
+    "typecheck:watch": "tsc -w",
+    "watch": "webpack -w"
+  }
+}
