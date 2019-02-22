@@ -30,6 +30,7 @@
   "scripts": {
     "build": "yarn run lint && yarn run prettier && tsc && webpack --mode=production --progress",
     "build:dev": "webpack --progress",
+    "clean": "rm -rv build/*",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint --fix src/**/*.ts",
     "prettier": "prettier --write src/**/*",

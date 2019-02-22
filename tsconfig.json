@@ -5,7 +5,6 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "lib": [
-      "dom",
       "es2018"
     ],
     "module": "ESNext",

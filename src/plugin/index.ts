@@ -1,7 +1,7 @@
 import { declare } from '@babel/helper-plugin-utils';
 import * as t from '@babel/types';
 
-export default declare(api => {
+const plugin = declare(api => {
   api.assertVersion(7);
 
   return {
@@ -18,3 +18,5 @@ export default declare(api => {
     },
   };
 });
+
+export default plugin;
