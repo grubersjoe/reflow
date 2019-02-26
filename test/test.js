@@ -1,3 +1,7 @@
+// @flow
+
+type bla = string;
+
 // but wait there is more
 foo   === baz
 

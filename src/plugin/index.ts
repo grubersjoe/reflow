@@ -1,8 +1,7 @@
 import { declare } from '@babel/helper-plugin-utils';
 import { NodePath } from 'babel-traverse';
 
-import * as types from '@babel/types';
-import { BinaryExpression } from '@babel/types';
+import { BinaryExpression, TypeAlias, identifier } from '@babel/types';
 
 const plugin = declare(api => {
   api.assertVersion(7);
@@ -10,10 +9,15 @@ const plugin = declare(api => {
   return {
     name: 'transform-flow-to-typscript',
     visitor: {
+      Flow(path: NodePath<TypeAlias>) {
+        console.log('+++');
+        console.log(path.node);
+        console.log('+++');
+      },
       BinaryExpression(path: NodePath<BinaryExpression>) {
         if (path.node.operator === '===') {
-          path.node.left = types.identifier('ja');
-          path.node.right = types.identifier('auja');
+          path.node.left = identifier('ja');
+          path.node.right = identifier('auja');
         }
       },
     },

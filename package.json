@@ -23,6 +23,7 @@
     "webpack-cli": "^3.2.1"
   },
   "dependencies": {
+    "@babel/preset-flow": "^7.0.0",
     "@babel/types": "^7.3.0",
     "@types/babel-types": "^7.0.4",
     "@types/chalk": "^2.2.0",

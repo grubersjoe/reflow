@@ -1,10 +1,11 @@
 import { transformSync } from '@babel/core';
+import babelPresetFlow from '@babel/preset-flow';
 import chalk from 'chalk';
 import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
 
-import OverflowPlugin from '../plugin';
+import overflowPlugin from '../plugin';
 import { printHeading } from '../util/printer';
 
 export interface RunnerArgs {
@@ -32,7 +33,8 @@ function transpileFile(filePath: string): void {
     const src = data.toString();
     const out = transformSync(src, {
       configFile: false,
-      plugins: [OverflowPlugin],
+      plugins: [overflowPlugin],
+      presets: [babelPresetFlow],
     });
 
     printHeading('Input');
