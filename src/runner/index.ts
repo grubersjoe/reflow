@@ -4,9 +4,15 @@ import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
 
-import { OverflowArgs } from '../cli';
 import OverflowPlugin from '../plugin';
 import { printHeading } from '../util/printer';
+
+export interface RunnerArgs {
+  dryRun?: boolean;
+  globPattern: string;
+  verbose?: boolean;
+  src: string[];
+}
 
 function getGlobOptions(options: object): object {
   const defaults = {
@@ -43,7 +49,7 @@ function transpileFile(filePath: string): void {
   });
 }
 
-export function run(args: OverflowArgs): void {
+export function run(args: RunnerArgs): void {
   console.log(args);
 
   args.src.forEach(src => {

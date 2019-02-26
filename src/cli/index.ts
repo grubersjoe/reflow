@@ -1,15 +1,8 @@
 import fs from 'fs';
 import program, { Command } from 'commander';
 
-import { run } from '../runner';
+import { run, RunnerArgs } from '../runner';
 import pkg from '../../package.json';
-
-export interface OverflowArgs {
-  dryRun?: boolean;
-  globPattern: string;
-  verbose?: boolean;
-  src: string[];
-}
 
 function validateArgs(dirs: string[]): boolean {
   if (dirs.length === 0) return false;
@@ -17,8 +10,8 @@ function validateArgs(dirs: string[]): boolean {
   return dirs.reduce((dirsExist, dir) => dirsExist && fs.existsSync(dir), true);
 }
 
-function buildRunnerArgs(program: Command): OverflowArgs {
-  return Object.assign({}, program.opts(), { src: program.args }) as OverflowArgs;
+function buildRunnerArgs(program: Command): RunnerArgs {
+  return Object.assign({}, program.opts(), { src: program.args }) as RunnerArgs;
 }
 
 program
