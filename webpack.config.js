@@ -18,11 +18,12 @@ module.exports = (env, argv) => {
       ]
     },
     output: {
-      // This is necessary
+      // These options are necessary to make debugging in VS Code possible,
+      // since VS Code won't understand the webpack:// "protocol"
       devtoolFallbackModuleFilenameTemplate: '[absolute-resource-path]?[hash]',
       devtoolModuleFilenameTemplate: '[absolute-resource-path]',
 
-      filename: 'bundle.js',
+      filename: 'overflow.js',
       path: path.resolve(__dirname, 'build')
     },
     resolve: {

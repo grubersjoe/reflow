@@ -23,7 +23,7 @@
       "error",
       2
     ],
-    "curly": "warn",
+    "curly": "off",
     "no-console": "off",
     "node/no-unsupported-features/es-syntax": "off"
   }

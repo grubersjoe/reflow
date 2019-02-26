@@ -1,1 +1,1 @@
-import './runner/index';
+import './cli/index';

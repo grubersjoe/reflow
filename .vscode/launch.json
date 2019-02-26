@@ -5,9 +5,9 @@
       "type": "node",
       "request": "launch",
       "args": [
-        "../test/test.js"
+        "./test/test.js"
       ],
-      "cwd": "${workspaceRoot}/build/",
+      "cwd": "${workspaceRoot}",
       "env": {
         "NODE_ENV": "development"
       },
