@@ -1,18 +1,44 @@
 import { transformSync } from '@babel/core';
-import babelPresetFlow from '@babel/preset-flow';
 import chalk from 'chalk';
 import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
 
-import overflowPlugin from '../plugin';
-import { printHeading } from '../util/printer';
+import { printRuler, printError } from '../util/printer';
+import { getBabelOptions, BabelConfiguration } from './babel-config';
 
 export interface RunnerArgs {
   dryRun?: boolean;
   globPattern: string;
   verbose?: boolean;
   src: string[];
+}
+
+function transpileFile(filePath: string, options: BabelConfiguration, verbose = false): void {
+  fs.readFile(filePath, function (err: NodeJS.ErrnoException, data: Buffer) {
+    console.log(chalk.magenta(`Transpiling ${filePath}...`));
+
+    if (err) throw err;
+
+    const src = data.toString();
+    const out = transformSync(src, options);
+
+
+    if (out) {
+      if (verbose) {
+        console.log(src.trim());
+        printRuler();
+        console.log(out.code);
+
+        console.log('');
+        printRuler('+');
+        console.log('');
+      }
+
+    } else {
+      printError(`Unable to transpile ${filePath}`)
+    }
+  });
 }
 
 function getGlobOptions(options: object): object {
@@ -24,48 +50,26 @@ function getGlobOptions(options: object): object {
   return Object.assign({}, defaults, options);
 }
 
-function transpileFile(filePath: string): void {
-  fs.readFile(filePath, function(err: NodeJS.ErrnoException, data: Buffer) {
-    console.log(chalk.magenta(`Transpiling ${filePath}...`));
-
-    if (err) throw err;
-
-    const src = data.toString();
-    const out = transformSync(src, {
-      configFile: false,
-      plugins: [overflowPlugin],
-      presets: [babelPresetFlow],
-    });
-
-    printHeading('Input');
-    console.log(src.trim());
-
-    console.log('─'.repeat(80));
-    printHeading('Output');
-
-    if (out) {
-      console.log(out.code);
-    } else {
-      console.error('Unable to transform the code!');
-    }
-  });
-}
-
 export function run(args: RunnerArgs): void {
-  console.log(args);
+  const { verbose } = args;
+  const babelOptions = getBabelOptions();
 
   args.src.forEach(src => {
     fs.stat(src, (err, stats) => {
       if (err) throw err;
 
       if (stats.isFile()) {
-        transpileFile(src);
+        transpileFile(src, babelOptions, verbose);
       } else {
         const options = getGlobOptions({ cwd: src });
 
         glob(args.globPattern, options, (err: Error, files: string[]) => {
           if (err) throw err;
-          files.forEach(file => transpileFile(path.join(src, file)));
+
+          files.forEach(file => {
+            const filePath = path.join(src, file);
+            transpileFile(filePath, babelOptions, verbose);
+          });
         });
       }
     });

@@ -5,6 +5,8 @@
       "type": "node",
       "request": "launch",
       "args": [
+        "-c",
+        "./test/helios-babel-config.json",
         "./test/test.js"
       ],
       "cwd": "${workspaceRoot}",
