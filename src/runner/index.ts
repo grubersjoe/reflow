@@ -1,11 +1,11 @@
-import { transformSync, TransformOptions } from '@babel/core';
+import { transformSync } from '@babel/core';
 import chalk from 'chalk';
 import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
 
-import { printRuler, printError } from '../util/printer';
 import { getBabelOptions } from './babel-config';
+import { printError } from '../util/printer';
 
 export interface RunnerArgs {
   dryRun?: boolean;
@@ -14,62 +14,43 @@ export interface RunnerArgs {
   src: string[];
 }
 
-function transpileFile(filePath: string, options: TransformOptions, verbose = false): void {
-  fs.readFile(filePath, function(err: NodeJS.ErrnoException, data: Buffer) {
-    console.log(chalk.magenta(`Transpiling ${filePath}...`));
-
-    if (err) throw err;
-
-    const src = data.toString();
-    const out = transformSync(src, options);
-
-    if (out) {
-      if (verbose) {
-        console.log(src.trim());
-        printRuler();
-        console.log(out.code);
-
-        console.log('');
-        printRuler('+');
-        console.log('');
-      }
-    } else {
-      printError(`Unable to transpile ${filePath}`);
-    }
-  });
-}
-
 function getGlobOptions(options: object): object {
   const defaults = {
+    absolute: true,
     ignore: 'node_modules/**',
     strict: true,
   };
 
-  return Object.assign({}, defaults, options);
+  return Object.assign(defaults, options);
 }
 
-export function run(args: RunnerArgs): void {
-  const { verbose } = args;
-  const babelOptions = getBabelOptions();
+function transpileFiles(args: RunnerArgs): void {
+  const { globPattern, src, verbose } = args;
 
-  args.src.forEach(src => {
-    fs.stat(src, (err, stats) => {
-      if (err) throw err;
+  const babelOptions = getBabelOptions({
+    verbose,
+  });
 
-      if (stats.isFile()) {
-        transpileFile(src, babelOptions, verbose);
-      } else {
-        const options = getGlobOptions({ cwd: src });
+  src.forEach(src => {
+    const isDir = fs.statSync(src).isDirectory();
+    const globOptions = getGlobOptions({ cwd: src });
 
-        glob(args.globPattern, options, (err: Error, files: string[]) => {
-          if (err) throw err;
+    // Create a list of to be transpiled files
+    const fileList = isDir ? glob.sync(globPattern, globOptions) : [path.resolve(src)];
 
-          files.forEach(file => {
-            const filePath = path.join(src, file);
-            transpileFile(filePath, babelOptions, verbose);
-          });
-        });
+    fileList.forEach(filePath => {
+      console.log(chalk.magenta(`Transpiling ${filePath}...`));
+
+      const src = fs.readFileSync(filePath).toString();
+      const out = transformSync(src, babelOptions);
+
+      if (out === null) {
+        printError(`Unable to transpile ${filePath}`)
       }
     });
   });
+}
+
+export function run(args: RunnerArgs): void {
+  transpileFiles(args);
 }

@@ -5,12 +5,9 @@ export function printError(message: string): void {
 }
 
 export function printHeading(text: string): void {
-  const padding = ' '.repeat(2);
-  const hrule = '═'.repeat(text.length + padding.length * 2);
-
-  console.log('╔' + hrule + '╗');
-  console.log('║' + padding + text + padding + '║');
-  console.log('╚' + hrule + '╝');
+  const ruler = '─'.repeat(text.length);
+  console.log(text.toUpperCase());
+  console.log(ruler);
 }
 
 export function printRuler(symbol: string = '─', length: number = 80): void {

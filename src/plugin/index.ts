@@ -1,17 +1,29 @@
+import { PluginObj } from '@babel/core';
 import { declare } from '@babel/helper-plugin-utils';
 import { NodePath } from '@babel/traverse';
 import { BinaryExpression, Flow, identifier } from '@babel/types';
 
-const plugin = declare(api => {
+export interface OverflowOptions {
+  verbose?: boolean;
+}
+
+interface ApiHelper {
+  assertVersion: (version: number) => void;
+}
+
+export default declare((api: ApiHelper) => {
   api.assertVersion(7);
 
-  return {
-    name: 'transform-flow-to-typscript',
+  const name = 'transform-flow-to-typscript';
+  const plugin: PluginObj<Flow> = {
+    name,
     visitor: {
-      Flow(path: NodePath<Flow>) {
-        // console.log('+++');
-        // console.log(path.node);
-        // console.log('+++');
+      Flow(path: NodePath<Flow>, state: any) {
+        const options = (state.opts as OverflowOptions);
+
+        if (options.verbose) {
+          console.log(`  - ${path.node.type}`);
+        }
       },
       BinaryExpression(path: NodePath<BinaryExpression>) {
         if (path.node.operator === '===') {
@@ -21,6 +33,6 @@ const plugin = declare(api => {
       },
     },
   };
-});
 
-export default plugin;
+  return plugin;
+});

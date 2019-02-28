@@ -1,5 +1,7 @@
 import { PluginObj, TransformOptions } from '@babel/core';
 
+import { OverflowOptions } from '../plugin';
+
 export type BabelPlugins =
   | 'OVERFLOW'
   | 'PROPOSAL_CLASS_DECORATORS'
@@ -9,10 +11,6 @@ export type BabelPlugins =
   | 'SYNTAX_DYNAMIC_IMPORT'
   | 'SYNTAX_JSX'
   | 'SYNTAX_FLOW';
-
-export type BabelPluginList = {
-  [key in BabelPlugins]: PluginObj
-};
 
 export const BABEL_PLUGINS: { [key in BabelPlugins]: PluginObj } = {
   OVERFLOW                    : require('../plugin/index.ts'),
@@ -24,11 +22,18 @@ export const BABEL_PLUGINS: { [key in BabelPlugins]: PluginObj } = {
   SYNTAX_FLOW                 : require('@babel/plugin-syntax-jsx'),
 };
 
-export function getBabelOptions(): TransformOptions {
+/**
+ * Create the Babel configuration for the runner
+ * @param overflowOptions Plugin options for Overflow
+ */
+export function getBabelOptions(overflowOptions: OverflowOptions): TransformOptions {
   return {
     configFile: false,
     plugins: [
-      BABEL_PLUGINS.OVERFLOW,
+      [
+        BABEL_PLUGINS.OVERFLOW,
+        overflowOptions
+      ],
       [
         BABEL_PLUGINS.PROPOSAL_CLASS_DECORATORS,
         {
