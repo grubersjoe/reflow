@@ -1,6 +1,5 @@
 import { declare } from '@babel/helper-plugin-utils';
-import { NodePath } from 'babel-traverse';
-
+import { NodePath } from '@babel/traverse';
 import { BinaryExpression, Flow, identifier } from '@babel/types';
 
 const plugin = declare(api => {

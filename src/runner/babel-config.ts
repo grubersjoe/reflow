@@ -1,32 +1,30 @@
-import pluginProposalClassProperties  from '@babel/plugin-proposal-class-properties';
-import pluginProposalDecorators       from '@babel/plugin-proposal-decorators';
-import pluginProposalObjectRestSpread from '@babel/plugin-proposal-object-rest-spread';
-import pluginSyntaxDynamicImport      from '@babel/plugin-syntax-dynamic-import';
-import pluginSyntaxFlow               from '@babel/plugin-syntax-flow';
-import pluginSyntaxJSX                from '@babel/plugin-syntax-jsx';
+import { PluginObj, TransformOptions } from '@babel/core';
 
-import pluginOverflow from '../plugin';
+export type BabelPlugins =
+  | 'OVERFLOW'
+  | 'PROPOSAL_CLASS_DECORATORS'
+  | 'PROPOSAL_CLASS_PROPERTIES'
+  | 'PROPOSAL_OBJECT_REST_SPREAD'
+  | 'SYNTAX_DYNAMIC_IMPORT'
+  | 'SYNTAX_DYNAMIC_IMPORT'
+  | 'SYNTAX_JSX'
+  | 'SYNTAX_FLOW';
 
-export interface BabelConfiguration {
-  configFile: false;
-  plugins: Configuration<BABEL_PLUGINS>[];
-  retainLines?: boolean;
-}
+export type BabelPluginList = {
+  [key in BabelPlugins]: PluginObj
+};
 
-// Just the plugin or the plugin and its configuration
-type Configuration<T> = T | [T, object];
+export const BABEL_PLUGINS: { [key in BabelPlugins]: PluginObj } = {
+  OVERFLOW                    : require('../plugin/index.ts'),
+  PROPOSAL_CLASS_DECORATORS   : require('@babel/plugin-proposal-decorators'),
+  PROPOSAL_CLASS_PROPERTIES   : require('@babel/plugin-proposal-class-properties'),
+  PROPOSAL_OBJECT_REST_SPREAD : require('@babel/plugin-proposal-object-rest-spread'),
+  SYNTAX_DYNAMIC_IMPORT       : require('@babel/plugin-syntax-dynamic-import'),
+  SYNTAX_JSX                  : require('@babel/plugin-syntax-flow'),
+  SYNTAX_FLOW                 : require('@babel/plugin-syntax-jsx'),
+};
 
-export enum BABEL_PLUGINS {
-  OVERFLOW                    = pluginOverflow,
-  PROPOSAL_CLASS_DECORATORS   = pluginProposalDecorators,
-  PROPOSAL_CLASS_PROPERTIES   = pluginProposalClassProperties,
-  PROPOSAL_OBJECT_REST_SPREAD = pluginProposalObjectRestSpread,
-  SYNTAX_DYNAMIC_IMPORT       = pluginSyntaxDynamicImport,
-  SYNTAX_JSX                  = pluginSyntaxJSX,
-  SYNTAX_FLOW                 = pluginSyntaxFlow,
-}
-
-export function getBabelOptions(): BabelConfiguration {
+export function getBabelOptions(): TransformOptions {
   return {
     configFile: false,
     plugins: [

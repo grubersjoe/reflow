@@ -1,11 +1,11 @@
-import { transformSync } from '@babel/core';
+import { transformSync, TransformOptions } from '@babel/core';
 import chalk from 'chalk';
 import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
 
 import { printRuler, printError } from '../util/printer';
-import { getBabelOptions, BabelConfiguration } from './babel-config';
+import { getBabelOptions } from './babel-config';
 
 export interface RunnerArgs {
   dryRun?: boolean;
@@ -14,15 +14,14 @@ export interface RunnerArgs {
   src: string[];
 }
 
-function transpileFile(filePath: string, options: BabelConfiguration, verbose = false): void {
-  fs.readFile(filePath, function (err: NodeJS.ErrnoException, data: Buffer) {
+function transpileFile(filePath: string, options: TransformOptions, verbose = false): void {
+  fs.readFile(filePath, function(err: NodeJS.ErrnoException, data: Buffer) {
     console.log(chalk.magenta(`Transpiling ${filePath}...`));
 
     if (err) throw err;
 
     const src = data.toString();
     const out = transformSync(src, options);
-
 
     if (out) {
       if (verbose) {
@@ -34,9 +33,8 @@ function transpileFile(filePath: string, options: BabelConfiguration, verbose = 
         printRuler('+');
         console.log('');
       }
-
     } else {
-      printError(`Unable to transpile ${filePath}`)
+      printError(`Unable to transpile ${filePath}`);
     }
   });
 }
