@@ -1,9 +1,9 @@
 import fs from 'fs';
 import program, { Command } from 'commander';
 
-import { run, RunnerArgs } from '../runner';
 import pkg from '../../package.json';
-import { printError } from '../util/printer';
+import { printError } from '../util/print';
+import { run, RunnerArgs } from './runner';
 
 /**
  * Validate that all arguments (all directories) are valid
@@ -44,11 +44,11 @@ program
   .option('-v, --verbose', 'increase verbosity');
 
 program.on('--help', () => {
-  console.log('Examples:');
+  console.log('\nExamples:');
   console.log('  $ overflow --dry-run src/');
 });
 
 program.parse(process.argv);
 
-// Let's go
+// Run the application
 validateArgs(program.args) ? run(collectArgs(program)) : program.help();

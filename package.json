@@ -1,5 +1,5 @@
 {
-  "name": "@grubersjoe/babel-plugin-flow-to-typscript",
+  "name": "@grubersjoe/babel-plugin-transform-flow-to-typescript",
   "version": "0.0.1",
   "description": "Babel Plugin to migrate Flow typed JavaScript to TypeScript",
   "author": "Jonathan Gruber <jogu@spreadshirt.net>",
@@ -16,7 +16,7 @@
     "@types/babel__traverse": "^7.0.6",
     "@types/node": "^11",
     "@typescript-eslint/eslint-plugin": "^1.1.1",
-    "@typescript-eslint/parser": "^1.1.1",
+    "@typescript-eslint/parser": "^1.4.2",
     "babel-loader": "^8.0.5",
     "eslint": "^5.12.1",
     "eslint-plugin-node": "^8.0.1",
@@ -51,6 +51,6 @@
     "lint:fix": "eslint --fix 'src/**/*.ts'",
     "typecheck": "tsc",
     "typecheck:watch": "tsc -w",
-    "watch": "webpack -w --display-error-details"
+    "watch": "webpack -w"
   }
 }

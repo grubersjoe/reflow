@@ -1,1 +1,1 @@
-import './cli/index';
+import './app';

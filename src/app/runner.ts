@@ -4,13 +4,14 @@ import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
 
-import { getBabelOptions } from './babel-config';
-import { printError } from '../util/printer';
+import { printError } from '../util/print';
+import { getTransformOptions } from './babel-config';
 
 export interface RunnerArgs {
   dryRun?: boolean;
   globPattern: string;
   verbose?: boolean;
+  stats?: boolean;
   src: string[];
 }
 
@@ -27,7 +28,7 @@ function getGlobOptions(options: object): object {
 function transpileFiles(args: RunnerArgs): void {
   const { globPattern, src, verbose } = args;
 
-  const babelOptions = getBabelOptions({
+  const babelOptions = getTransformOptions({
     verbose,
   });
 
@@ -45,7 +46,7 @@ function transpileFiles(args: RunnerArgs): void {
       const out = transformSync(src, babelOptions);
 
       if (out === null) {
-        printError(`Unable to transpile ${filePath}`)
+        printError(`Unable to transpile ${filePath}`);
       }
     });
   });
