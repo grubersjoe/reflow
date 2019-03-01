@@ -6,6 +6,7 @@ import path from 'path';
 
 import { printError } from '../util/print';
 import { getTransformOptions } from './babel-config';
+import { Stats, sortNumberMap } from '../util/stats';
 
 export interface RunnerArgs {
   dryRun?: boolean;
@@ -49,6 +50,9 @@ function transpileFiles(args: RunnerArgs): void {
         printError(`Unable to transpile ${filePath}`);
       }
     });
+
+    console.log(sortNumberMap(Stats.typeCounter.getCount()));
+    console.log();
   });
 }
 
