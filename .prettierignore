@@ -1,1 +1,2 @@
 src/app/babel-config.ts
+src/**/__fixtures__/**/*

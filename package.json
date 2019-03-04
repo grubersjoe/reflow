@@ -9,13 +9,13 @@
     "node": ">=8.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.3.4",
+    "@babel/core": "^7",
     "@babel/preset-env": "^7",
     "@babel/preset-typescript": "^7",
     "@types/babel__core": "^7",
     "@types/babel__traverse": "^7",
     "@types/node": "^11",
-    "@typescript-eslint/eslint-plugin": "^1.1.1",
+    "@typescript-eslint/eslint-plugin": "^1.4.2",
     "@typescript-eslint/parser": "^1.4.2",
     "babel-loader": "^8.0.5",
     "babel-plugin-tester": "^6.0.0",
@@ -29,9 +29,8 @@
     "webpack-cli": "^3.2.1"
   },
   "dependencies": {
-    "@babel/plugin-proposal-class-properties": "^7",
-    "@babel/plugin-proposal-decorators": "^7",
-    "@babel/plugin-proposal-object-rest-spread": "^7",
+    "@babel/plugin-syntax-class-properties": "^7.2.0",
+    "@babel/plugin-syntax-decorators": "^7.2.0",
     "@babel/plugin-syntax-dynamic-import": "^7",
     "@babel/plugin-syntax-flow": "^7",
     "@babel/plugin-syntax-jsx": "^7",

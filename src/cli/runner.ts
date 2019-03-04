@@ -1,12 +1,12 @@
-import { transformSync } from '@babel/core';
+import { transformSync, TransformOptions } from '@babel/core';
 import chalk from 'chalk';
 import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
 
 import { printError } from '../util/print';
-import { getTransformOptions } from './babel-config';
 import { Stats, sortNumberMap } from '../util/stats';
+import overflowPlugin, { OverflowOptions } from '../plugin';
 
 export interface RunnerArgs {
   dryRun?: boolean;
@@ -26,12 +26,22 @@ function getGlobOptions(options: object): object {
   return Object.assign(defaults, options);
 }
 
+/**
+ * Create the Babel configuration for the runner
+ * @param options Plugin options for Overflow
+ */
+function getTransformOptions(options: OverflowOptions): TransformOptions {
+  return {
+    configFile: false,
+    plugins: [[overflowPlugin, options]],
+    retainLines: true,
+  };
+}
+
 function transpileFiles(args: RunnerArgs): void {
   const { globPattern, src, verbose } = args;
 
-  const babelOptions = getTransformOptions({
-    verbose,
-  });
+  const babelOptions = getTransformOptions({ verbose });
 
   src.forEach(src => {
     const isDir = fs.statSync(src).isDirectory();
