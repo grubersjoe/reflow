@@ -1,7 +1,7 @@
 [ignore]
 
 [include]
-src/test/**/*.js
+**/__fixtures__/**/*.js
 
 [libs]
 

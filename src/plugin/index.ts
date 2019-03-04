@@ -1,5 +1,4 @@
 import { PluginObj } from '@babel/core';
-import { declare } from '@babel/helper-plugin-utils';
 import { Visitor } from '@babel/traverse';
 import { Flow as FlowType } from '@babel/types';
 
@@ -13,18 +12,29 @@ interface ApiHelper {
   assertVersion: (version: number) => void;
 }
 
-function buildPlugin(visitor: Visitor<FlowType>): PluginObj<FlowType> {
+export function buildPlugin(visitor: Visitor<FlowType>): PluginObj<FlowType> {
   return {
     name: 'transform-flow-to-typescript',
     visitor,
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    manipulateOptions(opts: any, parserOpts: any) {
+      parserOpts.plugins.push('flow');
+      parserOpts.plugins.push('jsx');
+    },
   };
 }
 
-export default declare((api: ApiHelper) => {
-  api.assertVersion(7);
-
-  return buildPlugin({
-    Flow,
-    NullableTypeAnnotation,
-  });
+export default () => buildPlugin({
+  Flow,
+  NullableTypeAnnotation,
 });
+
+// export default declare((api: ApiHelper) => {
+//   api.assertVersion(7);
+//
+//   return buildPlugin({
+//     Flow,
+//     NullableTypeAnnotation,
+//   });
+// });
