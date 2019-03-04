@@ -8,10 +8,6 @@ export interface OverflowOptions {
   verbose?: boolean;
 }
 
-interface ApiHelper {
-  assertVersion: (version: number) => void;
-}
-
 export function buildPlugin(visitor: Visitor<FlowType>): PluginObj<FlowType> {
   return {
     name: 'transform-flow-to-typescript',
@@ -29,12 +25,3 @@ export default () => buildPlugin({
   Flow,
   NullableTypeAnnotation,
 });
-
-// export default declare((api: ApiHelper) => {
-//   api.assertVersion(7);
-//
-//   return buildPlugin({
-//     Flow,
-//     NullableTypeAnnotation,
-//   });
-// });
