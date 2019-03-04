@@ -3,7 +3,7 @@ import { declare } from '@babel/helper-plugin-utils';
 import { Visitor } from '@babel/traverse';
 import { Flow as FlowType } from '@babel/types';
 
-import { Flow, TypeAnnotation } from './visitors';
+import { Flow, NullableTypeAnnotation } from './visitors';
 
 export interface OverflowOptions {
   verbose?: boolean;
@@ -25,6 +25,6 @@ export default declare((api: ApiHelper) => {
 
   return buildPlugin({
     Flow,
-    TypeAnnotation,
+    NullableTypeAnnotation,
   });
 });

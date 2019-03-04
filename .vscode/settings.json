@@ -3,4 +3,7 @@
     "typescript",
     "typescriptreact"
   ],
+
+  // Required to make Flow checks
+  "javascript.validate.enable": false
 }

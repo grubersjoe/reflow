@@ -20,8 +20,8 @@ export function sortNumberMap<T>(counter: Map<T, number>): Map<T, number> {
   const arr = [...counter.entries()];
 
   return new Map<T, number>(
-    arr.sort((a, b) => {
-      return b[1] - a[1];
+    arr.sort((x, y) => {
+      return y[1] - x[1];
     }),
   );
 }

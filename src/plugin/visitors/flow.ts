@@ -4,6 +4,7 @@ import { Flow } from '@babel/types';
 import { Stats } from '../../util/stats';
 import { OverflowOptions } from '..';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const visitor: VisitNodeFunction<Flow, Flow> = (path, state: any): void => {
   const { verbose } = state.opts as OverflowOptions;
 
