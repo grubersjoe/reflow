@@ -35,8 +35,6 @@
     "@babel/plugin-syntax-flow": "^7",
     "@babel/plugin-syntax-jsx": "^7",
     "@babel/types": "^7",
-    "@types/chalk": "^2.2.0",
-    "@types/commander": "^2.12.2",
     "@types/diff": "^4.0.1",
     "@types/glob": "^7.1.1",
     "chalk": "^2.4.2",
@@ -52,6 +50,7 @@
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint --fix 'src/**/*.ts'",
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "typecheck": "tsc",
     "typecheck:watch": "tsc -w",
     "watch": "webpack -w"

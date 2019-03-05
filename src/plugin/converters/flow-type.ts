@@ -9,6 +9,8 @@ import {
   tsBooleanKeyword,
   tsStringKeyword,
   tsVoidKeyword,
+  tsArrayType,
+  tsNullKeyword,
 } from '@babel/types';
 
 export function convertFlowType(path: NodePath<FlowType>): TSType {
@@ -17,7 +19,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
   }
 
   if (path.isArrayTypeAnnotation()) {
-    console.log(path.type);
+    return convertFlowType(path.get('elementType'));
   }
 
   if (path.isBooleanTypeAnnotation()) {
@@ -53,11 +55,17 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
   }
 
   if (path.isNullableTypeAnnotation()) {
-    // prettier-ignore
-    return tsUnionType([
+    const tsNullableType = tsUnionType([
       convertFlowType(path.get('typeAnnotation')),
+      tsNullKeyword(),
       tsUndefinedKeyword(),
     ]);
+
+    if (path.get('typeAnnotation').isArrayTypeAnnotation()) {
+      return tsArrayType(tsNullableType);
+    }
+
+    return tsNullableType;
   }
 
   if (path.isNumberTypeAnnotation()) {
@@ -97,5 +105,6 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     return tsVoidKeyword();
   }
 
+  console.log('NOPE');
   return tsAnyKeyword();
 }

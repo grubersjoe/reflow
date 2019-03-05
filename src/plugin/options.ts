@@ -4,7 +4,7 @@ import { TransformOptions } from '@babel/core';
  * Add Babel syntax plugins for commonly used features and technologies
  * @param parserOpts
  */
-export function setTransformOptions(parserOpts: TransformOptions): void {
+export function setParserOptions(parserOpts: TransformOptions): void {
   if (!parserOpts.plugins) {
     throw new Error('Unexpected error');
   }
