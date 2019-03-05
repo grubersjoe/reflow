@@ -1,10 +1,13 @@
-import { NodePath } from '@babel/traverse';
-import types from '@babel/types';
+import { VisitNodeFunction } from '@babel/traverse';
+import t from '@babel/types';
 import { convertTypeAnnotation } from '../converters';
 
-export function TypeAnnotation(path: NodePath<types.TypeAnnotation>): void {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const TypeAnnotation: VisitNodeFunction<any, t.TypeAnnotation> = (path): void => {
   path.replaceWith(convertTypeAnnotation(path));
-}
+};
+
+export { TypeAnnotation };
 
 // export function TypeAlias(path: NodePath<TypeAlias>): void {
 //   path.replaceWith(convertTypeAlias(path))
