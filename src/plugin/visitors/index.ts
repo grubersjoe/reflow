@@ -1,4 +1,4 @@
-import Flow from './flow';
-import MyVisitor from './nullable-type-annotation';
+import { FlowType } from './flow-type';
+import { TypeAnnotation } from './type-annotation';
 
-export { Flow, MyVisitor as NullableTypeAnnotation };
+export { FlowType, TypeAnnotation };

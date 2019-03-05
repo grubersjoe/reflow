@@ -5,7 +5,7 @@
       "type": "node",
       "request": "launch",
       "args": [
-        "../helios/src/components"
+        "src/plugin/__tests__/__fixtures__/simple/code.js"
       ],
       "cwd": "${workspaceRoot}",
       "env": {

@@ -1,5 +1,5 @@
 interface Counter {
-  getCount(): Map<string, number>;
+  getCounter(): Map<string, number>;
   incrementFor(key: string): void;
 }
 
@@ -7,7 +7,7 @@ export function createCounter(): Counter {
   let count = new Map<string, number>();
 
   return {
-    getCount() {
+    getCounter() {
       return count;
     },
     incrementFor(key: string) {

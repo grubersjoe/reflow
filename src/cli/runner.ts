@@ -61,8 +61,10 @@ function transpileFiles(args: RunnerArgs): void {
       }
     });
 
-    console.log(sortNumberMap(Stats.typeCounter.getCount()));
-    console.log();
+    if (Stats.typeCounter.getCounter().size) {
+      console.log(sortNumberMap(Stats.typeCounter.getCounter()));
+      console.log();
+    }
   });
 }
 
