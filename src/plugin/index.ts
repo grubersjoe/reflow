@@ -1,19 +1,16 @@
 import { PluginObj, TransformOptions } from '@babel/core';
 import { Visitor } from '@babel/traverse';
-import t from '@babel/types';
 
 import { setParserOptions } from './options';
-import { FlowType, Program, TypeAnnotation } from './visitors';
+import { VisitorType } from './types';
 
-export interface OverflowOptions {
-  verbose?: boolean;
-}
+import { FlowType, Program, TypeAnnotation } from './visitors';
 
 /**
  * Plugin definition
  */
 // TODO: Get this type parameter right
-function buildPlugin(visitor: Visitor<t.Node>): PluginObj<t.Node> {
+function buildPlugin(visitor: Visitor<VisitorType>): PluginObj<VisitorType> {
   return {
     name: 'transform-flow-to-typescript',
     visitor,

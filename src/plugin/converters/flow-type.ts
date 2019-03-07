@@ -12,6 +12,7 @@ import {
   tsArrayType,
   tsNullKeyword,
 } from '@babel/types';
+import chalk from 'chalk';
 
 export function convertFlowType(path: NodePath<FlowType>): TSType {
   if (path.isAnyTypeAnnotation()) {
@@ -105,6 +106,6 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     return tsVoidKeyword();
   }
 
-  console.log('NOPE');
+  console.log(chalk.red('NOPE\n'));
   return tsAnyKeyword();
 }

@@ -1,2 +1,2 @@
-src/app/babel-config.ts
+src/**/__coverage__/**/*
 src/**/__fixtures__/**/*

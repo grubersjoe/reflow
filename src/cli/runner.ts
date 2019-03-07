@@ -4,9 +4,10 @@ import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
 
+import overflowPlugin from '../plugin';
+import { OverflowOptions } from '../plugin/types';
 import { printError } from '../util/print';
 import { Stats, sortNumberMap } from '../util/stats';
-import overflowPlugin, { OverflowOptions } from '../plugin';
 
 export interface RunnerArgs {
   dryRun?: boolean;

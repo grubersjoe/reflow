@@ -1,21 +1,21 @@
-// See https://github.com/babel/babel/blob/master/packages/babel-plugin-transform-flow-strip-types/src/index.js
+// See https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-flow-strip-types
 
-import t, { Comment } from '@babel/types';
+import { Comment, Program } from '@babel/types';
 import { VisitNodeFunction } from '@babel/traverse';
+import { PluginPass } from '../types';
 
 const FLOW_DIRECTIVE = /(@flow(\s+(strict(-local)?|weak))?|@noflow)/;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Program: VisitNodeFunction<any, t.Program> = (path, state): void => {
-  const { comments } = state.file.ast;
+const programVisitor: VisitNodeFunction<object, Program> = (path, state): void => {
+  const comments = (state as PluginPass<Program>).file.ast.comments as Comment[];
 
   if (comments) {
-    (comments as Comment[]).forEach(comment => {
+    comments.forEach(comment => {
       if (FLOW_DIRECTIVE.test(comment.value)) {
-        // Remove Flow directive
+        // Remove the Flow directive
         comment.value = comment.value.replace(FLOW_DIRECTIVE, '');
 
-        // Remove the comment completely if there is only whitespace or stars left
+        // Remove the comment completely if only whitespace or stars is left
         if (!comment.value.replace(/\*/g, '').trim()) {
           // @ts-ignore
           comment.ignore = true;
@@ -25,4 +25,4 @@ const Program: VisitNodeFunction<any, t.Program> = (path, state): void => {
   }
 };
 
-export { Program };
+export { programVisitor };
