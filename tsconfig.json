@@ -4,8 +4,8 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "lib": [
-      "es2018",
-      "dom"
+      "dom",
+      "es2018"
     ],
     "module": "ESNext",
     "moduleResolution": "node",
@@ -13,5 +13,8 @@
     "resolveJsonModule": true,
     "strict": true,
     "target": "ESNext"
-  }
+  },
+  "include": [
+    "src/**/*"
+  ]
 }

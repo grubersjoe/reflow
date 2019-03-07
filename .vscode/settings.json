@@ -4,6 +4,6 @@
     "typescriptreact"
   ],
 
-  // Required to make Flow checks
+  // Required to make Flow checks work
   "javascript.validate.enable": false
 }

@@ -5,7 +5,7 @@
       "type": "node",
       "request": "launch",
       "args": [
-        "src/plugin/__tests__/__fixtures__/playground/code.js"
+        "src/plugin/__tests__/__fixtures__/maybe/code.js"
       ],
       "cwd": "${workspaceRoot}",
       "env": {

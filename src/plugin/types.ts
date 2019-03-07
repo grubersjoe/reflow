@@ -1,10 +1,8 @@
 import { TransformOptions } from '@babel/core';
 import { NodePath, Scope } from '@babel/traverse';
-import { File, FlowType, Program } from '@babel/types';
+import { File } from '@babel/types';
 
-export interface OverflowOptions {
-  verbose?: boolean;
-}
+import { OverflowOptions } from '.';
 
 export interface PluginPass<T> {
   cwd: string;
@@ -25,4 +23,4 @@ export interface PluginPass<T> {
   opts: OverflowOptions;
 }
 
-export type VisitorType = FlowType | Program;
+

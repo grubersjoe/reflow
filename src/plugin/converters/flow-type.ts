@@ -1,4 +1,6 @@
 import { NodePath } from '@babel/traverse';
+import chalk from 'chalk';
+
 import {
   FlowType,
   tsNumberKeyword,
@@ -11,8 +13,9 @@ import {
   tsVoidKeyword,
   tsArrayType,
   tsNullKeyword,
+  isTSNullKeyword,
 } from '@babel/types';
-import chalk from 'chalk';
+import { insertIf } from '../../util/array';
 
 export function convertFlowType(path: NodePath<FlowType>): TSType {
   if (path.isAnyTypeAnnotation()) {
@@ -20,7 +23,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
   }
 
   if (path.isArrayTypeAnnotation()) {
-    return convertFlowType(path.get('elementType'));
+    return tsArrayType(convertFlowType(path.get('elementType')));
   }
 
   if (path.isBooleanTypeAnnotation()) {
@@ -28,10 +31,6 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
   }
 
   if (path.isBooleanLiteralTypeAnnotation()) {
-    console.log(path.type);
-  }
-
-  if (path.isNullLiteralTypeAnnotation()) {
     console.log(path.type);
   }
 
@@ -56,17 +55,17 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
   }
 
   if (path.isNullableTypeAnnotation()) {
-    const tsNullableType = tsUnionType([
-      convertFlowType(path.get('typeAnnotation')),
+    const type = convertFlowType(path.get('typeAnnotation'));
+
+    return tsUnionType([
+      ...insertIf(!isTSNullKeyword(type), type),
       tsNullKeyword(),
       tsUndefinedKeyword(),
     ]);
+  }
 
-    if (path.get('typeAnnotation').isArrayTypeAnnotation()) {
-      return tsArrayType(tsNullableType);
-    }
-
-    return tsNullableType;
+  if (path.isNullLiteralTypeAnnotation()) {
+    return tsNullKeyword();
   }
 
   if (path.isNumberTypeAnnotation()) {
@@ -77,9 +76,9 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     console.log(path.type);
   }
 
-  // TODO: maybe unnecessary
+  // REVIEW: maybe unnecessary
   if (path.isStringLiteralTypeAnnotation()) {
-    console.log(path.type, path.node.value);
+    return tsStringKeyword();
   }
 
   if (path.isStringTypeAnnotation()) {

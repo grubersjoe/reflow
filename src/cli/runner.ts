@@ -4,8 +4,7 @@ import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
 
-import overflowPlugin from '../plugin';
-import { OverflowOptions } from '../plugin/types';
+import overflowPlugin, { OverflowOptions } from '../plugin';
 import { printError } from '../util/print';
 import { Stats, sortNumberMap } from '../util/stats';
 
@@ -17,6 +16,19 @@ export interface RunnerArgs {
   src: string[];
 }
 
+/**
+ * Create the Babel configuration for runner using the plugin
+ * @param options Plugin options for Overflow
+ */
+export function getTransformOptions(options?: OverflowOptions): TransformOptions {
+  return {
+    babelrc: false,
+    configFile: false,
+    plugins: [[overflowPlugin, options]],
+    retainLines: true,
+  };
+}
+
 function getGlobOptions(options: object): object {
   const defaults = {
     absolute: true,
@@ -25,18 +37,6 @@ function getGlobOptions(options: object): object {
   };
 
   return Object.assign(defaults, options);
-}
-
-/**
- * Create the Babel configuration for the runner
- * @param options Plugin options for Overflow
- */
-function getTransformOptions(options: OverflowOptions): TransformOptions {
-  return {
-    configFile: false,
-    plugins: [[overflowPlugin, options]],
-    retainLines: true,
-  };
 }
 
 function transpileFiles(args: RunnerArgs): void {
