@@ -1,0 +1,31 @@
+image: node:11
+
+cache:
+  key: "node_modules-overflow"
+  paths:
+    - node_modules/
+
+stages:
+  - test
+  - build
+
+before_script:
+  - yarn install
+
+test:
+  stage: test
+  script:
+    - yarn lint
+    - yarn test
+    - yarn typecheck
+
+build:
+  stage: build
+  script:
+    - yarn build
+  artifacts:
+    name: overflow
+    paths:
+      - build
+  only:
+    - master

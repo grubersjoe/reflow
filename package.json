@@ -43,7 +43,7 @@
     "glob": "^7.1.3"
   },
   "scripts": {
-    "build": "yarn run lint && yarn run format && tsc && webpack --mode=production --progress",
+    "build": "webpack --mode=production",
     "build:dev": "webpack --progress",
     "clean": "rm -rv build/*",
     "format": "prettier --write 'src/**/*'",
