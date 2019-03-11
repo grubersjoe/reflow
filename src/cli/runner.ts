@@ -18,15 +18,20 @@ export interface RunnerArgs {
 
 /**
  * Create the Babel configuration for runner using the plugin
- * @param options Plugin options for Overflow
+ * @param overflowOptions Plugin options for Overflow
  */
-export function getTransformOptions(options?: OverflowOptions): TransformOptions {
-  return {
+export function getTransformOptions(
+  overflowOptions?: OverflowOptions,
+  overwrites?: TransformOptions,
+): TransformOptions {
+  const defaults = {
     babelrc: false,
     configFile: false,
-    plugins: [[overflowPlugin, options]],
-    retainLines: true,
+    plugins: [[overflowPlugin, overflowOptions]],
+    ...overwrites,
   };
+
+  return Object.assign({}, defaults, overwrites);
 }
 
 function getGlobOptions(options: object): object {

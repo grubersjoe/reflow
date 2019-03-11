@@ -14,8 +14,14 @@ import {
   tsArrayType,
   tsNullKeyword,
   isTSNullKeyword,
+  tsTypeReference,
+  tsLiteralType,
+  stringLiteral,
+  booleanLiteral,
+  TSEntityName,
 } from '@babel/types';
 import { insertIf } from '../../util/array';
+import { convertTypeParameterInstantiation } from './type-parameter';
 
 export function convertFlowType(path: NodePath<FlowType>): TSType {
   if (path.isAnyTypeAnnotation()) {
@@ -31,7 +37,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
   }
 
   if (path.isBooleanLiteralTypeAnnotation()) {
-    console.log(path.type);
+    return tsLiteralType(booleanLiteral(path.node.value));
   }
 
   if (path.isFunctionTypeAnnotation()) {
@@ -39,7 +45,14 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
   }
 
   if (path.isGenericTypeAnnotation()) {
-    console.log(path.type);
+    const { id } = path.node;
+    const typeParametersPath = path.get('typeParameters');
+
+    const typeParameters = typeParametersPath.isTypeParameterInstantiation()
+      ? convertTypeParameterInstantiation(typeParametersPath)
+      : null;
+
+    return tsTypeReference(id as TSEntityName, typeParameters);
   }
 
   if (path.isInterfaceDeclaration()) {
@@ -76,9 +89,8 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     console.log(path.type);
   }
 
-  // REVIEW: maybe unnecessary
   if (path.isStringLiteralTypeAnnotation()) {
-    return tsStringKeyword();
+    return tsLiteralType(stringLiteral(path.node.value));
   }
 
   if (path.isStringTypeAnnotation()) {

@@ -2,39 +2,65 @@ import { transformSync, TransformOptions } from '@babel/core';
 import fs, { statSync } from 'fs';
 import path from 'path';
 
-export interface TestRunnerArgs {
+export interface FixtureTestRunnerArgs {
   babelOptions: TransformOptions;
   fixturesRoot: string;
+  inputFilename?: string;
+  outputFilename?: string;
 }
+
+export const defaultFixtureRunnerArgs = {
+  inputFilename: 'input.js',
+  outputFilename: 'output.ts',
+};
 
 function splitLines(code: Buffer | string): string[] {
-  return code.toString().trim().split(/\r?\n/);
+  const BLANK_LINES = /^\s*\n/gm;
+  const LINE_BREAKS = /\r?\n/;
+
+  return code
+    .toString()
+    .trim()
+    .replace(BLANK_LINES, '')
+    .split(LINE_BREAKS);
 }
 
-export function runFixtureTests(args: TestRunnerArgs): void {
-  const { babelOptions, fixturesRoot } = args;
+export function runFixtureTests(args: FixtureTestRunnerArgs): void {
+  const mergedArgs = Object.assign({}, defaultFixtureRunnerArgs, args);
+  const { babelOptions, fixturesRoot, inputFilename, outputFilename } = mergedArgs;
 
   fs.readdirSync(fixturesRoot).forEach(typeName => {
     const dir = path.join(fixturesRoot, typeName);
 
     if (statSync(dir).isDirectory()) {
-      const input = fs.readFileSync(`${dir}/code.js`).toString();
+      const filePath = path.join(dir, inputFilename);
+      const input = fs.readFileSync(filePath).toString();
+
       const output = transformSync(input, babelOptions);
-      const expectedOutput = splitLines(fs.readFileSync(`${dir}/output.ts`));
+      const expectedOutput = splitLines(fs.readFileSync(`${dir}/${outputFilename}`));
 
       describe(typeName, () => {
-        test('Flow file could be transformed', () => {
-          expect(output).not.toBeNull();
-          // @ts-ignore
-          expect(output.code).not.toBeNull();
-        });
+        if (!output) {
+          throw new Error(`Unable to transform file ${filePath}.`);
+        }
 
-        // @ts-ignore
-        splitLines(output.code).forEach((line, lineNumber) => {
-          const testNumber = (lineNumber + 1).toString().padStart(2, '0');
+        if (!output.code) {
+          throw new Error(`Emitted code for file ${filePath} is empty.`);
+        }
 
-          test(`${typeName} #${testNumber}`, () => {
-            expect(line).toMatch(expectedOutput[lineNumber]);
+        const outputLines = splitLines(output.code);
+
+        if (outputLines.length !== expectedOutput.length) {
+          throw new Error('Input and output files do not contain the same number of fixtures.');
+        }
+
+        outputLines.forEach((line, i) => {
+          // + 1 because first line of input files is always the @flow directive
+          const padLength = Math.min(String(expectedOutput.length).length, 2);
+          const lineNumber = String(i + 1).padStart(padLength, '0');
+
+          test(`${typeName}:${lineNumber} is equals expected output`, () => {
+            expect(line).toMatch(expectedOutput[i]);
           });
         });
       });

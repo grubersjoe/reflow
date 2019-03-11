@@ -30,6 +30,5 @@ const maybeStringArrayEmpty: ?string[] = [];
 const maybeStringArrayNull: ?string[] = null;
 const maybeStringArrayUndefined: ?string[] = undefined;
 
-function funcMaybeNumber(value: ?number) {
-  // ...
-}
+function funcMaybeNumber(value: ?number) {}
+function funcMaybeString(value: ?string) {}

@@ -3,7 +3,7 @@ import { Visitor } from '@babel/traverse';
 import types from '@babel/types';
 
 import { setParserOptions } from './options';
-import { FlowType, Program, TypeAnnotation } from './visitors';
+import { FlowType, Program, TypeAlias, TypeAnnotation } from './visitors';
 
 export interface OverflowOptions {
   verbose?: boolean;
@@ -24,6 +24,7 @@ function buildPlugin(visitor: Visitor<VisitorType>): PluginObj<VisitorType> {
 const plugin = buildPlugin({
   FlowType,
   Program,
+  TypeAlias,
   TypeAnnotation,
 });
 

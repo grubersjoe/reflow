@@ -1,3 +1,4 @@
+
 const maybeBoolean: boolean | null | undefined = true;
 const maybeBooleanNull: boolean | null | undefined = null;
 const maybeBooleanUndefined: boolean | null | undefined = undefined;
@@ -29,6 +30,5 @@ const maybeStringArrayEmpty: string[] | null | undefined = [];
 const maybeStringArrayNull: string[] | null | undefined = null;
 const maybeStringArrayUndefined: string[] | null | undefined = undefined;
 
-function funcMaybeNumber(value: number | null | undefined) {
-  // ...
-}
+function funcMaybeNumber(value: number | null | undefined) {}
+function funcMaybeString(value: string | null | undefined) {}

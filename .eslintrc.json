@@ -25,6 +25,7 @@
     ],
     "curly": 0,
     "no-console": 0,
-    "node/no-unsupported-features/es-syntax": 0
+    "node/no-unsupported-features/es-syntax": 0,
+    "semi": "error"
   }
 }

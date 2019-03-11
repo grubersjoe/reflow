@@ -9,12 +9,10 @@ function collectStats(path: NodePath<FlowType>): void {
   console.log(`  - ${path.node.type}`);
 }
 
-const flowTypeVisitor: VisitNodeFunction<object, FlowType> = (path, state): void => {
+export const flowTypeVisitor: VisitNodeFunction<object, FlowType> = (path, state): void => {
   const { verbose } = (state as PluginPass<FlowType>).opts;
 
   if (verbose) {
     collectStats(path);
   }
 };
-
-export { flowTypeVisitor };

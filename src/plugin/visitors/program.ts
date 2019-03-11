@@ -6,7 +6,7 @@ import { PluginPass } from '../types';
 
 const FLOW_DIRECTIVE = /(@flow(\s+(strict(-local)?|weak))?|@noflow)/;
 
-const programVisitor: VisitNodeFunction<object, Program> = (path, state): void => {
+export const programVisitor: VisitNodeFunction<object, Program> = (path, state): void => {
   const comments = (state as PluginPass<Program>).file.ast.comments as Comment[];
 
   if (comments) {
@@ -24,5 +24,3 @@ const programVisitor: VisitNodeFunction<object, Program> = (path, state): void =
     });
   }
 };
-
-export { programVisitor };

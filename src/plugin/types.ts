@@ -22,5 +22,3 @@ export interface PluginPass<T> {
   key: string;
   opts: OverflowOptions;
 }
-
-
