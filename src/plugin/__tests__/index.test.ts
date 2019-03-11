@@ -1,8 +1,8 @@
 import path from 'path';
-import { testFixtures } from '../../util/test-runner';
+import { runFixtureTests } from '../../util/test-runner';
 import { getTransformOptions } from '../../cli/runner';
 
-testFixtures({
+runFixtureTests({
   babelOptions: getTransformOptions(),
-  fixturesDirectory: path.resolve('src/plugin/__tests__/__fixtures__/'),
+  fixturesRoot: path.resolve('src/plugin/__tests__/__fixtures__/'),
 });

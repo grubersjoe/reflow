@@ -4,23 +4,23 @@ import path from 'path';
 
 export interface TestRunnerArgs {
   babelOptions: TransformOptions;
-  fixturesDirectory: string;
+  fixturesRoot: string;
 }
 
-function toLines(code: Buffer | string): string[] {
+function splitLines(code: Buffer | string): string[] {
   return code.toString().trim().split(/\r?\n/);
 }
 
-export function testFixtures(args: TestRunnerArgs): void {
-  const { babelOptions, fixturesDirectory } = args;
+export function runFixtureTests(args: TestRunnerArgs): void {
+  const { babelOptions, fixturesRoot } = args;
 
-  fs.readdirSync(fixturesDirectory).forEach(typeName => {
-    const dir = path.join(fixturesDirectory, typeName);
+  fs.readdirSync(fixturesRoot).forEach(typeName => {
+    const dir = path.join(fixturesRoot, typeName);
 
     if (statSync(dir).isDirectory()) {
-      const flowCode = fs.readFileSync(`${dir}/code.js`).toString();
-      const output = transformSync(flowCode, babelOptions);
-      const expectedCode = toLines(fs.readFileSync(`${dir}/output.ts`));
+      const input = fs.readFileSync(`${dir}/code.js`).toString();
+      const output = transformSync(input, babelOptions);
+      const expectedOutput = splitLines(fs.readFileSync(`${dir}/output.ts`));
 
       describe(typeName, () => {
         test('Flow file could be transformed', () => {
@@ -30,11 +30,11 @@ export function testFixtures(args: TestRunnerArgs): void {
         });
 
         // @ts-ignore
-        toLines(output.code).forEach((line, lineNumber) => {
+        splitLines(output.code).forEach((line, lineNumber) => {
           const testNumber = (lineNumber + 1).toString().padStart(2, '0');
 
           test(`${typeName} #${testNumber}`, () => {
-            expect(line).toMatch(expectedCode[lineNumber]);
+            expect(line).toMatch(expectedOutput[lineNumber]);
           });
         });
       });
