@@ -2,6 +2,8 @@ import { transformSync, TransformOptions } from '@babel/core';
 import fs, { statSync } from 'fs';
 import path from 'path';
 
+import { upperCamelCase } from '../../util/string';
+
 export interface FixtureTestRunnerArgs {
   babelOptions: TransformOptions;
   fixturesRoot: string;
@@ -29,17 +31,18 @@ export function runFixtureTests(args: FixtureTestRunnerArgs): void {
   const mergedArgs = Object.assign({}, defaultFixtureRunnerArgs, args);
   const { babelOptions, fixturesRoot, inputFilename, outputFilename } = mergedArgs;
 
-  fs.readdirSync(fixturesRoot).forEach(typeName => {
-    const dir = path.join(fixturesRoot, typeName);
+  fs.readdirSync(fixturesRoot).forEach(dirName => {
+    const dir = path.join(fixturesRoot, dirName);
 
     if (statSync(dir).isDirectory()) {
+      const testName = upperCamelCase(dirName);
       const filePath = path.join(dir, inputFilename);
-      const input = fs.readFileSync(filePath).toString();
 
+      const input = fs.readFileSync(filePath).toString();
       const output = transformSync(input, babelOptions);
       const expectedOutput = splitLines(fs.readFileSync(`${dir}/${outputFilename}`));
 
-      describe(typeName, () => {
+      describe(testName, () => {
         if (!output) {
           throw new Error(`Unable to transform file ${filePath}.`);
         }
@@ -59,7 +62,7 @@ export function runFixtureTests(args: FixtureTestRunnerArgs): void {
           const padLength = Math.min(String(expectedOutput.length).length, 2);
           const lineNumber = String(i + 1).padStart(padLength, '0');
 
-          test(`${typeName}:${lineNumber} is equals expected output`, () => {
+          test(`${testName}:${lineNumber} is equals expected output`, () => {
             expect(line).toMatch(expectedOutput[i]);
           });
         });

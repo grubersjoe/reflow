@@ -1,12 +1,12 @@
-import { transformSync, TransformOptions } from '@babel/core';
+import { transformSync } from '@babel/core';
 import chalk from 'chalk';
 import fs from 'fs';
 import glob from 'glob';
 import path from 'path';
 
-import overflowPlugin, { OverflowOptions } from '../plugin';
 import { printError } from '../util/print';
 import { Stats, sortNumberMap } from '../util/stats';
+import { getTransformOptions } from '../plugin/options';
 
 export interface RunnerArgs {
   dryRun?: boolean;
@@ -14,24 +14,6 @@ export interface RunnerArgs {
   verbose?: boolean;
   stats?: boolean;
   src: string[];
-}
-
-/**
- * Create the Babel configuration for runner using the plugin
- * @param overflowOptions Plugin options for Overflow
- */
-export function getTransformOptions(
-  overflowOptions?: OverflowOptions,
-  overwrites?: TransformOptions,
-): TransformOptions {
-  const defaults = {
-    babelrc: false,
-    configFile: false,
-    plugins: [[overflowPlugin, overflowOptions]],
-    ...overwrites,
-  };
-
-  return Object.assign({}, defaults, overwrites);
 }
 
 function getGlobOptions(options: object): object {
