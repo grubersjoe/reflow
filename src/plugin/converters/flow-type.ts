@@ -22,6 +22,7 @@ import {
 } from '@babel/types';
 import { insertIf } from '../../util/array';
 import { convertTypeParameterInstantiation } from './type-parameter';
+import { convertObjectTypeAnnotation } from './object-type-annotation';
 
 export function convertFlowType(path: NodePath<FlowType>): TSType {
   if (path.isAnyTypeAnnotation()) {
@@ -86,7 +87,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
   }
 
   if (path.isObjectTypeAnnotation()) {
-    console.log(path.type);
+    return convertObjectTypeAnnotation(path);
   }
 
   if (path.isStringLiteralTypeAnnotation()) {
@@ -106,7 +107,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
   }
 
   if (path.isTypeofTypeAnnotation()) {
-    console.log(path.type);
+    console.log(path.type, path.node.type);
   }
 
   if (path.isUnionTypeAnnotation()) {

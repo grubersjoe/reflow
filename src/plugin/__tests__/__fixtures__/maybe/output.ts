@@ -30,5 +30,5 @@ const maybeStringArrayEmpty: string[] | null | undefined = [];
 const maybeStringArrayNull: string[] | null | undefined = null;
 const maybeStringArrayUndefined: string[] | null | undefined = undefined;
 
-function funcMaybeNumber(value: number | null | undefined) {}
-function funcMaybeString(value: string | null | undefined) {}
+function funcMaybeNumber(p: number | null | undefined) {}
+function funcMaybeString(p: string | null | undefined) {}
