@@ -1,5 +1,7 @@
 .idea/
 .directory
 
+node_modules/
+
 build/
 __coverage__/
