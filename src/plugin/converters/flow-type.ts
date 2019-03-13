@@ -19,12 +19,17 @@ import {
   stringLiteral,
   booleanLiteral,
   TSEntityName,
+  numericLiteral,
+  NumberLiteralTypeAnnotation,
+  isNumberLiteralTypeAnnotation,
 } from '@babel/types';
 import { insertIf } from '../../util/array';
 import { convertTypeParameterInstantiation } from './type-parameter';
 import { convertObjectTypeAnnotation } from './object-type-annotation';
 
-export function convertFlowType(path: NodePath<FlowType>): TSType {
+export function convertFlowType(
+  path: NodePath<FlowType> | NodePath<NumberLiteralTypeAnnotation>,
+): TSType {
   if (path.isAnyTypeAnnotation()) {
     return tsAnyKeyword();
   }
@@ -86,6 +91,12 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     return tsNumberKeyword();
   }
 
+  // TODO: this should probably go into a converter of its own since this is not a FlowType!
+  if (isNumberLiteralTypeAnnotation(path)) {
+    const value = (path as NodePath<NumberLiteralTypeAnnotation>).node.value;
+    return tsLiteralType(numericLiteral(value));
+  }
+
   if (path.isObjectTypeAnnotation()) {
     return convertObjectTypeAnnotation(path);
   }
@@ -107,7 +118,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
   }
 
   if (path.isTypeofTypeAnnotation()) {
-    console.log(path.type, path.node.type);
+    console.log(path.type);
   }
 
   if (path.isUnionTypeAnnotation()) {
@@ -118,6 +129,6 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     return tsVoidKeyword();
   }
 
-  console.log(chalk.red('NOPE\n'));
+  console.log(chalk.red(`NOPE, ${path.type}`));
   return tsAnyKeyword();
 }

@@ -1,8 +1,7 @@
 import { transformSync, TransformOptions } from '@babel/core';
 import fs, { statSync } from 'fs';
+import startCase from 'lodash/startCase';
 import path from 'path';
-
-import { upperCamelCase } from '../../util/string';
 
 export interface FixtureTestRunnerArgs {
   babelOptions: TransformOptions;
@@ -16,15 +15,16 @@ export const defaultFixtureRunnerArgs = {
   outputFilename: 'output.ts',
 };
 
-function splitLines(code: Buffer | string): string[] {
-  const BLANK_LINES = /^\s*\n/gm;
-  const LINE_BREAKS = /\r?\n/;
+export function splitLines(code: Buffer | string): string[] {
+  const BLANK_LINE = /^\s*$/;
+  const LINE_COMMENT = /^\s*\/\/.*/;
+  const LINE_BREAK = /\r?\n/;
 
   return code
     .toString()
-    .trim()
-    .replace(BLANK_LINES, '')
-    .split(LINE_BREAKS);
+    .split(LINE_BREAK)
+    .filter(line => !line.match(BLANK_LINE) && !line.match(LINE_COMMENT))
+    .map(line => line.trim());
 }
 
 export function runFixtureTests(args: FixtureTestRunnerArgs): void {
@@ -35,36 +35,28 @@ export function runFixtureTests(args: FixtureTestRunnerArgs): void {
     const dir = path.join(fixturesRoot, dirName);
 
     if (statSync(dir).isDirectory()) {
-      const testName = upperCamelCase(dirName);
+      const testName = startCase(dirName);
       const filePath = path.join(dir, inputFilename);
 
       const input = fs.readFileSync(filePath).toString();
-      const output = transformSync(input, babelOptions);
+      const babelOutput = transformSync(input, babelOptions);
+      const expectedLines = splitLines(fs.readFileSync(`${dir}/${outputFilename}`));
 
-      const expectedOutput = splitLines(fs.readFileSync(`${dir}/${outputFilename}`));
-
-      describe(testName, () => {
-        if (!output) {
+      describe(testName.toUpperCase(), () => {
+        if (!babelOutput) {
           throw new Error(`Unable to transform file ${filePath}.`);
         }
 
-        if (!output.code) {
+        if (!babelOutput.code) {
           throw new Error(`Emitted code for file ${filePath} is empty.`);
         }
 
-        const inputLines = splitLines(input);
-        const outputLines = splitLines(output.code);
-
-        if (outputLines.length !== expectedOutput.length) {
-          throw new Error('Input and output files do not contain the same number of fixtures.');
-        }
-
-        outputLines.forEach((line, i) => {
-          const padLength = Math.min(String(expectedOutput.length).length, 2);
+        splitLines(babelOutput.code).forEach((line, i) => {
+          const padLength = Math.min(String(expectedLines.length).length, 2);
           const number = String(i + 1).padStart(padLength, '0');
 
-          test(`${testName}:${number} │ ${inputLines[i + 1]}`, () => {
-            expect(line).toMatch(expectedOutput[i]);
+          test(`${testName}:${number} │ ${line}  ===  ${expectedLines[i]}`, () => {
+            expect(line).toMatch(expectedLines[i]);
           });
         });
       });
