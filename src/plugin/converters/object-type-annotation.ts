@@ -1,4 +1,12 @@
-import { TSTypeElement, FlowType, tsPropertySignature, tsTypeAnnotation, tsTypeLiteral, TSTypeLiteral, ObjectTypeAnnotation } from '@babel/types';
+import {
+  TSTypeElement,
+  FlowType,
+  tsPropertySignature,
+  tsTypeAnnotation,
+  tsTypeLiteral,
+  TSTypeLiteral,
+  ObjectTypeAnnotation,
+} from '@babel/types';
 import { NodePath } from '@babel/traverse';
 import { convertFlowType } from './flow-type';
 
@@ -10,10 +18,7 @@ export function convertObjectTypeAnnotation(path: NodePath<ObjectTypeAnnotation>
       const { key, optional, variance } = prop.node;
 
       const propType = path.get(`properties.${i}.value`) as NodePath<FlowType>;
-      const propSignature = tsPropertySignature(
-        key,
-        tsTypeAnnotation(convertFlowType(propType)),
-      );
+      const propSignature = tsPropertySignature(key, tsTypeAnnotation(convertFlowType(propType)));
 
       propSignature.optional = optional;
       propSignature.readonly = variance && variance.kind === 'plus';

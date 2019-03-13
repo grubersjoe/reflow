@@ -40,6 +40,7 @@ export function runFixtureTests(args: FixtureTestRunnerArgs): void {
 
       const input = fs.readFileSync(filePath).toString();
       const output = transformSync(input, babelOptions);
+
       const expectedOutput = splitLines(fs.readFileSync(`${dir}/${outputFilename}`));
 
       describe(testName, () => {
@@ -51,6 +52,7 @@ export function runFixtureTests(args: FixtureTestRunnerArgs): void {
           throw new Error(`Emitted code for file ${filePath} is empty.`);
         }
 
+        const inputLines = splitLines(input);
         const outputLines = splitLines(output.code);
 
         if (outputLines.length !== expectedOutput.length) {
@@ -58,11 +60,10 @@ export function runFixtureTests(args: FixtureTestRunnerArgs): void {
         }
 
         outputLines.forEach((line, i) => {
-          // + 1 because first line of input files is always the @flow directive
           const padLength = Math.min(String(expectedOutput.length).length, 2);
-          const lineNumber = String(i + 1).padStart(padLength, '0');
+          const number = String(i + 1).padStart(padLength, '0');
 
-          test(`${testName}:${lineNumber} is equals expected output`, () => {
+          test(`${testName}:${number} │ ${inputLines[i + 1]}`, () => {
             expect(line).toMatch(expectedOutput[i]);
           });
         });

@@ -7,4 +7,4 @@ type AliasGenericSimple<T> = T;
 type AliasGeneric<S, T> = Map<S, T>;
 
 type AliasMaybeNumber = ?number;
-type AliasGenericMaybe<T> = ?T
+type AliasGenericMaybe<T> = ?T;
