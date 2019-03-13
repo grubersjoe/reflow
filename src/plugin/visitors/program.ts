@@ -2,7 +2,6 @@
 
 import { Comment, Program } from '@babel/types';
 import { VisitNodeFunction } from '@babel/traverse';
-import { PluginPass } from '../types';
 
 const FLOW_DIRECTIVE = /(@flow(\s+(strict(-local)?|weak))?|@noflow)/;
 

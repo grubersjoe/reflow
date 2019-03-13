@@ -5,7 +5,7 @@ import types from '@babel/types';
 import { setParserOptions } from './options';
 import { FlowType, Program, TypeAlias, TypeAnnotation } from './visitors';
 
-export interface OverflowOptions {
+export interface PluginOptions {
   verbose?: boolean;
 }
 

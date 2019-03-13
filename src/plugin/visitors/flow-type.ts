@@ -1,7 +1,6 @@
 import { NodePath, VisitNodeFunction } from '@babel/traverse';
 import { FlowType } from '@babel/types';
 
-import { PluginPass } from '../types';
 import { Stats } from '../../util/stats';
 
 function collectStats(path: NodePath<FlowType>): void {

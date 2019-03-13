@@ -1,19 +1,19 @@
 import { TransformOptions } from '@babel/core';
 
-import overflowPlugin, { OverflowOptions } from '.';
+import overflowPlugin, { PluginOptions } from '.';
 
 /**
  * Create the Babel configuration for runner using the plugin
- * @param overflowOptions Plugin options for Overflow
+ * @param options Plugin options for Overflow
  */
 export function getTransformOptions(
-  overflowOptions?: OverflowOptions,
+  options?: PluginOptions,
   overwrites?: TransformOptions,
 ): TransformOptions {
   const defaults = {
     babelrc: false,
     configFile: false,
-    plugins: [[overflowPlugin, overflowOptions]],
+    plugins: [[overflowPlugin, options]],
     ...overwrites,
   };
 
