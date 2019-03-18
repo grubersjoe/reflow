@@ -52,6 +52,7 @@
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint --fix 'src/**/*.ts'",
     "test": "jest",
+    "test:coverage": "jest --coverage && xdg-open src/plugin/__tests__/__coverage__/lcov-report/index.html",
     "typecheck": "tsc",
     "typecheck:watch": "tsc -w",
     "watch": "webpack -w"

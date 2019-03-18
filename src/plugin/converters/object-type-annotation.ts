@@ -1,6 +1,5 @@
 import {
   TSTypeElement,
-  FlowType,
   tsPropertySignature,
   tsTypeAnnotation,
   tsTypeLiteral,
@@ -12,28 +11,26 @@ import {
   isObjectTypeSpreadProperty,
   isTSTypeLiteral,
 } from '@babel/types';
-import { NodePath } from '@babel/traverse';
 import { convertFlowType } from './flow-type';
 
-export function convertObjectTypeAnnotation(path: NodePath<ObjectTypeAnnotation>): TSTypeLiteral {
-  const { exact, indexers, properties } = path.node;
+export function convertObjectTypeAnnotation(node: ObjectTypeAnnotation): TSTypeLiteral {
+  const { exact, indexers, properties } = node;
   const members: TSTypeElement[] = [];
 
-  properties.map((prop, i) => {
+  properties.map(prop => {
     if (isObjectTypeProperty(prop)) {
       const { key, optional, variance } = prop;
 
-      const propValue = path.get(`properties.${i}.value`) as NodePath<FlowType>;
-      const propSignature = tsPropertySignature(key, tsTypeAnnotation(convertFlowType(propValue)));
+      const propSignature = tsPropertySignature(key, tsTypeAnnotation(convertFlowType(prop.value)));
 
-      propSignature.optional = optional || !exact;
+      propSignature.optional = optional;
       propSignature.readonly = variance && variance.kind === 'plus';
 
       members.push(propSignature);
     }
 
     if (isObjectTypeSpreadProperty(prop)) {
-      const type = convertFlowType(path.get(`properties.${i}.argument`) as NodePath<FlowType>);
+      const type = convertFlowType(prop.argument);
 
       // TODO
       if (exact) {
@@ -49,15 +46,11 @@ export function convertObjectTypeAnnotation(path: NodePath<ObjectTypeAnnotation>
   });
 
   if (indexers) {
-    indexers.map((indexer, i) => {
+    indexers.map(indexer => {
       const key = indexer.id || identifier('key');
-      const keyType = convertFlowType(path.get(`indexers.${i}.key`) as NodePath<FlowType>);
+      key.typeAnnotation = tsTypeAnnotation(convertFlowType(indexer.key));
 
-      key.typeAnnotation = tsTypeAnnotation(keyType);
-
-      const valueType = convertFlowType(path.get(`indexers.${i}.value`) as NodePath<FlowType>);
-      const typeAnnotation = tsTypeAnnotation(valueType);
-
+      const typeAnnotation = tsTypeAnnotation(convertFlowType(indexer.value));
       const propIndexSignature = tsIndexSignature([key], typeAnnotation);
 
       members.push(propIndexSignature);

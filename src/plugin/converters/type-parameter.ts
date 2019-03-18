@@ -1,8 +1,6 @@
-import { NodePath } from '@babel/traverse';
 import {
   TypeParameterInstantiation,
   TSTypeParameterInstantiation,
-  FlowType,
   tsTypeParameterInstantiation,
   TypeParameter,
   TSTypeParameter,
@@ -14,31 +12,31 @@ import {
 
 import { convertFlowType } from './flow-type';
 
-export function convertTypeParameter(path: NodePath<TypeParameter>): TSTypeParameter {
-  const tsNode = tsTypeParameter();
-
-  // if (path.node.bound) tsNode.constraint = convertFlowType(path.get('bound').get('typeAnnotation'));
-  tsNode.name = path.node.name;
-
-  return tsNode;
-}
-
 export function convertTypeParameterInstantiation(
-  path: NodePath<TypeParameterInstantiation>,
+  node: TypeParameterInstantiation,
 ): TSTypeParameterInstantiation {
-  const params = path.node.params.map((_, i) =>
-    convertFlowType(path.get(`params.${i}`) as NodePath<FlowType>),
-  );
+  const params = node.params.map(param => convertFlowType(param));
 
   return tsTypeParameterInstantiation(params);
 }
 
+export function convertTypeParameter(node: TypeParameter): TSTypeParameter {
+  const { bound, name } = node;
+  const tsNode = tsTypeParameter();
+
+  tsNode.name = name;
+
+  if (bound) {
+    tsNode.constraint = convertFlowType(bound.typeAnnotation);
+  }
+
+  return tsNode;
+}
+
 export function convertTypeParameterDeclaration(
-  path: NodePath<TypeParameterDeclaration>,
+  node: TypeParameterDeclaration,
 ): TSTypeParameterDeclaration {
-  const params = path.node.params.map((_, i) =>
-    convertTypeParameter(path.get(`params.${i}`) as NodePath<TypeParameter>),
-  );
+  const params = node.params.map(param => convertTypeParameter(param));
 
   return tsTypeParameterDeclaration(params);
 }

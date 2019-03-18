@@ -1,47 +1,43 @@
 // @flow
 let sealedObject = {
-  a: 'string',
-  b: 1,
-  c: null,
+  p1: "string",
+  p2: 1,
+  p3: null,
 };
 
 let unsealedObject: {};
 
 let object: {
-  a: string,
-  b: boolean,
-} = {};
+  p4: string,
+  p5: boolean,
+};
 
 let nestedObject: {
-  a: string,
-  b: {
-    a: {
-      a: number,
+  p6: string,
+  p7: {
+    p8: {
+      p9: number,
     },
-    b: boolean,
+    p10: boolean,
   },
-  c: null,
+  p11: null,
 };
 
 let optionalObject: {
-  a?: boolean,
-  b: string,
-} = {};
-
-let exactObjectType: {|
-  a: number,
-  b: string
-|} = {
-  a: 3,
-  b: 'string',
+  p12?: boolean,
+  p13: string,
 };
 
-let exactObjectTypeWithOptional: {|
-  a: boolean,
-  b?: string,
-|} = {
-  a: true,
-}
+let exactObjectType: {|
+  p14: number,
+  p15: string
+|};
+
+let exactObjectTypeWithOptionalProp: {|
+  p16: boolean,
+  p17?: string,
+  p18?: number,
+|};
 
 // let objectWithSpread: {
 //   a: string,
@@ -56,7 +52,7 @@ let exactObjectTypeWithOptional: {|
 //   c: false,
 //   ...{
 //     a: number,
-//     b: 'bar',
+//     b: "bar",
 //     c: true,
 //   }
 // };
@@ -65,7 +61,7 @@ let exactObjectTypeWithOptional: {|
 //   a: string,
 //   ...{|
 //     a: number,
-//     b: 'literal',
+//     b: "literal",
 //   |}
 // |};
 
@@ -85,4 +81,4 @@ let objectNamedIndexerPropertyNumber: {
   [timestamp: number]: {}
 };
 
-function functionWithObjectParameter(obj: {}) {}
+function functionWithObjectParameter(obj: {}): void {}

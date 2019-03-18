@@ -22,10 +22,10 @@ const maybeNullArrayEmpty: ?null[] = [];
 const maybeNullArrayNull: ?null[] = null;
 const maybeNullArrayUndefined: ?null[] = undefined;
 
-const maybeString: ?string = 'a';
+const maybeString: ?string = "a";
 const maybeStringNull: ?string = null;
 const maybeStringUndefined: ?string = undefined;
-const maybeStringArray: ?string[] = ['a', 'b', 'c'];
+const maybeStringArray: ?string[] = ["a", "b", "c"];
 const maybeStringArrayEmpty: ?string[] = [];
 const maybeStringArrayNull: ?string[] = null;
 const maybeStringArrayUndefined: ?string[] = undefined;

@@ -1,63 +1,59 @@
 
 let sealedObject = {
-  a: 'string',
-  b: 1,
-  c: null
+  p1: "string",
+  p2: 1,
+  p3: null
 };
 
 let unsealedObject: {};
 
 let object: {
-  a?: string;
-  b?: boolean;
-} = {};
+  p4: string;
+  p5: boolean
+};
 
 let nestedObject: {
-  a?: string;
-  b?: {
-    a?: {
-      a?: number;
+  p6: string;
+  p7: {
+    p8: {
+      p9: number;
     };
-    b?: boolean;
+    p10: boolean;
   };
-  c?: null;
+  p11: null
 };
 
 let optionalObject: {
-  a?: boolean;
-  b?: string;
+  p12?: boolean;
+  p13: string
 };
 
 let exactObjectType: {
-  a: number;
-  b: string;
-} = {
-  a: 3,
-  b: 'string'
+  p14: number;
+  p15: string
 };
 
-let exactObjectTypeWithOptional: {
-  a: boolean;
-  b?: string;
-} = {
-  a: true
-}
+let exactObjectTypeWithOptionalProp: {
+  p16: boolean;
+  p17?: string;
+  p18?: number
+};
 
 // let objectWithSpread: {
 //   a?: string;
-//   b?: 'literal';
+//   b?: "literal";
 //   c?: boolean;
 // };
 
 // let objectWithSpreadOverwrite: {
 //   a: string | number;
-//   b?: 'literal';
+//   b?: "literal";
 //   c: boolean;
 // };
 
 // let exactObjectWithSpread: {
 //   a: number,
-//   b: 'literal',
+//   b: "literal",
 // }
 
 let objectIndexerPropertyString: {
@@ -76,4 +72,4 @@ let objectNamedIndexerPropertyNumber: {
   [timestamp: number]: {}
 };
 
-function functionWithObjectParameter(obj: {}) {}
+function functionWithObjectParameter(obj: {}): void {}

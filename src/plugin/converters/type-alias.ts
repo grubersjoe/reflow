@@ -1,22 +1,13 @@
-import { NodePath } from '@babel/traverse';
 import { TypeAlias, TSTypeAliasDeclaration, tsTypeAliasDeclaration } from '@babel/types';
 
 import { convertFlowType } from './flow-type';
 import { convertTypeParameterDeclaration } from './type-parameter';
 
-export function convertTypeAlias(path: NodePath<TypeAlias>): TSTypeAliasDeclaration {
-  const { id } = path.node;
-  const right = path.get('right');
-
-  const typeParameterPath = path.get('typeParameters');
-  const typeAnnotation = convertFlowType(path.get('right'));
-
-  if (path.isFlow()) {
-  }
-
-  const typeParameters = typeParameterPath.isTypeParameterDeclaration()
-    ? convertTypeParameterDeclaration(typeParameterPath)
+export function convertTypeAlias(node: TypeAlias): TSTypeAliasDeclaration {
+  const typeAnnotation = convertFlowType(node.right);
+  const typeParameters = node.typeParameters
+    ? convertTypeParameterDeclaration(node.typeParameters)
     : null;
 
-  return tsTypeAliasDeclaration(id, typeParameters, typeAnnotation);
+  return tsTypeAliasDeclaration(node.id, typeParameters, typeAnnotation);
 }
