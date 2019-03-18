@@ -39,31 +39,71 @@ let exactObjectTypeWithOptionalProp: {|
   p18?: number,
 |};
 
-// let objectWithSpread: {
-//   a: string,
-//   ...{
-//     b: boolean,
-//     c: null,
-//   }
-// } = {};
+let objectWithStringLiteralKey: {
+  "p19": number,
+  p20: null,
+  "p 21": boolean,
+}
 
-// let objectWithSpreadOverwrite: {
-//   a: string,
-//   c: false,
-//   ...{
-//     a: number,
-//     b: "bar",
-//     c: true,
-//   }
-// };
+let objectWithSpread: {
+  a: string,
+  ...{
+    b: boolean,
+    c: null,
+  }
+};
 
-// let exactObjectWithSpread: {|
-//   a: string,
-//   ...{|
-//     a: number,
-//     b: "literal",
-//   |}
-// |};
+let objectWithSpreadInBetween: {
+  a: string,
+  ...{
+    b: boolean,
+    c: null,
+  },
+  d: null,
+  e: number,
+};
+
+let objectWithSpreadOverwrite: {
+  a: string,
+  c: false,
+  ...{
+    a: number,
+    b: "literal",
+    c: true,
+  }
+};
+
+let objectWithSpreadOverwriteInBetween: {
+  a: string,
+  ...{
+    a: number,
+    b: "literal",
+    c: false,
+  },
+  c: true,
+};
+
+let objectWithSpreadOverwriteAndStringLiteralKey: {
+  a: "foo",
+  "b": string,
+  "c": number,
+  ...{
+    "a": "bar",
+    c: null,
+    "b": number,
+  }
+};
+
+let exactObjectWithSpread: {|
+  a: string,
+  c: number,
+  d: boolean,
+  ...{|
+    a: number,
+    b: "literal",
+    c: string,
+  |}
+|};
 
 let objectIndexerPropertyString: {
   [string]: number,
