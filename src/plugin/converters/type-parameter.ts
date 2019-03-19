@@ -1,24 +1,16 @@
 import {
-  TypeParameterInstantiation,
-  TSTypeParameterInstantiation,
-  tsTypeParameterInstantiation,
-  TypeParameter,
   TSTypeParameter,
-  tsTypeParameter,
-  TypeParameterDeclaration,
   TSTypeParameterDeclaration,
+  TSTypeParameterInstantiation,
+  TypeParameter,
+  TypeParameterDeclaration,
+  TypeParameterInstantiation,
+  tsTypeParameter,
   tsTypeParameterDeclaration,
+  tsTypeParameterInstantiation,
 } from '@babel/types';
 
 import { convertFlowType } from './flow-type';
-
-export function convertTypeParameterInstantiation(
-  node: TypeParameterInstantiation,
-): TSTypeParameterInstantiation {
-  const params = node.params.map(param => convertFlowType(param));
-
-  return tsTypeParameterInstantiation(params);
-}
 
 export function convertTypeParameter(node: TypeParameter): TSTypeParameter {
   const { bound, name } = node;
@@ -39,4 +31,12 @@ export function convertTypeParameterDeclaration(
   const params = node.params.map(param => convertTypeParameter(param));
 
   return tsTypeParameterDeclaration(params);
+}
+
+export function convertTypeParameterInstantiation(
+  node: TypeParameterInstantiation,
+): TSTypeParameterInstantiation {
+  const params = node.params.map(param => convertFlowType(param));
+
+  return tsTypeParameterInstantiation(params);
 }

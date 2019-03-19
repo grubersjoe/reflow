@@ -1,12 +1,12 @@
 import {
-  TypeofTypeAnnotation,
   TSTypeQuery,
-  tsTypeQuery,
   TSUndefinedKeyword,
-  tsUndefinedKeyword,
+  TypeofTypeAnnotation,
   isGenericTypeAnnotation,
   isIdentifier,
   isQualifiedTypeIdentifier,
+  tsTypeQuery,
+  tsUndefinedKeyword,
 } from '@babel/types';
 import { NotImplementedError, UnexpectedError } from '../../util/error';
 

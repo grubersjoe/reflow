@@ -1,4 +1,4 @@
-import { TypeAlias, TSTypeAliasDeclaration, tsTypeAliasDeclaration } from '@babel/types';
+import { TSTypeAliasDeclaration, TypeAlias, tsTypeAliasDeclaration } from '@babel/types';
 
 import { convertFlowType } from './flow-type';
 import { convertTypeParameterDeclaration } from './type-parameter';

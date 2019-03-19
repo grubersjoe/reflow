@@ -19,3 +19,4 @@ let typeofNumericLiteralFloatVar: typeof numericLiteralFloatVar;
 let typeofStringVar: typeof stringVar;
 let typeofStringLiteralVar: typeof stringLiteralVar;
 let typeofNullVar: typeof nullVar;
+

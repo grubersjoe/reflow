@@ -1,8 +1,8 @@
 import { transformSync, TransformOptions } from '@babel/core';
+import chalk from 'chalk';
 import fs, { statSync } from 'fs';
 import startCase from 'lodash/startCase';
 import path from 'path';
-import chalk from 'chalk';
 
 export interface FixtureTestRunnerArgs {
   babelOptions: TransformOptions;

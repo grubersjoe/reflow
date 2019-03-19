@@ -18,8 +18,8 @@ import {
   tsUnionType,
   tsUnknownKeyword,
   tsVoidKeyword,
+  tsNeverKeyword,
 } from '@babel/types';
-import chalk from 'chalk';
 
 import { insertIf } from '../../util/array';
 import { convertObjectTypeAnnotation } from './object-type-annotation';
@@ -27,8 +27,6 @@ import { convertTypeParameterInstantiation } from './type-parameter';
 import { convertTypeofTypeAnnotation } from './typeof-type-annotation';
 
 export function convertFlowType(node: FlowType): TSType {
-  const { type } = node;
-
   switch (node.type) {
     case 'AnyTypeAnnotation':
       return tsAnyKeyword();
@@ -42,18 +40,14 @@ export function convertFlowType(node: FlowType): TSType {
     case 'BooleanTypeAnnotation':
       return tsBooleanKeyword();
 
-    // Undocumented
     case 'EmptyTypeAnnotation':
-      console.log(chalk.red(`TODO, ${type}`));
-      return tsUnknownKeyword();
+      return tsNeverKeyword();
 
-    // = Existential Type?
     case 'ExistsTypeAnnotation':
-      console.log(chalk.red(`TODO, ${type}`));
-      return tsUnknownKeyword();
+      return tsAnyKeyword();
 
     case 'FunctionTypeAnnotation':
-      console.log(chalk.red(`TODO, ${type}`));
+      // TODO
       return tsUnknownKeyword();
 
     case 'GenericTypeAnnotation': {
@@ -65,11 +59,11 @@ export function convertFlowType(node: FlowType): TSType {
     }
 
     case 'InterfaceTypeAnnotation':
-      console.log(chalk.red(`TODO, ${type}`));
+      // TODO
       return tsUnknownKeyword();
 
     case 'IntersectionTypeAnnotation':
-      console.log(chalk.red(`TODO, ${type}`));
+      // TODO
       return tsUnknownKeyword();
 
     case 'MixedTypeAnnotation':
@@ -104,11 +98,11 @@ export function convertFlowType(node: FlowType): TSType {
       return tsStringKeyword();
 
     case 'ThisTypeAnnotation':
-      console.log(chalk.red(`TODO, ${type}`));
+      // TODO
       return tsUnknownKeyword();
 
     case 'TupleTypeAnnotation':
-      console.log(chalk.red(`TODO, ${type}`));
+      // TODO
       return tsUnknownKeyword();
 
     case 'TypeofTypeAnnotation': {
