@@ -19,12 +19,14 @@ import {
   tsUnknownKeyword,
   tsVoidKeyword,
   tsNeverKeyword,
+  tsFunctionType,
 } from '@babel/types';
 
 import { insertIf } from '../../util/array';
 import { convertObjectTypeAnnotation } from './object-type-annotation';
 import { convertTypeParameterInstantiation } from './type-parameter';
 import { convertTypeofTypeAnnotation } from './typeof-type-annotation';
+import { NotImplementedError } from '../../util/error';
 
 export function convertFlowType(node: FlowType): TSType {
   switch (node.type) {
@@ -48,7 +50,11 @@ export function convertFlowType(node: FlowType): TSType {
 
     case 'FunctionTypeAnnotation':
       // TODO
-      return tsUnknownKeyword();
+      // typeParameters?: TSTypeParameterDeclaration | null,
+      // typeAnnotation?: TSTypeAnnotation | null,
+      // parameters?: Array<Identifier | RestElement> | null
+
+      return tsAnyKeyword();
 
     case 'GenericTypeAnnotation': {
       const typeParameters = node.typeParameters
@@ -60,11 +66,11 @@ export function convertFlowType(node: FlowType): TSType {
 
     case 'InterfaceTypeAnnotation':
       // TODO
-      return tsUnknownKeyword();
+      throw new NotImplementedError();
 
     case 'IntersectionTypeAnnotation':
       // TODO
-      return tsUnknownKeyword();
+      throw new NotImplementedError();
 
     case 'MixedTypeAnnotation':
       return tsUnknownKeyword();
@@ -99,11 +105,11 @@ export function convertFlowType(node: FlowType): TSType {
 
     case 'ThisTypeAnnotation':
       // TODO
-      return tsUnknownKeyword();
+      throw new NotImplementedError();
 
     case 'TupleTypeAnnotation':
       // TODO
-      return tsUnknownKeyword();
+      throw new NotImplementedError();
 
     case 'TypeofTypeAnnotation': {
       return convertTypeofTypeAnnotation(node);
