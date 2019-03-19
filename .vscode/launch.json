@@ -5,7 +5,7 @@
       "type": "node",
       "request": "launch",
       "args": [
-        "src/plugin/__tests__/__fixtures__/object/input.js"
+        "src/plugin/__tests__/__fixtures__/type-alias/input.js"
       ],
       "cwd": "${workspaceRoot}",
       "env": {

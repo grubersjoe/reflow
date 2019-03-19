@@ -1,4 +1,4 @@
-import { splitLines } from '../test-runner';
+import { splitLines } from '../../plugin/__tests__/runner';
 
 test('splitLines() should ', () => {
   const code = `

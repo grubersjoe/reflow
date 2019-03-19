@@ -1,29 +1,30 @@
 import {
   FlowType,
-  TSType,
-  tsAnyKeyword,
-  tsUnionType,
-  tsBooleanKeyword,
-  tsArrayType,
-  tsLiteralType,
-  booleanLiteral,
-  tsTypeReference,
   TSEntityName,
+  TSType,
+  booleanLiteral,
   isTSNullKeyword,
-  tsNullKeyword,
-  tsUndefinedKeyword,
   numericLiteral,
   stringLiteral,
-  tsStringKeyword,
-  tsVoidKeyword,
-  tsUnknownKeyword,
+  tsAnyKeyword,
+  tsArrayType,
+  tsBooleanKeyword,
+  tsLiteralType,
+  tsNullKeyword,
   tsNumberKeyword,
+  tsStringKeyword,
+  tsTypeReference,
+  tsUndefinedKeyword,
+  tsUnionType,
+  tsUnknownKeyword,
+  tsVoidKeyword,
 } from '@babel/types';
 import chalk from 'chalk';
 
 import { insertIf } from '../../util/array';
 import { convertObjectTypeAnnotation } from './object-type-annotation';
 import { convertTypeParameterInstantiation } from './type-parameter';
+import { convertTypeofTypeAnnotation } from './typeof-type-annotation';
 
 export function convertFlowType(node: FlowType): TSType {
   const { type } = node;
@@ -72,7 +73,6 @@ export function convertFlowType(node: FlowType): TSType {
       return tsUnknownKeyword();
 
     case 'MixedTypeAnnotation':
-      console.log(chalk.red(`TODO, ${type}`));
       return tsUnknownKeyword();
 
     case 'NullLiteralTypeAnnotation':
@@ -111,9 +111,9 @@ export function convertFlowType(node: FlowType): TSType {
       console.log(chalk.red(`TODO, ${type}`));
       return tsUnknownKeyword();
 
-    case 'TypeofTypeAnnotation':
-      console.log(chalk.red(`TODO, ${type}`));
-      return tsUnknownKeyword();
+    case 'TypeofTypeAnnotation': {
+      return convertTypeofTypeAnnotation(node);
+    }
 
     case 'UnionTypeAnnotation':
       return tsUnionType(node.types.map(type => convertFlowType(type)));
