@@ -10,6 +10,7 @@ import {
   tsArrayType,
   tsBooleanKeyword,
   tsLiteralType,
+  tsNeverKeyword,
   tsNullKeyword,
   tsNumberKeyword,
   tsStringKeyword,
@@ -18,8 +19,6 @@ import {
   tsUnionType,
   tsUnknownKeyword,
   tsVoidKeyword,
-  tsNeverKeyword,
-  tsFunctionType,
 } from '@babel/types';
 
 import { insertIf } from '../../util/array';
@@ -27,6 +26,7 @@ import { convertObjectTypeAnnotation } from './object-type-annotation';
 import { convertTypeParameterInstantiation } from './type-parameter';
 import { convertTypeofTypeAnnotation } from './typeof-type-annotation';
 import { NotImplementedError } from '../../util/error';
+import { convertFunctionTypeAnnotation } from './function-type-annotation';
 
 export function convertFlowType(node: FlowType): TSType {
   switch (node.type) {
@@ -49,12 +49,7 @@ export function convertFlowType(node: FlowType): TSType {
       return tsAnyKeyword();
 
     case 'FunctionTypeAnnotation':
-      // TODO
-      // typeParameters?: TSTypeParameterDeclaration | null,
-      // typeAnnotation?: TSTypeAnnotation | null,
-      // parameters?: Array<Identifier | RestElement> | null
-
-      return tsAnyKeyword();
+      return convertFunctionTypeAnnotation(node);
 
     case 'GenericTypeAnnotation': {
       const typeParameters = node.typeParameters

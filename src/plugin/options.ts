@@ -26,7 +26,7 @@ export function getTransformOptions(
  */
 export function setParserOptions(parserOpts: TransformOptions): void {
   if (!parserOpts.plugins) {
-    throw new Error('Unexpected error');
+    parserOpts.plugins = [];
   }
 
   parserOpts.plugins.push('classProperties');

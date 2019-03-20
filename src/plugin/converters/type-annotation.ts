@@ -1,7 +1,11 @@
-import { TSTypeAnnotation, TypeAnnotation, tsTypeAnnotation } from '@babel/types';
+import { BaseNode, FlowType, TSTypeAnnotation, tsTypeAnnotation } from '@babel/types';
 
 import { convertFlowType } from './flow-type';
 
-export function convertTypeAnnotation(node: TypeAnnotation): TSTypeAnnotation {
+interface FlowTypeAnnotation extends BaseNode {
+  typeAnnotation: FlowType;
+}
+
+export function convertTypeAnnotation(node: FlowTypeAnnotation): TSTypeAnnotation {
   return tsTypeAnnotation(convertFlowType(node.typeAnnotation));
 }

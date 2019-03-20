@@ -13,16 +13,19 @@ import {
 import { convertFlowType } from './flow-type';
 
 export function convertTypeParameter(node: TypeParameter): TSTypeParameter {
-  const { bound, name } = node;
-  const tsNode = tsTypeParameter();
+  const typeParameter = tsTypeParameter();
 
-  tsNode.name = name;
+  typeParameter.name = node.name;
 
-  if (bound) {
-    tsNode.constraint = convertFlowType(bound.typeAnnotation);
+  if (node.bound) {
+    typeParameter.constraint = convertFlowType(node.bound.typeAnnotation);
   }
 
-  return tsNode;
+  if (node.default) {
+    typeParameter.default = convertFlowType(node.default);
+  }
+
+  return typeParameter;
 }
 
 export function convertTypeParameterDeclaration(

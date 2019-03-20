@@ -1,9 +1,25 @@
 // @flow
-function functionWithInitializer(p1: string, p2: boolean = false) {}
-function functionWithTypeParams<T>(p: T): T {
-  return p;
-}
-function functionWithOptionalAndInitializer(a: string, b?: number, c?: boolean = false) {}
+type FunctionEmpty = () => void;
+type FunctionSimple = (p1: number[], p2: boolean) => number;
+type FunctionMaybeParam = (p1: number, p2?: boolean) => number;
+type FunctionWithOptionalParams = (p1: string, p2?: {}, p3?: boolean) => void;
+type FunctionWithUnnamedParam = (string, number) => boolean;
+type FunctionWithUnnamedParamMaybe = (Array<string>, ?number) => boolean;
+type FunctionWithUnnamedParamMaybeReturn = ({}, number) => ?boolean;
+type FunctionWithUnnamedParamUnion = (string, number | {}) => boolean | null;
+type FunctionWithRestParam = (p: string, ...numbers: number[]) => number;
+type FunctionWithUnnamedRestParam = (p: string, ...number[]) => number;
+type FunctionWithFunctionParam = (f: (p: number) => boolean) => void
+type FunctionWithUnnamedFunctionParam = ((number) => boolean, string) => void;
+type FunctionWithTypeParam = <T>(p: T) => T;
+type FunctionWithTypeParams = <T1, T2>(p: T1) => T2;
 
-const arrowFunctionUntyped = () => {};
+function functionWithInitializer(p1: string, p2: boolean = false) {}
+function functionWithOptionalParamAndInitializer(p1: string, p2?: number, p3?: boolean = false) {}
+async function functionAsync(): Promise<number> {
+  return 42;
+}
+
+const arrowFunctionEmpty = () => {};
 const arrowFunctionWithParams = (p1: {}, p2: boolean) => {};
+const arrowFunctionWithOptionalParam: (x: number, y?: number) => number = x => x;
