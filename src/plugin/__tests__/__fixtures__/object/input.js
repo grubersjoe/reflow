@@ -1,18 +1,18 @@
 // @flow
-let sealedObject = {
+type SealedObject = {
   p1: "string",
   p2: 1,
   p3: null,
 };
 
-let unsealedObject: {};
+type UnsealedObject = {};
 
-let object: {
+type ObjectSimple = {
   p4: string,
   p5: boolean,
 };
 
-let nestedObject: {
+type NestedObject = {
   p6: string,
   p7: {
     p8: {
@@ -23,29 +23,29 @@ let nestedObject: {
   p11: null,
 };
 
-let optionalObject: {
+type OptionalObject = {
   p12?: boolean,
   p13: string,
 };
 
-let exactObjectType: {|
+type ExactObjectType = {|
   p14: number,
   p15: string
 |};
 
-let exactObjectTypeWithOptionalProp: {|
+type ExactObjectTypeWithOptionalProp = {|
   p16: boolean,
   p17?: string,
   p18?: number,
 |};
 
-let objectWithStringLiteralKey: {
+type ObjectWithStringLiteralKey = {
   "p19": number,
   p20: null,
   "p 21": boolean,
 }
 
-let objectWithSpread: {
+type ObjectWithSpread = {
   a: string,
   ...{
     b: boolean,
@@ -53,7 +53,7 @@ let objectWithSpread: {
   }
 };
 
-let objectWithSpreadInBetween: {
+type ObjectWithSpreadInBetween = {
   a: string,
   ...{
     b: boolean,
@@ -63,7 +63,7 @@ let objectWithSpreadInBetween: {
   e: number,
 };
 
-let objectWithSpreadOverwrite: {
+type ObjectWithSpreadOverwrite = {
   a: string,
   c: false,
   ...{
@@ -73,7 +73,7 @@ let objectWithSpreadOverwrite: {
   }
 };
 
-let objectWithSpreadOverwriteInBetween: {
+type ObjectWithSpreadOverwriteInBetween = {
   a: string,
   ...{
     a: number,
@@ -83,7 +83,7 @@ let objectWithSpreadOverwriteInBetween: {
   c: true,
 };
 
-let objectWithSpreadOverwriteAndStringLiteralKey: {
+type ObjectWithSpreadOverwriteAndStringLiteralKey = {
   a: "foo",
   "b": string,
   "c": number,
@@ -94,7 +94,7 @@ let objectWithSpreadOverwriteAndStringLiteralKey: {
   }
 };
 
-let exactObjectWithSpread: {|
+type ExactObjectWithSpread = {|
   a: string,
   c: number,
   d: boolean,
@@ -105,19 +105,19 @@ let exactObjectWithSpread: {|
   |}
 |};
 
-let objectIndexerPropertyString: {
+type ObjectIndexerPropertyString = {
   [string]: number,
 };
 
-let objectIndexerPropertyNumber: {
+type ObjectIndexerPropertyNumber = {
   [number]: {}
 };
 
-let objectNamedIndexerPropertyString: {
+type ObjectNamedIndexerPropertyString = {
   [id: string]: boolean,
 };
 
-let objectNamedIndexerPropertyNumber: {
+type ObjectNamedIndexerPropertyNumber = {
   [timestamp: number]: {}
 };
 
@@ -130,3 +130,4 @@ type WriteOnlyObject = {
 };
 
 function functionWithObjectParameter(obj: {}): void {}
+function functionWithObjectInitializer(p: any, obj = {}): void {}

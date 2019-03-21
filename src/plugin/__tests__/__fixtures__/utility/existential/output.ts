@@ -1,5 +1,5 @@
 
-const existentialPrimitive: any = 'string';
+const existentialPrimitive: any = "string";
 
 function functionExistentialParam(p1: string): any {
   return p1.length;

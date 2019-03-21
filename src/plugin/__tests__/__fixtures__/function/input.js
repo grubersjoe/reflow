@@ -14,6 +14,11 @@ type FunctionWithUnnamedFunctionParam = ((number) => boolean, string) => void;
 type FunctionWithTypeParam = <T>(p: T) => T;
 type FunctionWithTypeParams = <T1, T2>(p: T1) => T2;
 
+function functionEmpty() {}
+function functionSimple(p1: mixed, p2: boolean) {}
+function functionSimpleWithReturn(p1: number, p2: number): boolean {
+  return p1 === p2;
+}
 function functionWithInitializer(p1: string, p2: boolean = false) {}
 function functionWithOptionalParamAndInitializer(p1: string, p2?: number, p3?: boolean = false) {}
 async function functionAsync(): Promise<number> {
