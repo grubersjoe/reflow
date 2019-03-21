@@ -4,11 +4,12 @@ import {
   TypeofTypeAnnotation,
   isGenericTypeAnnotation,
   isIdentifier,
-  isQualifiedTypeIdentifier,
   tsTypeQuery,
   tsUndefinedKeyword,
 } from '@babel/types';
-import { NotImplementedError, UnexpectedError } from '../../util/error';
+
+import { UnexpectedError } from '../../util/error';
+import { getQualifiedName } from './qualified-type-identifier';
 
 export function convertTypeofTypeAnnotation(
   node: TypeofTypeAnnotation,
@@ -16,16 +17,16 @@ export function convertTypeofTypeAnnotation(
   const { argument } = node;
 
   if (isGenericTypeAnnotation(argument)) {
-    if (isIdentifier(argument.id)) {
-      if (argument.id.name === 'undefined') {
+    const { id } = argument;
+
+    if (isIdentifier(id)) {
+      if (id.name === 'undefined') {
         return tsUndefinedKeyword();
       } else {
-        return tsTypeQuery(argument.id);
+        return tsTypeQuery(id);
       }
-    }
-
-    if (isQualifiedTypeIdentifier(argument.id)) {
-      throw new NotImplementedError('QualifiedTypeIdentifier');
+    } else {
+      return tsTypeQuery(getQualifiedName(id));
     }
   }
 

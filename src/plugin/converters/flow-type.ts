@@ -1,6 +1,5 @@
 import {
   FlowType,
-  TSEntityName,
   TSType,
   booleanLiteral,
   isTSNullKeyword,
@@ -16,7 +15,6 @@ import {
   tsStringKeyword,
   tsThisType,
   tsTupleType,
-  tsTypeReference,
   tsUndefinedKeyword,
   tsUnionType,
   tsUnknownKeyword,
@@ -25,10 +23,10 @@ import {
 
 import { insertIf } from '../../util/array';
 import { convertObjectTypeAnnotation } from './object-type-annotation';
-import { convertTypeParameterInstantiation } from './type-parameter';
 import { convertTypeofTypeAnnotation } from './typeof-type-annotation';
 import { NotImplementedError } from '../../util/error';
 import { convertFunctionTypeAnnotation } from './function-type-annotation';
+import { convertGenericTypeAnnotation } from './generic-type-annotation';
 
 export function convertFlowType(node: FlowType): TSType {
   switch (node.type) {
@@ -54,11 +52,7 @@ export function convertFlowType(node: FlowType): TSType {
       return convertFunctionTypeAnnotation(node);
 
     case 'GenericTypeAnnotation': {
-      const typeParameters = node.typeParameters
-        ? convertTypeParameterInstantiation(node.typeParameters)
-        : null;
-
-      return tsTypeReference(node.id as TSEntityName, typeParameters);
+      return convertGenericTypeAnnotation(node);
     }
 
     case 'InterfaceTypeAnnotation':
@@ -116,6 +110,6 @@ export function convertFlowType(node: FlowType): TSType {
       return tsVoidKeyword();
 
     default:
-      throw new NotImplementedError(`${(node as FlowType).type} not implemented`);
+      throw new NotImplementedError(`${(node as FlowType).type} not implemented.`);
   }
 }
