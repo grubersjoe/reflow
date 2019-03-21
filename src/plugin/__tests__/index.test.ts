@@ -1,7 +1,7 @@
 import path from 'path';
 
 import { getTransformOptions } from '../options';
-import { runFixtureTests } from './runner';
+import { runFixtureTests } from '../../util/test';
 
 runFixtureTests({
   babelOptions: getTransformOptions(undefined, { comments: false }),

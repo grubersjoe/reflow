@@ -1,4 +1,4 @@
-import { splitLines } from '../../plugin/__tests__/runner';
+import { splitFixtureLines } from '../string';
 
 test('splitLines() should ', () => {
   const code = `
@@ -13,7 +13,7 @@ test('splitLines() should ', () => {
     //strange comment
 
   `;
-  const result = splitLines(code);
+  const result = splitFixtureLines(code);
 
   expect(result).toHaveLength(3);
   expect(result[0]).toMatch('const foo = 3;');

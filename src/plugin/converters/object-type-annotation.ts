@@ -23,6 +23,8 @@ import {
 } from '@babel/types';
 import { convertFlowType } from './flow-type';
 
+import { UnexpectedError } from '../../util/error';
+
 type Signature = TSIndexSignature | TSPropertySignature;
 type SignatureKey = Identifier | StringLiteral;
 
@@ -45,7 +47,7 @@ function signatureKeysAreEqual(signature: Signature, key: SignatureKey): boolean
     }
   }
 
-  return false;
+  throw new UnexpectedError('Unknown signature type');
 }
 
 function replaceProperty(

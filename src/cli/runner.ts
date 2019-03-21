@@ -5,7 +5,7 @@ import glob from 'glob';
 import path from 'path';
 
 import { printError } from '../util/print';
-import { Stats, sortNumberMap } from '../util/stats';
+import { Metrics, sortNumberMap } from '../util/metric';
 import { getTransformOptions } from '../plugin/options';
 
 export interface RunnerArgs {
@@ -49,8 +49,8 @@ function transpileFiles(args: RunnerArgs): void {
       }
     });
 
-    if (Stats.typeCounter.getCounter().size) {
-      console.log(sortNumberMap(Stats.typeCounter.getCounter()));
+    if (Metrics.typeCounter.getCounter().size) {
+      console.log(sortNumberMap(Metrics.typeCounter.getCounter()));
       console.log();
     }
   });

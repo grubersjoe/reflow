@@ -1,10 +1,10 @@
 import { VisitNodeFunction } from '@babel/traverse';
 import { FlowType } from '@babel/types';
 
-import { Stats } from '../../util/stats';
+import { Metrics } from '../../util/metric';
 
 function collectStats(node: FlowType): void {
-  Stats.typeCounter.incrementFor(node.type);
+  Metrics.typeCounter.incrementFor(node.type);
   console.log(`  - ${node.type}`);
 }
 
