@@ -31,7 +31,7 @@ export function convertTypeParameter(node: TypeParameter): TSTypeParameter {
 export function convertTypeParameterDeclaration(
   node: TypeParameterDeclaration,
 ): TSTypeParameterDeclaration {
-  const params = node.params.map(param => convertTypeParameter(param));
+  const params = node.params.map(convertTypeParameter);
 
   return tsTypeParameterDeclaration(params);
 }
@@ -39,7 +39,7 @@ export function convertTypeParameterDeclaration(
 export function convertTypeParameterInstantiation(
   node: TypeParameterInstantiation,
 ): TSTypeParameterInstantiation {
-  const params = node.params.map(param => convertFlowType(param));
+  const params = node.params.map(convertFlowType);
 
   return tsTypeParameterInstantiation(params);
 }

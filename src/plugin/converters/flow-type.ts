@@ -14,12 +14,13 @@ import {
   tsNullKeyword,
   tsNumberKeyword,
   tsStringKeyword,
+  tsThisType,
+  tsTupleType,
   tsTypeReference,
   tsUndefinedKeyword,
   tsUnionType,
   tsUnknownKeyword,
   tsVoidKeyword,
-  tsThisType,
 } from '@babel/types';
 
 import { insertIf } from '../../util/array';
@@ -103,17 +104,18 @@ export function convertFlowType(node: FlowType): TSType {
       return tsThisType();
 
     case 'TupleTypeAnnotation':
-      // TODO
-      throw new NotImplementedError('TupleTypeAnnotation');
+      return tsTupleType(node.types.map(convertFlowType));
 
-    case 'TypeofTypeAnnotation': {
+    case 'TypeofTypeAnnotation':
       return convertTypeofTypeAnnotation(node);
-    }
 
     case 'UnionTypeAnnotation':
-      return tsUnionType(node.types.map(type => convertFlowType(type)));
+      return tsUnionType(node.types.map(convertFlowType));
 
     case 'VoidTypeAnnotation':
       return tsVoidKeyword();
+
+    default:
+      throw new NotImplementedError(`${(node as FlowType).type} not implemented`);
   }
 }
