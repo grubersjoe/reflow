@@ -19,6 +19,7 @@ import {
   tsUnionType,
   tsUnknownKeyword,
   tsVoidKeyword,
+  tsThisType,
 } from '@babel/types';
 
 import { insertIf } from '../../util/array';
@@ -61,11 +62,11 @@ export function convertFlowType(node: FlowType): TSType {
 
     case 'InterfaceTypeAnnotation':
       // TODO
-      throw new NotImplementedError();
+      throw new NotImplementedError('InterfaceTypeAnnotation');
 
     case 'IntersectionTypeAnnotation':
       // TODO
-      throw new NotImplementedError();
+      throw new NotImplementedError('IntersectionTypeAnnotation');
 
     case 'MixedTypeAnnotation':
       return tsUnknownKeyword();
@@ -99,12 +100,11 @@ export function convertFlowType(node: FlowType): TSType {
       return tsStringKeyword();
 
     case 'ThisTypeAnnotation':
-      // TODO
-      throw new NotImplementedError();
+      return tsThisType();
 
     case 'TupleTypeAnnotation':
       // TODO
-      throw new NotImplementedError();
+      throw new NotImplementedError('TupleTypeAnnotation');
 
     case 'TypeofTypeAnnotation': {
       return convertTypeofTypeAnnotation(node);
