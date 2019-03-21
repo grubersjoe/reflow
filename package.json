@@ -46,7 +46,7 @@
     "lodash": "^4.17.11"
   },
   "scripts": {
-    "build": "webpack --mode=production",
+    "build": "webpack --mode=production --progress",
     "clean": "rm -rv build/*",
     "dev": "webpack -w",
     "format": "prettier --write 'src/**/*'",
