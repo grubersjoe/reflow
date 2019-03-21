@@ -121,4 +121,12 @@ let objectNamedIndexerPropertyNumber: {
   [timestamp: number]: {}
 };
 
+type ReadOnlyObject = {
+  +prop: any,
+};
+
+type WriteOnlyObject = {
+  -prop: any,
+};
+
 function functionWithObjectParameter(obj: {}): void {}

@@ -65,6 +65,9 @@ function createPropertySignature(prop: ObjectTypeProperty): TSPropertySignature 
   propSignature.optional = optional;
   propSignature.readonly = variance && variance.kind === 'plus';
 
+  // Note: TypeScript does not suppport write-only properties. So Flow's variance.kind === 'minus'
+  // is ignored.
+
   return propSignature;
 }
 
