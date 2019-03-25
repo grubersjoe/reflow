@@ -20,7 +20,9 @@ import {
 } from '@babel/types';
 
 import { NotImplementedError } from '../../util/error';
+import { Stats } from '../../util/stats';
 
+import { PluginWarnings } from '../warnings';
 import { convertFunctionTypeAnnotation } from './function-type-annotation';
 import { convertGenericTypeAnnotation } from './generic-type-annotation';
 import { convertNullableTypeAnnotation } from './nullable-type-annotation';
@@ -28,6 +30,8 @@ import { convertObjectTypeAnnotation } from './object-type-annotation';
 import { convertTypeofTypeAnnotation } from './typeof-type-annotation';
 
 export function convertFlowType(node: FlowType): TSType {
+  Stats.typeCounter.incrementFor(node.type);
+
   switch (node.type) {
     case 'AnyTypeAnnotation':
       return tsAnyKeyword();
@@ -45,22 +49,22 @@ export function convertFlowType(node: FlowType): TSType {
       return tsNeverKeyword();
 
     case 'ExistsTypeAnnotation':
+      PluginWarnings.warnAbout(node.type);
       return tsAnyKeyword();
 
     case 'FunctionTypeAnnotation':
       return convertFunctionTypeAnnotation(node);
 
-    case 'GenericTypeAnnotation': {
+    case 'GenericTypeAnnotation':
       return convertGenericTypeAnnotation(node);
-    }
 
     case 'InterfaceTypeAnnotation':
       // TODO
-      throw new NotImplementedError('InterfaceTypeAnnotation');
+      throw new NotImplementedError(node.type);
 
     case 'IntersectionTypeAnnotation':
       // TODO
-      throw new NotImplementedError('IntersectionTypeAnnotation');
+      throw new NotImplementedError(node.type);
 
     case 'MixedTypeAnnotation':
       return tsUnknownKeyword();

@@ -1,32 +1,27 @@
 import { PluginObj, TransformOptions } from '@babel/core';
-import { Visitor } from '@babel/traverse';
-import types from '@babel/types';
+import { FunctionDeclaration, Flow, Program } from '@babel/types';
 
 import { setParserOptions } from './options';
-import { FlowType, FunctionDeclaration, Program, TypeAlias, TypeAnnotation } from './visitors';
+import { flowVisitor } from './visitors/flow';
+import { functionDeclarationVisitor } from './visitors/function';
+import { programVisitor } from './visitors/program';
 
 export interface PluginOptions {
   verbose?: boolean;
 }
 
-export type VisitorType = types.FlowType | types.Program;
-
-function buildPlugin(visitor: Visitor<VisitorType>): PluginObj<VisitorType> {
+function buildPlugin(): PluginObj<Flow | FunctionDeclaration | Program> {
   return {
     name: 'transform-flow-to-typescript',
-    visitor,
+    visitor: {
+      Flow: flowVisitor,
+      FunctionDeclaration: functionDeclarationVisitor,
+      Program: programVisitor,
+    },
     manipulateOptions(opts: TransformOptions, parserOpts: TransformOptions) {
       setParserOptions(parserOpts);
     },
   };
 }
 
-const plugin = buildPlugin({
-  FlowType,
-  FunctionDeclaration,
-  Program,
-  TypeAlias,
-  TypeAnnotation,
-});
-
-export default plugin;
+export default buildPlugin();

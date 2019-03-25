@@ -46,8 +46,8 @@ Babel Plugin to transform Flow typed JavaScript to TypeScript (*WIP*).
 | Values         | `$Values<A>`          | `A[keyof A]` |
 
 ### Not supported in TypeScript
-| Type             | Flow                | TypeScript    | Notes |
-|------------------|---------------------|---------------|------|
-| Existential type | `*`                 | `any`         | https://github.com/Microsoft/TypeScript/issues/14466 |
-| Opaque types     | `opaque type A = B` | `type A 1= B` | Not expressible |
-| Supertype        | `$Supertype<A>`     | `any`         | https://github.com/Microsoft/TypeScript/issues/14520 |
+| Type             | Flow                | TypeScript   | Notes |
+|------------------|---------------------|--------------|------|
+| Existential type | `*`                 | `any`        | https://github.com/Microsoft/TypeScript/issues/14466 |
+| Opaque types     | `opaque type A = B` | `type A = B` | Not expressible |
+| Supertype        | `$Supertype<A>`     | `any`        | https://github.com/Microsoft/TypeScript/issues/14520 |

@@ -1,12 +1,13 @@
 import { transformSync } from '@babel/core';
 import chalk from 'chalk';
-import fs from 'fs';
 import glob from 'glob';
-import path from 'path';
+import { readFileSync, statSync } from 'fs';
+import { resolve } from 'path';
 
-import { printError } from '../util/print';
-import { Metrics, sortNumberMap } from '../util/metric';
+import { logError, logPluginWarning } from '../util/log';
+import { Stats, sortNumberMap } from '../util/stats';
 import { getTransformOptions } from '../plugin/options';
+import { PluginWarnings } from '../plugin/warnings';
 
 export interface RunnerArgs {
   dryRun?: boolean;
@@ -32,26 +33,27 @@ function transpileFiles(args: RunnerArgs): void {
   const babelOptions = getTransformOptions({ verbose });
 
   src.forEach(src => {
-    const isDir = fs.statSync(src).isDirectory();
+    const isDir = statSync(src).isDirectory();
     const globOptions = getGlobOptions({ cwd: src });
 
     // Create a list of to be transpiled files
-    const fileList = isDir ? glob.sync(globPattern, globOptions) : [path.resolve(src)];
+    const fileList = isDir ? glob.sync(globPattern, globOptions) : [resolve(src)];
 
     fileList.forEach(filePath => {
       console.log(chalk.magenta(`Transpiling ${filePath}...`));
 
-      const src = fs.readFileSync(filePath).toString();
+      const src = readFileSync(filePath).toString();
       const out = transformSync(src, babelOptions);
 
       if (out === null) {
-        printError(`Unable to transpile ${filePath}`);
+        logError(`Unable to transpile ${filePath}`);
       }
     });
 
-    if (Metrics.typeCounter.getCounter().size) {
-      console.log(sortNumberMap(Metrics.typeCounter.getCounter()));
-      console.log();
+    PluginWarnings.getWarnings().forEach(logPluginWarning);
+
+    if (verbose && Stats.typeCounter.getCounter().size) {
+      console.log(sortNumberMap(Stats.typeCounter.getCounter()));
     }
   });
 }

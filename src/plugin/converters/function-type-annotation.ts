@@ -2,13 +2,13 @@ import {
   FunctionTypeAnnotation,
   FunctionTypeParam,
   Identifier,
+  RestElement,
   TSFunctionType,
   identifier,
   isIdentifier,
+  restElement,
   tsFunctionType,
   tsTypeAnnotation,
-  RestElement,
-  restElement,
 } from '@babel/types';
 
 import { convertFlowType } from './flow-type';

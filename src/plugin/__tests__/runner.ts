@@ -1,12 +1,11 @@
-import { transformSync, TransformOptions } from '@babel/core';
+import { TransformOptions, transformFileSync } from '@babel/core';
 import chalk from 'chalk';
 import startCase from 'lodash/startCase';
-
 import { existsSync, readdirSync, readFileSync, statSync } from 'fs';
 import { cwd } from 'process';
 import { relative, resolve } from 'path';
 
-import { splitFixtureLines } from './string';
+import { splitFixtureLines } from '../../util/string';
 
 const FIXTURE_INPUT_FILENAME = 'input.js';
 const FIXTURE_OUTPUT_FILENAME = 'output.ts';
@@ -35,8 +34,7 @@ export function runFixtureTests(rootDir: string, babelOptions: TransformOptions)
       const outputFileExists = existsSync(outputFile);
 
       if (inputFileExists && outputFileExists) {
-        const input = readFileSync(inputFile).toString();
-        const babelOutput = transformSync(input, babelOptions);
+        const babelOutput = transformFileSync(inputFile, babelOptions);
         const expectedLines = splitFixtureLines(readFileSync(outputFile));
 
         describe(testName.toUpperCase(), () => {

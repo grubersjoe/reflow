@@ -2,8 +2,8 @@ import fs from 'fs';
 import program, { Command } from 'commander';
 
 import pkg from '../../package.json';
-import { printError } from '../util/print';
-import { run, RunnerArgs } from './runner';
+import { logError } from '../util/log';
+import { run, RunnerArgs } from './transpiler';
 
 /**
  * Validate that all arguments (all directories) are valid
@@ -11,14 +11,14 @@ import { run, RunnerArgs } from './runner';
  */
 function validateArgs(args: string[]): boolean {
   if (args.length === 0) {
-    printError('No input directories or files given');
+    logError('No input directories or files given');
     return false;
   }
 
   const srcExists = args.every(dir => fs.existsSync(dir));
 
   if (!srcExists) {
-    printError('Not all input directories or files exist');
+    logError('Not all input directories or files exist');
   }
 
   return srcExists;

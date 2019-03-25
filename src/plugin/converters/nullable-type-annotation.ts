@@ -1,12 +1,13 @@
 import {
   NullableTypeAnnotation,
   TSUnionType,
-  tsUnionType,
   isTSNullKeyword,
   tsNullKeyword,
   tsUndefinedKeyword,
+  tsUnionType,
 } from '@babel/types';
 import { convertFlowType } from './flow-type';
+
 import { insertIf } from '../../util/array';
 
 export function convertNullableTypeAnnotation(node: NullableTypeAnnotation): TSUnionType {

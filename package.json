@@ -50,7 +50,7 @@
     "clean": "rm -rv build/*",
     "dev": "webpack -w",
     "format": "prettier --write 'src/**/*'",
-    "lint": "eslint 'src/**/*.ts'",
+    "lint": "eslint --max-warnings=0 'src/**/*.ts'",
     "test": "jest",
     "test:coverage": "jest --coverage && xdg-open src/plugin/__tests__/__coverage__/lcov-report/index.html",
     "typecheck": "tsc"

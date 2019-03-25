@@ -8,6 +8,7 @@ import {
   TSIndexSignature,
   TSPropertySignature,
   TSTypeLiteral,
+  identifier,
   isIdentifier,
   isObjectTypeProperty,
   isObjectTypeSpreadProperty,
@@ -19,7 +20,6 @@ import {
   tsTypeAnnotation,
   tsTypeLiteral,
   tsUnionType,
-  identifier,
 } from '@babel/types';
 import { convertFlowType } from './flow-type';
 

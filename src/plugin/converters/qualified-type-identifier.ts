@@ -1,8 +1,8 @@
 import {
   QualifiedTypeIdentifier,
   TSQualifiedName,
-  tsQualifiedName,
   isQualifiedTypeIdentifier,
+  tsQualifiedName,
 } from '@babel/types';
 
 export function convertQualifiedTypeIdentifier(q: QualifiedTypeIdentifier): TSQualifiedName {

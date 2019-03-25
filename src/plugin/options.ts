@@ -10,14 +10,13 @@ export function getTransformOptions(
   options?: PluginOptions,
   overwrites?: TransformOptions,
 ): TransformOptions {
-  const defaults = {
+  const defaultOptions = {
     babelrc: false,
     configFile: false,
     plugins: [[overflowPlugin, options]],
-    ...overwrites,
   };
 
-  return Object.assign({}, defaults, overwrites);
+  return Object.assign({}, defaultOptions, overwrites);
 }
 
 /**
@@ -25,18 +24,18 @@ export function getTransformOptions(
  * @param parserOpts
  */
 export function setParserOptions(parserOpts: TransformOptions): void {
-  if (!parserOpts.plugins) {
-    parserOpts.plugins = [];
-  }
+  const plugins = parserOpts.plugins || [];
 
-  parserOpts.plugins.push('classProperties');
-  parserOpts.plugins.push([
+  plugins.push('classProperties');
+  plugins.push([
     'decorators',
     {
       decoratorsBeforeExport: true,
     },
   ]);
-  parserOpts.plugins.push('dynamicImport');
-  parserOpts.plugins.push('flow');
-  parserOpts.plugins.push('jsx');
+  plugins.push('dynamicImport');
+  plugins.push('flow');
+  plugins.push('jsx');
+
+  parserOpts.plugins = plugins;
 }

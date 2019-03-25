@@ -1,12 +1,12 @@
 import {
   GenericTypeAnnotation,
-  TSTypeReference,
-  tsTypeReference,
-  isQualifiedTypeIdentifier,
-  tsTypeQuery,
   TSTypeQuery,
-  isTSTypeReference,
+  TSTypeReference,
   isIdentifier,
+  isQualifiedTypeIdentifier,
+  isTSTypeReference,
+  tsTypeQuery,
+  tsTypeReference,
 } from '@babel/types';
 
 import { convertTypeParameterInstantiation } from './type-parameter';

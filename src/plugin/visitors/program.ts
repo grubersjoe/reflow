@@ -11,10 +11,9 @@ export const programVisitor: VisitNodeFunction<object, Program> = (path, state):
   if (comments) {
     comments.forEach(comment => {
       if (FLOW_DIRECTIVE.test(comment.value)) {
-        // Remove the Flow directive
         comment.value = comment.value.replace(FLOW_DIRECTIVE, '');
 
-        // Remove the comment completely if only whitespace or stars is left
+        // Remove the remaining comment completely if it consists of stars or whitespace only
         if (!comment.value.replace(/\*/g, '').trim()) {
           // @ts-ignore
           comment.ignore = true;

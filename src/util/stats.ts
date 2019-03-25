@@ -26,6 +26,6 @@ export function sortNumberMap<T>(counter: Map<T, number>): Map<T, number> {
   );
 }
 
-export const Metrics = {
+export const Stats = {
   typeCounter: createCounter(),
 };
