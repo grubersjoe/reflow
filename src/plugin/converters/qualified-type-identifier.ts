@@ -5,11 +5,13 @@ import {
   isQualifiedTypeIdentifier,
 } from '@babel/types';
 
-export function getQualifiedName(q: QualifiedTypeIdentifier): TSQualifiedName {
+export function convertQualifiedTypeIdentifier(q: QualifiedTypeIdentifier): TSQualifiedName {
   const { id, qualification } = q;
 
   return tsQualifiedName(
-    isQualifiedTypeIdentifier(qualification) ? getQualifiedName(qualification) : qualification,
+    isQualifiedTypeIdentifier(qualification)
+      ? convertQualifiedTypeIdentifier(qualification)
+      : qualification,
     id,
   );
 }

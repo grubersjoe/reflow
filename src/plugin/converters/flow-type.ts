@@ -2,7 +2,6 @@ import {
   FlowType,
   TSType,
   booleanLiteral,
-  isTSNullKeyword,
   numericLiteral,
   stringLiteral,
   tsAnyKeyword,
@@ -15,18 +14,18 @@ import {
   tsStringKeyword,
   tsThisType,
   tsTupleType,
-  tsUndefinedKeyword,
   tsUnionType,
   tsUnknownKeyword,
   tsVoidKeyword,
 } from '@babel/types';
 
-import { insertIf } from '../../util/array';
-import { convertObjectTypeAnnotation } from './object-type-annotation';
-import { convertTypeofTypeAnnotation } from './typeof-type-annotation';
 import { NotImplementedError } from '../../util/error';
+
 import { convertFunctionTypeAnnotation } from './function-type-annotation';
 import { convertGenericTypeAnnotation } from './generic-type-annotation';
+import { convertNullableTypeAnnotation } from './nullable-type-annotation';
+import { convertObjectTypeAnnotation } from './object-type-annotation';
+import { convertTypeofTypeAnnotation } from './typeof-type-annotation';
 
 export function convertFlowType(node: FlowType): TSType {
   switch (node.type) {
@@ -69,15 +68,8 @@ export function convertFlowType(node: FlowType): TSType {
     case 'NullLiteralTypeAnnotation':
       return tsNullKeyword();
 
-    case 'NullableTypeAnnotation': {
-      const type = convertFlowType(node.typeAnnotation);
-
-      return tsUnionType([
-        ...insertIf(!isTSNullKeyword(type), type),
-        tsNullKeyword(),
-        tsUndefinedKeyword(),
-      ]);
-    }
+    case 'NullableTypeAnnotation':
+      return convertNullableTypeAnnotation(node);
 
     case 'NumberLiteralTypeAnnotation':
       return tsLiteralType(numericLiteral(node.value));

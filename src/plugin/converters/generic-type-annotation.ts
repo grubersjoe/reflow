@@ -10,7 +10,7 @@ import {
 } from '@babel/types';
 
 import { convertTypeParameterInstantiation } from './type-parameter';
-import { getQualifiedName } from './qualified-type-identifier';
+import { convertQualifiedTypeIdentifier } from './qualified-type-identifier';
 
 export function convertGenericTypeAnnotation(
   node: GenericTypeAnnotation,
@@ -22,7 +22,7 @@ export function convertGenericTypeAnnotation(
     : null;
 
   if (isQualifiedTypeIdentifier(id)) {
-    return tsTypeReference(getQualifiedName(id), typeParameters);
+    return tsTypeReference(convertQualifiedTypeIdentifier(id), typeParameters);
   }
 
   if (isIdentifier(id) && typeParameters) {

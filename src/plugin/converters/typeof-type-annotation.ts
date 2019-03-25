@@ -9,7 +9,7 @@ import {
 } from '@babel/types';
 
 import { UnexpectedError } from '../../util/error';
-import { getQualifiedName } from './qualified-type-identifier';
+import { convertQualifiedTypeIdentifier } from './qualified-type-identifier';
 
 export function convertTypeofTypeAnnotation(
   node: TypeofTypeAnnotation,
@@ -26,7 +26,7 @@ export function convertTypeofTypeAnnotation(
         return tsTypeQuery(id);
       }
     } else {
-      return tsTypeQuery(getQualifiedName(id));
+      return tsTypeQuery(convertQualifiedTypeIdentifier(id));
     }
   }
 
