@@ -1,37 +1,43 @@
 import { transformSync, TransformOptions } from '@babel/core';
 import chalk from 'chalk';
-import fs, { statSync } from 'fs';
 import startCase from 'lodash/startCase';
-import path from 'path';
+
+import { existsSync, readdirSync, readFileSync, statSync } from 'fs';
+import { cwd } from 'process';
+import { relative, resolve } from 'path';
 
 import { splitFixtureLines } from './string';
 
 const FIXTURE_INPUT_FILENAME = 'input.js';
 const FIXTURE_OUTPUT_FILENAME = 'output.ts';
 
+function relPath(...pathSegments: string[]): string {
+  return relative(cwd(), resolve(...pathSegments));
+}
+
 export function runFixtureTests(rootDir: string, babelOptions: TransformOptions): void {
-  const files = fs.readdirSync(rootDir);
+  const files = readdirSync(rootDir);
 
   if (files.length === 0) {
     throw new Error(`No fixture directories or files found in ${rootDir}`);
   }
 
   files.forEach(dirName => {
-    const dir = path.resolve(rootDir, dirName);
+    const dir = relPath(rootDir, dirName);
 
     if (statSync(dir).isDirectory()) {
       const testName = startCase(dirName);
 
-      const inputFile = path.resolve(dir, FIXTURE_INPUT_FILENAME);
-      const outputFile = path.resolve(dir, FIXTURE_OUTPUT_FILENAME);
+      const inputFile = relPath(dir, FIXTURE_INPUT_FILENAME);
+      const outputFile = relPath(dir, FIXTURE_OUTPUT_FILENAME);
 
-      const inputFileExists = fs.existsSync(inputFile);
-      const outputFileExists = fs.existsSync(outputFile);
+      const inputFileExists = existsSync(inputFile);
+      const outputFileExists = existsSync(outputFile);
 
       if (inputFileExists && outputFileExists) {
-        const input = fs.readFileSync(inputFile).toString();
+        const input = readFileSync(inputFile).toString();
         const babelOutput = transformSync(input, babelOptions);
-        const expectedLines = splitFixtureLines(fs.readFileSync(outputFile));
+        const expectedLines = splitFixtureLines(readFileSync(outputFile));
 
         describe(testName.toUpperCase(), () => {
           if (!babelOutput) {
