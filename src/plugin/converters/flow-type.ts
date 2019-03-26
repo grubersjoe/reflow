@@ -23,7 +23,7 @@ import { NotImplementedError } from '../../util/error';
 import { Stats } from '../../util/stats';
 
 import { PluginWarnings } from '../warnings';
-import { convertFunctionTypeAnnotation } from './function-type-annotation';
+import { convertFunctionTypeAnnotation } from './function';
 import { convertGenericTypeAnnotation } from './generic-type-annotation';
 import { convertNullableTypeAnnotation } from './nullable-type-annotation';
 import { convertObjectTypeAnnotation } from './object-type-annotation';
