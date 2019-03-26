@@ -14,18 +14,25 @@ function relPath(...pathSegments: string[]): string {
   return relative(cwd(), resolve(...pathSegments));
 }
 
-export function runFixtureTests(rootDir: string, babelOptions: TransformOptions): void {
+export function runFixtureTests(
+  rootDir: string,
+  babelOptions: TransformOptions,
+  parentDirs: string[] = [],
+): void {
   const files = readdirSync(rootDir);
 
   if (files.length === 0) {
     throw new Error(`No fixture directories or files found in ${rootDir}`);
   }
 
-  files.forEach(dirName => {
-    const dir = relPath(rootDir, dirName);
+  files.forEach(testDir => {
+    const dir = relPath(rootDir, testDir);
 
     if (statSync(dir).isDirectory()) {
-      const testName = startCase(dirName);
+      const testName = parentDirs
+        .concat(testDir)
+        .map(startCase)
+        .join('/');
 
       const inputFile = relPath(dir, FIXTURE_INPUT_FILENAME);
       const outputFile = relPath(dir, FIXTURE_OUTPUT_FILENAME);
@@ -37,7 +44,7 @@ export function runFixtureTests(rootDir: string, babelOptions: TransformOptions)
         const babelOutput = transformFileSync(inputFile, babelOptions);
         const expectedLines = splitFixtureLines(readFileSync(outputFile));
 
-        describe(testName.toUpperCase(), () => {
+        describe(chalk.underline(testName), () => {
           if (!babelOutput) {
             throw new Error(`Unable to transform file ${inputFile}.`);
           }
@@ -47,7 +54,7 @@ export function runFixtureTests(rootDir: string, babelOptions: TransformOptions)
               const padLength = Math.min(String(expectedLines.length).length, 2);
               const testNumber = String(i + 1).padStart(padLength, '0');
 
-              test(`${testName}:${testNumber} │ ${line}  ===  ${expectedLines[i]}`, () => {
+              test(`${testName}:${testNumber} │ ${line}`, () => {
                 expect(line).toMatch(expectedLines[i]);
               });
             });
@@ -61,7 +68,7 @@ export function runFixtureTests(rootDir: string, babelOptions: TransformOptions)
         throw new Error(`Fixture input file ${inputFile} does not exist.`);
       } else {
         // Descend in next directory level
-        runFixtureTests(dir, babelOptions);
+        runFixtureTests(dir, babelOptions, [...parentDirs, testDir]);
       }
     }
   });
