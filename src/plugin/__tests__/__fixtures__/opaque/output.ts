@@ -9,7 +9,8 @@ type OpaqueTypeWithGenerics<T1, T2> = {
   p2: T2;
 };
 
-// declare type OpaqueTypeDeclaration;
+// Using any for omitted type
+declare type OpaqueTypeDeclaration = any;
 
-// export type ExportedOpaqueType = string;
-// export type ExportedOpaqueTypeWithSubtypingConstraint = D;
+export type ExportedOpaqueType = string;
+export type ExportedOpaqueTypeWithSubtypingConstraint = D;

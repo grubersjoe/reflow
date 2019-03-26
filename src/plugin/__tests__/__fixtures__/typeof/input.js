@@ -17,7 +17,7 @@ const obj = {
     },
     p32: null,
   },
-}
+};
 
 type TypeofObject = typeof obj;
 type TypeofObjectQualified = typeof obj.p1;

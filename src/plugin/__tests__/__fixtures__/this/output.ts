@@ -5,6 +5,6 @@ class ClassWithThisReturn {
   }
 
   functionThisWithParam(p: number): this {
-    return this
+    return this;
   }
 }

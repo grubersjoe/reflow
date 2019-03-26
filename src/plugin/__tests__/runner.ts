@@ -55,7 +55,7 @@ export function runFixtureTests(
               const testNumber = String(i + 1).padStart(padLength, '0');
 
               test(`${testName}:${testNumber} │ ${line}`, () => {
-                expect(line).toMatch(expectedLines[i]);
+                expect(line).toEqual(expectedLines[i]);
               });
             });
           } else {

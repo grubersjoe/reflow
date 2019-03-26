@@ -2,14 +2,14 @@
 type SealedObject = {
   p1: "string";
   p2: 1;
-  p3: null
+  p3: null;
 };
 
 type UnsealedObject = {};
 
 type ObjectSimple = {
   p4: string;
-  p5: boolean
+  p5: boolean;
 };
 
 type NestedObject = {
@@ -20,30 +20,30 @@ type NestedObject = {
     };
     p10: boolean;
   };
-  p11: null
+  p11: null;
 };
 
 type OptionalObject = {
   p12?: boolean;
-  p13: string
+  p13: string;
 };
 
 type ExactObjectType = {
   p14: number;
-  p15: string
+  p15: string;
 };
 
 type ExactObjectTypeWithOptionalProp = {
   p16: boolean;
   p17?: string;
-  p18?: number
+  p18?: number;
 };
 
 type ObjectWithStringLiteralKey = {
   "p19": number;
   p20: null;
-  "p 21": boolean
-}
+  "p 21": boolean;
+};
 
 type ObjectWithSpread = {
   a: string;
@@ -56,13 +56,13 @@ type ObjectWithSpreadInBetween = {
   d: null;
   e: number;
   b: boolean;
-  c: null
+  c: null;
 };
 
 type ObjectWithSpreadOverwrite = {
   a: string | number;
   c: false | true;
-  b: "literal"
+  b: "literal";
 };
 
 type ObjectWithSpreadOverwriteInBetween = {
@@ -74,38 +74,30 @@ type ObjectWithSpreadOverwriteInBetween = {
 type ObjectWithSpreadOverwriteAndStringLiteralKey = {
   "a": "foo" | "bar";
   "b": string | number;
-  c: number | null
+  c: number | null;
 };
 
 type ExactObjectWithSpread = {
   a: number;
   c: string;
-  d: boolean
-  b: "literal"
-}
-
-type ObjectIndexerPropertyString = {
-  [key: string]: number
+  d: boolean;
+  b: "literal";
 };
 
-type ObjectIndexerPropertyNumber = {
-  [key: number]: {}
+type ObjectIndexerProperty = {
+  [key: string]: number;
 };
 
-type ObjectNamedIndexerPropertyString = {
-  [id: string]: boolean
-};
-
-type ObjectNamedIndexerPropertyNumber = {
-  [timestamp: number]: {}
+type ObjectNamedIndexerProperty = {
+  [id: number]: {};
 };
 
 type ReadOnlyObject = {
-  readonly prop: any;
+  readonly prop: unknown;
 };
 
 type WriteOnlyObject = {
-  prop: any;
+  prop: () => void;
 };
 
 function functionWithObjectParameter(obj: {}): void {}

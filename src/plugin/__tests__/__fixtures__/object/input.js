@@ -43,7 +43,7 @@ type ObjectWithStringLiteralKey = {
   "p19": number,
   p20: null,
   "p 21": boolean,
-}
+};
 
 type ObjectWithSpread = {
   a: string,
@@ -105,28 +105,20 @@ type ExactObjectWithSpread = {|
   |}
 |};
 
-type ObjectIndexerPropertyString = {
+type ObjectIndexerProperty = {
   [string]: number,
 };
 
-type ObjectIndexerPropertyNumber = {
-  [number]: {}
-};
-
-type ObjectNamedIndexerPropertyString = {
-  [id: string]: boolean,
-};
-
-type ObjectNamedIndexerPropertyNumber = {
-  [timestamp: number]: {}
+type ObjectNamedIndexerProperty = {
+  [id: number]: {},
 };
 
 type ReadOnlyObject = {
-  +prop: any,
+  +prop: mixed,
 };
 
 type WriteOnlyObject = {
-  -prop: any,
+  -prop: () => void,
 };
 
 function functionWithObjectParameter(obj: {}): void {}

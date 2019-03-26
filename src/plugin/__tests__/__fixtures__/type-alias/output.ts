@@ -23,5 +23,5 @@ type MixedAlias = unknown;
 type ObjectAlias = {
   p4: string;
   p5: number;
-  p6: null
+  p6: null;
 };

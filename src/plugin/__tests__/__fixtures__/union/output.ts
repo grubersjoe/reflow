@@ -5,11 +5,11 @@ type Sizes = "S" | "M" | "L" | "XL";
 type SuccessPayload = {
   success: true;
   value: boolean;
-}
+};
 type ErrorPayload = {
   success: false;
-  error?: string
-}
+  error?: string;
+};
 type TypeAliasUnion = SuccessPayload | ErrorPayload;
 
 function functionWithUnionParam(p: string | number) {}
