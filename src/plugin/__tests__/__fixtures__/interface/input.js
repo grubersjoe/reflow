@@ -1,6 +1,7 @@
 // @flow
 interface InterfaceSimple {
   p: Date;
+  q?: number;
   m(x: number): string;
 }
 
@@ -14,13 +15,16 @@ class InterfaceClassSimple implements InterfaceSimple {
 }
 
 class InterfaceClassMissingType implements InterfaceSimple {
-  //
-  p: Date;
+  p: Date = new Date();
 
   //
   m(x) {
     return x.toLocaleString();
   }
+}
+
+interface DerivedInterface<T> extends Set<T> {
+  type: T;
 }
 
 // This is currently broken in Flow:
