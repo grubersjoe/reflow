@@ -1,8 +1,13 @@
 import {
+  BaseNode,
+  Identifier,
   InterfaceDeclaration,
   InterfaceExtends,
+  InterfaceTypeAnnotation,
   TSExpressionWithTypeArguments,
   TSInterfaceDeclaration,
+  TSTypeLiteral,
+  TypeParameterDeclaration,
   isIdentifier,
   tsExpressionWithTypeArguments,
   tsInterfaceBody,
@@ -16,27 +21,46 @@ import {
   convertTypeParameterInstantiation,
 } from './type-parameter';
 
+export interface TypeAliasForInterfaceType extends BaseNode {
+  type: 'TypeAlias';
+  id: Identifier;
+  typeParameters: TypeParameterDeclaration | null;
+  right: InterfaceTypeAnnotation;
+}
+
 export function convertInterfaceExtends(node: InterfaceExtends): TSExpressionWithTypeArguments {
   const id = isIdentifier(node.id) ? node.id : convertQualifiedTypeIdentifier(node.id);
-
-  const typeParameters = node.typeParameters
-    ? convertTypeParameterInstantiation(node.typeParameters)
-    : null;
+  const typeParameters = convertTypeParameterInstantiation(node.typeParameters);
 
   return tsExpressionWithTypeArguments(id, typeParameters);
 }
 
 export function convertInterfaceDeclaration(node: InterfaceDeclaration): TSInterfaceDeclaration {
-  const typeParameters = node.typeParameters
-    ? convertTypeParameterDeclaration(node.typeParameters)
-    : null;
+  const typeParameters = convertTypeParameterDeclaration(node.typeParameters);
+  const body = tsInterfaceBody(convertObjectTypeAnnotation(node.body).members);
 
   const _extends =
     node.extends && node.extends.length
       ? node.extends.map(interfaceExtends => convertInterfaceExtends(interfaceExtends))
       : null;
 
-  const body = tsInterfaceBody(convertObjectTypeAnnotation(node.body).members);
+  return tsInterfaceDeclaration(node.id, typeParameters, _extends, body);
+}
+
+export function convertInterfaceTypeAnnotation(node: InterfaceTypeAnnotation): TSTypeLiteral {
+  return convertObjectTypeAnnotation(node.body);
+}
+
+export function convertInterfaceTypeAlias(node: TypeAliasForInterfaceType): TSInterfaceDeclaration {
+  const { right: _interface } = node;
+
+  const typeParameters = convertTypeParameterDeclaration(node.typeParameters);
+  const body = tsInterfaceBody(convertObjectTypeAnnotation(_interface.body).members);
+
+  const _extends =
+    _interface.extends && _interface.extends.length
+      ? _interface.extends.map(_extends => convertInterfaceExtends(_extends))
+      : null;
 
   return tsInterfaceDeclaration(node.id, typeParameters, _extends, body);
 }

@@ -29,17 +29,21 @@ export function convertTypeParameter(node: TypeParameter): TSTypeParameter {
 }
 
 export function convertTypeParameterDeclaration(
-  node: TypeParameterDeclaration,
-): TSTypeParameterDeclaration {
-  const params = node.params.map(convertTypeParameter);
+  node: TypeParameterDeclaration | null,
+): TSTypeParameterDeclaration | null {
+  if (node === null) {
+    return null;
+  }
 
-  return tsTypeParameterDeclaration(params);
+  return tsTypeParameterDeclaration(node.params.map(convertTypeParameter));
 }
 
 export function convertTypeParameterInstantiation(
-  node: TypeParameterInstantiation,
-): TSTypeParameterInstantiation {
-  const params = node.params.map(convertFlowType);
+  node: TypeParameterInstantiation | null,
+): TSTypeParameterInstantiation | null {
+  if (node === null) {
+    return null;
+  }
 
-  return tsTypeParameterInstantiation(params);
+  return tsTypeParameterInstantiation(node.params.map(convertFlowType));
 }

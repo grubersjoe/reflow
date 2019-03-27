@@ -21,10 +21,11 @@ import {
 
 import { NotImplementedError } from '../../util/error';
 import { Stats } from '../../util/stats';
-
 import { PluginWarnings } from '../warnings';
+
 import { convertFunctionTypeAnnotation } from './function';
 import { convertGenericTypeAnnotation } from './generic-type-annotation';
+import { convertInterfaceTypeAnnotation } from './interface';
 import { convertNullableTypeAnnotation } from './nullable-type-annotation';
 import { convertObjectTypeAnnotation } from './object-type-annotation';
 import { convertTypeofTypeAnnotation } from './typeof-type-annotation';
@@ -59,8 +60,7 @@ export function convertFlowType(node: FlowType): TSType {
       return convertGenericTypeAnnotation(node);
 
     case 'InterfaceTypeAnnotation':
-      // TODO
-      throw new NotImplementedError(node.type);
+      return convertInterfaceTypeAnnotation(node);
 
     case 'IntersectionTypeAnnotation':
       // TODO
@@ -106,6 +106,6 @@ export function convertFlowType(node: FlowType): TSType {
       return tsVoidKeyword();
 
     default:
-      throw new NotImplementedError(`${(node as FlowType).type} not implemented.`);
+      throw new NotImplementedError(`${(node as FlowType).type} is not implemented.`);
   }
 }

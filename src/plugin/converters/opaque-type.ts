@@ -11,19 +11,14 @@ import { convertTypeParameterDeclaration } from './type-parameter';
 
 export function convertOpaqueType(node: OpaqueType): TSTypeAliasDeclaration {
   // Supertype must be ignored.
-  const typeParameters = node.typeParameters
-    ? convertTypeParameterDeclaration(node.typeParameters)
-    : null;
+  const typeParameters = convertTypeParameterDeclaration(node.typeParameters);
 
   return tsTypeAliasDeclaration(node.id, typeParameters, convertFlowType(node.impltype));
 }
 
 export function convertDeclareOpaqueType(node: DeclareOpaqueType): TSTypeAliasDeclaration {
   // Supertype must be ignored.
-  const typeParameters = node.typeParameters
-    ? convertTypeParameterDeclaration(node.typeParameters)
-    : null;
-
+  const typeParameters = convertTypeParameterDeclaration(node.typeParameters);
   const tsTypeAlias = tsTypeAliasDeclaration(node.id, typeParameters, tsAnyKeyword());
 
   tsTypeAlias.declare = true;

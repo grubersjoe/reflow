@@ -2,14 +2,14 @@
 interface InterfaceSimple {
   p: Date;
   q?: number;
-  m(x: number): string;
+  f(x: number): string;
 }
 
 class InterfaceClassSimple implements InterfaceSimple {
   //
   p: Date;
 
-  m(x: number) {
+  f(x: number) {
     return x.toLocaleString();
   }
 }
@@ -18,7 +18,7 @@ class InterfaceClassMissingType implements InterfaceSimple {
   p: Date = new Date();
 
   //
-  m(x) {
+  f(x) {
     return x.toLocaleString();
   }
 }
@@ -35,18 +35,41 @@ interface InterfaceWithIndexer {
 
 interface InterfaceWithGenerics<T1, T2, T3> {
   p: T1;
-  m1(x: T2): T3;
-  m2(x: T3, y: T3): number;
+  f(x: T2): T3;
+  g(x: T3, y: T3): number;
 }
 
-const InterfaceWithGenericsImplementation: InterfaceWithGenerics<string, string, number> = {
-  p: 'string',
-  m1: x => 3,
-  m2: (x, y) => x * y,
-};
-
-interface InterfaceVariance {
+interface InterfaceWithVariance {
   invariant: () => void,
   +covariant: number | string,
-  -contravariant: Date,
+  -contravariant: string[],
 }
+
+function functionWithInterfaceParameter(i: InterfaceSimple) {
+  return i.f(5);
+}
+
+const arrowFunctionWithInterfaceParameter: (i: InterfaceSimple) => Date = i => i.p;
+
+const objectWithInterfaceType: interface {
+  x: number,
+  f(p: string): number,
+} = {
+  x: 1,
+  f: (p) => p.length,
+};
+
+type InterfaceAlias = interface {
+  p: Date;
+  f(x: number): number;
+};
+
+type InterfaceAliasWithExtend = interface extends InterfaceAlias {
+  g(x: number): string;
+};
+
+type InterfaceAliasWithGenerics<T> = interface extends Map<T, T> {
+  p: string;
+};
+
+type InterfaceAliasGeneric = InterfaceSimple;

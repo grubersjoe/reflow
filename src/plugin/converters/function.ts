@@ -41,9 +41,7 @@ export function convertFunctionTypeRestParam(param: FunctionTypeParam): RestElem
 }
 
 export function convertFunctionTypeAnnotation(node: FunctionTypeAnnotation): TSFunctionType {
-  const typeParameters = node.typeParameters
-    ? convertTypeParameterDeclaration(node.typeParameters)
-    : null;
+  const typeParameters = convertTypeParameterDeclaration(node.typeParameters);
 
   let functionParameters: (Identifier | RestElement)[] = node.params
     ? node.params.map((param, i) => convertFunctionTypeParam(param, `p${i + 1}`))
