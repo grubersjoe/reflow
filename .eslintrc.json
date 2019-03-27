@@ -19,10 +19,7 @@
     "@typescript-eslint"
   ],
   "rules": {
-    "@typescript-eslint/indent": [
-      "error",
-      2
-    ],
+    "@typescript-eslint/indent": 0,
     "curly": 0,
     "no-console": 0,
     "node/no-unsupported-features/es-syntax": 0,
