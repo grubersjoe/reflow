@@ -84,7 +84,7 @@ function convertObjectTypeSpreadProperty(
         const { key } = innerProp;
 
         if (!isIdentifier(key) && !isStringLiteral(key)) {
-          return;
+          throw new UnexpectedError(`Unexpected property name type: ${key.type}`);
         }
 
         const parentProp = props.find(prop => signatureKeysAreEqual(prop, key));
