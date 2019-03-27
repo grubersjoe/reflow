@@ -11,6 +11,7 @@ import {
 } from '@babel/types';
 
 import { convertFlowType } from './flow-type';
+import { PluginWarnings, WARNINGS } from '../warnings';
 
 export function convertTypeParameter(node: TypeParameter): TSTypeParameter {
   const typeParameter = tsTypeParameter();
@@ -23,6 +24,10 @@ export function convertTypeParameter(node: TypeParameter): TSTypeParameter {
 
   if (node.default) {
     typeParameter.default = convertFlowType(node.default);
+  }
+
+  if (node.variance) {
+    PluginWarnings.enable(WARNINGS.GenericTypeAnnotation.Variance);
   }
 
   return typeParameter;

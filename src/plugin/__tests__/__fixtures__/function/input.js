@@ -20,10 +20,12 @@ function functionSimpleWithReturn(p1: number, p2: number): boolean {
   return p1 === p2;
 }
 function functionWithInitializer(p1: string, p2: boolean = false) {}
+function functionWithOptionalParam(p1: string[], p2?: boolean) {}
 function functionWithOptionalParamAndInitializer(p1: string, p2?: number, p3?: boolean = false) {}
 async function functionAsync(): Promise<number> {
   return 42;
 }
+
 
 const arrowFunctionEmpty = () => {};
 const arrowFunctionWithParams = (p1: {}, p2: boolean) => {};

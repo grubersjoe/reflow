@@ -21,7 +21,7 @@ import {
 
 import { NotImplementedError } from '../../util/error';
 import { Stats } from '../../util/stats';
-import { PluginWarnings } from '../warnings';
+import { PluginWarnings, WARNINGS } from '../warnings';
 
 import { convertFunctionTypeAnnotation } from './function';
 import { convertGenericTypeAnnotation } from './generic-type-annotation';
@@ -50,7 +50,7 @@ export function convertFlowType(node: FlowType): TSType {
       return tsNeverKeyword();
 
     case 'ExistsTypeAnnotation':
-      PluginWarnings.warnAbout(node.type);
+      PluginWarnings.enable(WARNINGS.ExistsTypeAnnotation);
       return tsAnyKeyword();
 
     case 'FunctionTypeAnnotation':

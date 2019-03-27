@@ -14,5 +14,6 @@ export function logWarning(message: string): void {
 }
 
 export function logPluginWarning({ message, see }: PluginWarning): void {
-  logWarning(`${message}. ${see ? `\n${blank(13)}See ${see}.` : ''}`);
+  const indent = '    Warning: '.length;
+  logWarning(message.concat(see ? `\n${blank(indent)}See ${see}.` : ''));
 }

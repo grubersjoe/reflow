@@ -6,12 +6,15 @@ import {
   isTypeAnnotation,
   isDeclareOpaqueType,
   isInterfaceDeclaration,
+  isTypeParameterDeclaration,
 } from '@babel/types';
 
+import { PluginWarnings, WARNINGS } from '../warnings';
+import { convertInterfaceDeclaration } from '../converters/interface';
+import { convertDeclareOpaqueType, convertOpaqueType } from '../converters/opaque-type';
 import { convertTypeAlias } from '../converters/type-alias';
 import { convertTypeAnnotation } from '../converters/type-annotation';
-import { convertDeclareOpaqueType, convertOpaqueType } from '../converters/opaque-type';
-import { convertInterfaceDeclaration } from '../converters/interface';
+import { convertTypeParameterDeclaration } from '../converters/type-parameter';
 
 export const flowVisitor: VisitNodeFunction<object, Flow> = (path): void => {
   const { node } = path;
@@ -28,11 +31,16 @@ export const flowVisitor: VisitNodeFunction<object, Flow> = (path): void => {
     path.replaceWith(convertTypeAnnotation(node));
   }
 
+  if (isDeclareOpaqueType(node)) {
+    path.replaceWith(convertDeclareOpaqueType(node));
+  }
+
   if (isOpaqueType(node)) {
+    PluginWarnings.enable(WARNINGS.OpaqueType);
     path.replaceWith(convertOpaqueType(node));
   }
 
-  if (isDeclareOpaqueType(node)) {
-    path.replaceWith(convertDeclareOpaqueType(node));
+  if (isTypeParameterDeclaration(node)) {
+    path.replaceWith(convertTypeParameterDeclaration(node) || path);
   }
 };

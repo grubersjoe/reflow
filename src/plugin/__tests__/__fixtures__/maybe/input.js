@@ -25,5 +25,7 @@ type maybeStringArray = ?string[];
 
 type maybeUnion = ?(string | number);
 
-function functionMaybeNumber(p: ?number) {}
-function functionMaybeString(p: ?string) {}
+function functionMaybeParameter(p: ?number) {}
+function functionMaybeReturn(): ?string[] {
+  return undefined;
+}

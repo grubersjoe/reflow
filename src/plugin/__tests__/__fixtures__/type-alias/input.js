@@ -13,7 +13,7 @@ type AliasUndefined = typeof undefined;
 type AliasUnsealedObject = {};
 
 type AliasGenericSimple<T> = T;
-type AliasGeneric<S, T> = Map<S, T>;
+type AliasGeneric<T1, T2> = Map<T1, T2>;
 
 type AliasMaybeNumber = ?number;
 type AliasGenericMaybe<T> = ?T;
