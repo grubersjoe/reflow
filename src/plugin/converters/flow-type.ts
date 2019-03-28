@@ -7,6 +7,7 @@ import {
   tsAnyKeyword,
   tsArrayType,
   tsBooleanKeyword,
+  tsIntersectionType,
   tsLiteralType,
   tsNeverKeyword,
   tsNullKeyword,
@@ -62,8 +63,7 @@ export function convertFlowType(node: FlowType): TSType {
       return convertObjectTypeAnnotation(node.body);
 
     case 'IntersectionTypeAnnotation':
-      // TODO
-      throw new NotImplementedError(node.type);
+      return tsIntersectionType(node.types.map(convertFlowType));
 
     case 'MixedTypeAnnotation':
       return tsUnknownKeyword();

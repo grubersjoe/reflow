@@ -1,0 +1,34 @@
+
+type T1 = {
+  x: number;
+};
+
+type T2 = {
+  y: string | null | undefined;
+};
+
+type T3 = {
+  x: null;
+  z: {
+    prop: Date;
+  };
+};
+
+let IntersectionVar: T1 & T2;
+let IntersectionVarWithUnion: T1 & (T2 | T3);
+
+type IntersectionOfTypeAliases = T1 & T2;
+type IntersectionWithOverlap = T1 & T2 & T3;
+type IntersectionOfPrimitives = null & number;
+
+type IntersectionObjectLiteral = {
+  x: number;
+} & {
+  y: string;
+};
+
+function functionWithIntersectionParameter(p: T1 & {
+  x: null;
+}): number | null {
+  return p.x;
+}
