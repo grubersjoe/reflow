@@ -12,7 +12,7 @@ import {
   tsInterfaceDeclaration,
 } from '@babel/types';
 
-import { convertObjectTypeAnnotation } from './object-type-annotation';
+import { convertObjectTypeAnnotation } from './object';
 import { convertIdentifier } from './identifier';
 import {
   convertTypeParameterDeclaration,

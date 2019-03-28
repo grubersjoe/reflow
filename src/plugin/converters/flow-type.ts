@@ -27,10 +27,10 @@ import { Stats } from '../../util/stats';
 import { PluginWarnings, WARNINGS } from '../warnings';
 
 import { convertFunctionTypeAnnotation } from './function';
-import { convertGenericTypeAnnotation } from './generic-type-annotation';
-import { convertNullableTypeAnnotation } from './nullable-type-annotation';
-import { convertObjectTypeAnnotation } from './object-type-annotation';
-import { convertTypeofTypeAnnotation } from './typeof-type-annotation';
+import { convertGenericTypeAnnotation } from './type-annotation';
+import { convertNullableTypeAnnotation } from './nullable';
+import { convertObjectTypeAnnotation } from './object';
+import { convertTypeofTypeAnnotation } from './typeof';
 
 export function convertFlowType(node: FlowType, path?: NodePath<Flow>): TSType {
   Stats.typeCounter.incrementFor(node.type);

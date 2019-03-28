@@ -1,25 +1,23 @@
 import {
-  GenericTypeAnnotation,
+  Flow,
   TSTypeParameterInstantiation,
   TSTypeQuery,
   TSTypeReference,
   identifier,
+  isGenericTypeAnnotation,
   isIdentifier,
   isTSTypeQuery,
   isTSTypeReference,
+  isTypeAnnotation,
   tsTypeQuery,
   tsTypeReference,
-  Flow,
-  isTypeAnnotation,
-  isGenericTypeAnnotation,
 } from '@babel/types';
-
-import { convertTypeParameterInstantiation } from './type-parameter';
-import { convertIdentifier } from './identifier';
-import { UnexpectedError } from '../../util/error';
 import { NodePath } from '@babel/traverse';
 
-function convertClassUtility(
+import { UnexpectedError } from '../../util/error';
+import { convertIdentifier } from './identifier';
+
+export function convertClassUtility(
   typeParameters: TSTypeParameterInstantiation,
   path?: NodePath<Flow>,
 ): TSTypeQuery {
@@ -52,25 +50,8 @@ function convertClassUtility(
   throw new UnexpectedError(`Unknown type parameter for Class<T> utility: ${typeParam.type}.`);
 }
 
-export function convertGenericTypeAnnotation(
-  node: GenericTypeAnnotation,
-  path?: NodePath<Flow>,
-): TSTypeReference | TSTypeQuery {
-  const id = convertIdentifier(node.id);
-
-  const typeParameters = node.typeParameters
-    ? convertTypeParameterInstantiation(node.typeParameters)
-    : null;
-
-  if (isIdentifier(id) && typeParameters) {
-    switch (id.name) {
-      case 'Class':
-        return convertClassUtility(typeParameters, path);
-
-      case '$ReadOnlyArray':
-        return tsTypeReference(identifier('ReadonlyArray'), typeParameters);
-    }
-  }
-
-  return tsTypeReference(id, typeParameters);
+export function convertReadOnlyArray(
+  typeParameters: TSTypeParameterInstantiation,
+): TSTypeReference {
+  return tsTypeReference(identifier('ReadonlyArray'), typeParameters);
 }

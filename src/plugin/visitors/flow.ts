@@ -14,7 +14,7 @@ import { VisitorFunction } from '../types';
 import { PluginWarnings, WARNINGS } from '../warnings';
 
 import { convertInterfaceDeclaration } from '../converters/interface';
-import { convertDeclareOpaqueType, convertOpaqueType } from '../converters/opaque-type';
+import { convertDeclareOpaqueType, convertOpaqueType } from '../converters/opaque';
 import { convertTypeAlias } from '../converters/type-alias';
 import { convertTypeAnnotation } from '../converters/type-annotation';
 import { convertTypeParameterDeclaration } from '../converters/type-parameter';
