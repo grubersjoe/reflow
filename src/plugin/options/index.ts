@@ -1,10 +1,9 @@
 import { TransformOptions } from '@babel/core';
 
-import overflowPlugin, { PluginOptions } from '.';
+import overflowPlugin, { PluginOptions } from '..';
 
 /**
- * Create the Babel configuration for runner using the plugin
- * @param options Plugin options for Overflow
+ * Create the Babel configuration for runners using the plugin
  */
 export function getTransformOptions(
   options?: PluginOptions,
@@ -21,7 +20,6 @@ export function getTransformOptions(
 
 /**
  * Add Babel syntax plugins for commonly used features and technologies
- * @param parserOpts
  */
 export function setParserOptions(parserOpts: TransformOptions): void {
   const plugins = parserOpts.plugins || [];

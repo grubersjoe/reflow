@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+
 import { PluginWarning } from '../plugin/warnings';
 
 function blank(n: number): string {

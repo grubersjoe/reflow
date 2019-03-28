@@ -6,7 +6,6 @@ import {
   InterfaceTypeAnnotation,
   TSExpressionWithTypeArguments,
   TSInterfaceDeclaration,
-  TSTypeLiteral,
   TypeParameterDeclaration,
   isIdentifier,
   tsExpressionWithTypeArguments,
@@ -45,10 +44,6 @@ export function convertInterfaceDeclaration(node: InterfaceDeclaration): TSInter
       : null;
 
   return tsInterfaceDeclaration(node.id, typeParameters, _extends, body);
-}
-
-export function convertInterfaceTypeAnnotation(node: InterfaceTypeAnnotation): TSTypeLiteral {
-  return convertObjectTypeAnnotation(node.body);
 }
 
 export function convertInterfaceTypeAlias(node: TypeAliasForInterfaceType): TSInterfaceDeclaration {

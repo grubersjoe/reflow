@@ -25,7 +25,6 @@ import { PluginWarnings, WARNINGS } from '../warnings';
 
 import { convertFunctionTypeAnnotation } from './function';
 import { convertGenericTypeAnnotation } from './generic-type-annotation';
-import { convertInterfaceTypeAnnotation } from './interface';
 import { convertNullableTypeAnnotation } from './nullable-type-annotation';
 import { convertObjectTypeAnnotation } from './object-type-annotation';
 import { convertTypeofTypeAnnotation } from './typeof-type-annotation';
@@ -60,7 +59,7 @@ export function convertFlowType(node: FlowType): TSType {
       return convertGenericTypeAnnotation(node);
 
     case 'InterfaceTypeAnnotation':
-      return convertInterfaceTypeAnnotation(node);
+      return convertObjectTypeAnnotation(node.body);
 
     case 'IntersectionTypeAnnotation':
       // TODO

@@ -3,11 +3,10 @@ import program, { Command } from 'commander';
 
 import pkg from '../../package.json';
 import { logError } from '../util/log';
-import { run, RunnerArgs } from './transpiler';
+import { run, RunnerArgs } from './runner';
 
 /**
  * Validate that all arguments (all directories) are valid
- * @param args List of directories or files
  */
 function validateArgs(args: string[]): boolean {
   if (args.length === 0) {
@@ -26,7 +25,6 @@ function validateArgs(args: string[]): boolean {
 
 /**
  * Create the desired argument data structure for the Runner
- * @param program The Commander program
  */
 function collectArgs(program: Command): RunnerArgs {
   return Object.assign({}, program.opts(), { src: program.args }) as RunnerArgs;

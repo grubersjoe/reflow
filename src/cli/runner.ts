@@ -1,7 +1,7 @@
-import { transformSync } from '@babel/core';
+import { transformFileSync } from '@babel/core';
 import chalk from 'chalk';
 import glob from 'glob';
-import { readFileSync, statSync } from 'fs';
+import { statSync } from 'fs';
 import { resolve } from 'path';
 
 import { logError, logPluginWarning } from '../util/log';
@@ -41,9 +41,7 @@ function transpileFiles(args: RunnerArgs): void {
 
     fileList.forEach(filePath => {
       console.log(chalk.magenta(`Transpiling ${filePath}...`));
-
-      const src = readFileSync(filePath).toString();
-      const out = transformSync(src, babelOptions);
+      const out = transformFileSync(filePath, babelOptions);
 
       if (out === null) {
         logError(`Unable to transpile ${filePath}`);

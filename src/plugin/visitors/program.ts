@@ -1,12 +1,12 @@
 // See https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-flow-strip-types
 
 import { Comment, Program } from '@babel/types';
-import { VisitNodeFunction } from '@babel/traverse';
+import { VisitorFunction } from '../types';
 
 const FLOW_DIRECTIVE = /(@flow(\s+(strict(-local)?|weak))?|@noflow)/;
 
-export const programVisitor: VisitNodeFunction<object, Program> = (path, state): void => {
-  const comments = (state as PluginPass<Program>).file.ast.comments as Comment[];
+export const programVisitor: VisitorFunction<Program> = (path, state): void => {
+  const comments: Comment[] = state.file.ast.comments;
 
   if (comments) {
     comments.forEach(comment => {

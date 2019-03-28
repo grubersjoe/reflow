@@ -1,4 +1,3 @@
-import { VisitNodeFunction } from '@babel/traverse';
 import {
   Flow,
   isOpaqueType,
@@ -7,17 +6,23 @@ import {
   isDeclareOpaqueType,
   isInterfaceDeclaration,
   isTypeParameterDeclaration,
+  isTypeCastExpression,
 } from '@babel/types';
 
+import { NotImplementedError } from '../../util/error';
+import { VisitorFunction } from '../types';
 import { PluginWarnings, WARNINGS } from '../warnings';
+
 import { convertInterfaceDeclaration } from '../converters/interface';
 import { convertDeclareOpaqueType, convertOpaqueType } from '../converters/opaque-type';
 import { convertTypeAlias } from '../converters/type-alias';
 import { convertTypeAnnotation } from '../converters/type-annotation';
 import { convertTypeParameterDeclaration } from '../converters/type-parameter';
 
-export const flowVisitor: VisitNodeFunction<object, Flow> = (path): void => {
+export const flowVisitor: VisitorFunction<Flow> = (path): void => {
   const { node } = path;
+
+  // TODO: go through all Flow type nodes and check out which ones need to be handled!
 
   if (isInterfaceDeclaration(node)) {
     path.replaceWith(convertInterfaceDeclaration(node));
@@ -29,6 +34,10 @@ export const flowVisitor: VisitNodeFunction<object, Flow> = (path): void => {
 
   if (isTypeAnnotation(node)) {
     path.replaceWith(convertTypeAnnotation(node));
+  }
+
+  if (isTypeCastExpression(node)) {
+    throw new NotImplementedError(`TODO: ${node.type}`);
   }
 
   if (isDeclareOpaqueType(node)) {
