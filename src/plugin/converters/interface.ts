@@ -7,14 +7,13 @@ import {
   TSExpressionWithTypeArguments,
   TSInterfaceDeclaration,
   TypeParameterDeclaration,
-  isIdentifier,
   tsExpressionWithTypeArguments,
   tsInterfaceBody,
   tsInterfaceDeclaration,
 } from '@babel/types';
 
 import { convertObjectTypeAnnotation } from './object-type-annotation';
-import { convertQualifiedTypeIdentifier } from './qualified-type-identifier';
+import { convertIdentifier } from './identifier';
 import {
   convertTypeParameterDeclaration,
   convertTypeParameterInstantiation,
@@ -28,7 +27,7 @@ export interface TypeAliasForInterfaceType extends BaseNode {
 }
 
 export function convertInterfaceExtends(node: InterfaceExtends): TSExpressionWithTypeArguments {
-  const id = isIdentifier(node.id) ? node.id : convertQualifiedTypeIdentifier(node.id);
+  const id = convertIdentifier(node.id);
   const typeParameters = convertTypeParameterInstantiation(node.typeParameters);
 
   return tsExpressionWithTypeArguments(id, typeParameters);

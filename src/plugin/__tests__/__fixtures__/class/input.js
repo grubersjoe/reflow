@@ -14,6 +14,7 @@ class C1 {
 }
 
 type ClassTypeAlias = Class<C1>;
+type ClassTypeAliasFromInstance = Class<typeof c1>;
 type InstanceTypeAlias = C1;
 
 const c1: C1 = new C1('string');
@@ -37,4 +38,4 @@ class ClassWithGenerics<T1, T2> {
   m(p: T2) {}
 }
 
-const generics = new ClassWithGenerics<string, Date>('string', new Date());
+const classWithGenericsInstance = new ClassWithGenerics<string, Date>('string', new Date());

@@ -50,5 +50,5 @@ export function convertTypeParameterInstantiation(
     return null;
   }
 
-  return tsTypeParameterInstantiation(node.params.map(convertFlowType));
+  return tsTypeParameterInstantiation(node.params.map(param => convertFlowType(param)));
 }

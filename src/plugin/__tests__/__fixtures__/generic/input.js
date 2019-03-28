@@ -22,6 +22,8 @@ type GenericTypeAliasWithBoundAndDefault<T: number = 100> = {
   amount: T,
 };
 
+type GenericWithOtherTypes = Map<?Set<typeof C1>, Array<Date>>;
+
 type GenericCovariant<+T1, T2> = T1;
 type GenericContravariant<T1, -T2> = T1;
 type GenericVarianceMixed<T1, -T2, +T3, +T4> = T1;

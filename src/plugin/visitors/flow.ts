@@ -1,12 +1,12 @@
 import {
   Flow,
+  isDeclareOpaqueType,
+  isInterfaceDeclaration,
   isOpaqueType,
   isTypeAlias,
   isTypeAnnotation,
-  isDeclareOpaqueType,
-  isInterfaceDeclaration,
-  isTypeParameterDeclaration,
   isTypeCastExpression,
+  isTypeParameterDeclaration,
 } from '@babel/types';
 
 import { NotImplementedError } from '../../util/error';
@@ -22,14 +22,14 @@ import { convertTypeParameterDeclaration } from '../converters/type-parameter';
 export const flowVisitor: VisitorFunction<Flow> = (path): void => {
   const { node } = path;
 
-  // TODO: go through all Flow type nodes and check out which ones need to be handled!
+  // TODO: Go through all Flow type nodes and check out which ones need to be handled!
 
   if (isInterfaceDeclaration(node)) {
     path.replaceWith(convertInterfaceDeclaration(node));
   }
 
   if (isTypeAlias(node)) {
-    path.replaceWith(convertTypeAlias(node));
+    path.replaceWith(convertTypeAlias(node, path));
   }
 
   if (isTypeAnnotation(node)) {

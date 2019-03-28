@@ -9,7 +9,7 @@ import {
 } from '@babel/types';
 
 import { UnexpectedError } from '../../util/error';
-import { convertQualifiedTypeIdentifier } from './qualified-type-identifier';
+import { convertIdentifier } from './identifier';
 
 export function convertTypeofTypeAnnotation(
   node: TypeofTypeAnnotation,
@@ -17,17 +17,13 @@ export function convertTypeofTypeAnnotation(
   const { argument } = node;
 
   if (isGenericTypeAnnotation(argument)) {
-    const { id } = argument;
+    const id = convertIdentifier(argument.id);
 
-    if (isIdentifier(id)) {
-      if (id.name === 'undefined') {
-        return tsUndefinedKeyword();
-      } else {
-        return tsTypeQuery(id);
-      }
-    } else {
-      return tsTypeQuery(convertQualifiedTypeIdentifier(id));
+    if (isIdentifier(id) && id.name === 'undefined') {
+      return tsUndefinedKeyword();
     }
+
+    return tsTypeQuery(id);
   }
 
   throw new UnexpectedError('TypeofTypeAnnoatation with unexpected argument');
