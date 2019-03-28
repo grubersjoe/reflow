@@ -9,7 +9,6 @@ import {
   isTypeParameterDeclaration,
 } from '@babel/types';
 
-import { NotImplementedError } from '../../util/error';
 import { VisitorFunction } from '../types';
 import { PluginWarnings, WARNINGS } from '../warnings';
 
@@ -17,6 +16,7 @@ import { convertInterfaceDeclaration } from '../converters/interface';
 import { convertDeclareOpaqueType, convertOpaqueType } from '../converters/opaque';
 import { convertTypeAlias } from '../converters/type-alias';
 import { convertTypeAnnotation } from '../converters/type-annotation';
+import { convertTypeCastExpression } from '../converters/type-cast';
 import { convertTypeParameterDeclaration } from '../converters/type-parameter';
 
 export const flowVisitor: VisitorFunction<Flow> = (path): void => {
@@ -37,7 +37,7 @@ export const flowVisitor: VisitorFunction<Flow> = (path): void => {
   }
 
   if (isTypeCastExpression(node)) {
-    throw new NotImplementedError(`TODO: ${node.type}`);
+    path.replaceWith(convertTypeCastExpression(node));
   }
 
   if (isDeclareOpaqueType(node)) {
