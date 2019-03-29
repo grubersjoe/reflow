@@ -33,7 +33,7 @@ export function convertClassUtility(
   // type ClassType = Class<typeof c> -> type ClassType = typeof C;
   if (isTSTypeQuery(typeParam) && isIdentifier(typeParam.exprName)) {
     if (!path) {
-      throw new UnexpectedError('Expected parameter path not present');
+      throw new UnexpectedError('Expected argument typeof NodePath<Flow> not given.');
     }
 
     const binding = path.scope.getBinding(typeParam.exprName.name);

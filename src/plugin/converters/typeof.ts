@@ -14,10 +14,8 @@ import { convertIdentifier } from './identifier';
 export function convertTypeofTypeAnnotation(
   node: TypeofTypeAnnotation,
 ): TSTypeQuery | TSUndefinedKeyword {
-  const { argument } = node;
-
-  if (isGenericTypeAnnotation(argument)) {
-    const id = convertIdentifier(argument.id);
+  if (isGenericTypeAnnotation(node.argument)) {
+    const id = convertIdentifier(node.argument.id);
 
     if (isIdentifier(id) && id.name === 'undefined') {
       return tsUndefinedKeyword();
@@ -26,5 +24,5 @@ export function convertTypeofTypeAnnotation(
     return tsTypeQuery(id);
   }
 
-  throw new UnexpectedError('TypeofTypeAnnoatation with unexpected argument');
+  throw new UnexpectedError('TypeofTypeAnnotation with unexpected argument.');
 }
