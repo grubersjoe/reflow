@@ -7,6 +7,7 @@ let typeofStringVar: typeof stringVar;
 let typeofStringLiteralVar: typeof stringLiteralVar;
 
 type TypeofAlias = typeof stringVar;
+type TypeofAliasUndefined = undefined;
 
 const obj = {
   p1: 'string',

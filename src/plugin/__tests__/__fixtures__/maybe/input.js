@@ -1,29 +1,29 @@
 // @flow
-type maybeAny = ?any;
-type maybeAnyArray = ?any[];
+type MaybeAny = ?any;
+type MaybeAnyArray = ?any[];
 
-type maybeBoolean = ?boolean;
-type maybeBooleanArray = ?boolean[];
+type MaybeBoolean = ?boolean;
+type MaybeBooleanArray = ?boolean[];
 
-type maybeMixed = ?mixed;
-type maybeMixedArray = ?mixed[];
+type MaybeMixed = ?mixed;
+type MaybeMixedArray = ?mixed[];
 
-type maybeNumber = ?number;
-type maybeNumberArray = ?number[];
+type MaybeNumber = ?number;
+type MaybeNumberArray = ?number[];
 
-type maybeNull = ?null;
-type maybeNullArray = ?null[];
+type MaybeNull = ?null;
+type MaybeNullArray = ?null[];
 
-type maybeObject = ?{};
-type maybeObjectArray = ?{}[];
-type maybeObjectWithProps = ?{
+type MaybeObject = ?{};
+type MaybeObjectArray = ?{}[];
+type MaybeObjectWithProps = ?{
   key: number,
 };
 
-type maybeString = ?string;
-type maybeStringArray = ?string[];
+type MaybeString = ?string;
+type MaybeStringArray = ?string[];
 
-type maybeUnion = ?(string | number);
+type MaybeUnion = ?(string | number);
 
 function functionMaybeParameter(p: ?number) {}
 function functionMaybeReturn(): ?string[] {

@@ -1,29 +1,29 @@
 
-type maybeAny = any | null | undefined;
-type maybeAnyArray = any[] | null | undefined;
+type MaybeAny = any | null | undefined;
+type MaybeAnyArray = any[] | null | undefined;
 
-type maybeBoolean = boolean | null | undefined;
-type maybeBooleanArray = boolean[] | null | undefined;
+type MaybeBoolean = boolean | null | undefined;
+type MaybeBooleanArray = boolean[] | null | undefined;
 
-type maybeMixed = unknown | null | undefined;
-type maybeMixedArray = unknown[] | null | undefined;
+type MaybeMixed = unknown | null | undefined;
+type MaybeMixedArray = unknown[] | null | undefined;
 
-type maybeNumber = number | null | undefined;
-type maybeNumberArray = number[] | null | undefined;
+type MaybeNumber = number | null | undefined;
+type MaybeNumberArray = number[] | null | undefined;
 
-type maybeNull = null | undefined;
-type maybeNullArray = null[] | null | undefined;
+type MaybeNull = null | undefined;
+type MaybeNullArray = null[] | null | undefined;
 
-type maybeObject = {} | null | undefined;
-type maybeObjectArray = {}[] | null | undefined;
-type maybeObjectWithProps = {
+type MaybeObject = {} | null | undefined;
+type MaybeObjectArray = {}[] | null | undefined;
+type MaybeObjectWithProps = {
   key: number;
 } | null | undefined;
 
-type maybeString = string | null | undefined;
-type maybeStringArray = string[] | null | undefined;
+type MaybeString = string | null | undefined;
+type MaybeStringArray = string[] | null | undefined;
 
-type maybeUnion = (string | number) | null | undefined;
+type MaybeUnion = (string | number) | null | undefined;
 
 function functionMaybeParameter(p: number | null | undefined) {}
 function functionMaybeReturn(): string[] | null | undefined {

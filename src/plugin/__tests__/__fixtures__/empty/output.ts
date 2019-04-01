@@ -1,4 +1,6 @@
 
+type EmptyAlias = never;
+
 function emptyFunction(): never {
   throw new Error();
 }
