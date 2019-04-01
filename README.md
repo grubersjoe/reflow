@@ -1,16 +1,56 @@
 # Overflow
 
-Babel Plugin to transform Flow typed JavaScript to TypeScript (*WIP*).
+Babel Plugin to transform Flow typed JavaScript to TypeScript.
 
-## TODO
+## Transformations
 
-### Same syntax
+### Base types
 
-| Type        | Flow               | TypeScript |
-|-------------|--------------------|------------|
-| Null        | `null`             | `null` |
-| Undefined   | `typeof undefined` | `undefined` |
-| Void        | `void`             | `void` |
+The examples have been chosen to give an overview and show some of the syntax differences. Many of the basic type annotations do not require any syntax transformation.
+
+| Status | Type                  | Flow                           | TypeScript | Notes |
+|--------|-----------------------|--------------------------------|------------|-------|
+| Done   | Any type | `any` | `any` |  |
+| Done   | Array type | `Array<number>`, `number[]` | `number[]` |  |
+| Done   | Boolean literal type | `type BoolLiteral = true` | `type BoolLiteral = true` |  |
+| Done   | Boolean type | `type Boolean = boolean ` | `type Boolean = boolean` |  |
+| Done   | Empty type | `type Empty = empty` | `type Empty = never` | *undocumented* |
+| Done   | Exact object type | `type ExactObject = {\| p: number \|}` | `type ExactObject = { p: number }` | TS default behaviour |
+| Done   | Function type | `type Function = (string) => number` | `type Function = (p1: string) => number` |  |
+| Done   | Generic type | `type Generic<T: Animal> = T;` | `type Generic<T extends Animal> = T;` |  |
+| Done   | Interface type | `interface { +p: number }` | `interface { readonly p: number }` |  |
+| Done   | Intersection type | `type Intersection = T1 & T2` | `type Intersection = T1 & T2` |  |
+| Done   | Mixed type | `type Mixed = mixed` | `type Mixed = unknown` |  |
+| Done   | Null literal type | `type Null = null` | `type Null = null` |  |
+| Done   | Nullable type (Maybe) | `type Maybe = ?number` | `type Maybe = number \| null \| undefined` |  |
+| Done   | Number literal type | `type NumberLiteral = 3` | `type NumberLiteral = 3` |  |
+| Done   | Number type | `type Number = number` | `type Number = number` |  |
+| Done   | Object type | `type Object = { [string]: number }` | `type Object = { [key: string]: number }` |  |
+| Done   | Opaque type | `opaque type Opaque = number` | `type Opaque = number` | Unsupported in TS |
+| Done   | String literal type | `type StringLiteral = 'string'` | `type StringLiteral = 'string'` |  |
+| Done   | String type | `type String = string` | `type String = string` |  |
+| Done   | This type | `type This = this` | `type This = this` |  |
+| Done   | Tuple type | `type Tuple = [Date, number]` | `type Tuple = [Date, number]` |  |
+| Done   | Typeof type | `type Typeof = typeof undefined` | `type Typeof = undefined` |  |
+| Done   | Union type | `type Union = number \| null` | `type Union = number \| null` |  |
+| Done   | Void type | `type Void = void` | `type Void = void` |  |
+
+### Utility types
+
+| Status | Type                  | Flow                           | TypeScript | Notes |
+|--------|-----------------------|--------------------------------|------------|-------
+| Done   | ExistsTypeAnnotation (Existential) | `*` | `any` | Unsupported in TS |
+
+### Language constructs
+
+| Status | Construct             | Flow                           | TypeScript | Notes |
+|--------|-----------------------|--------------------------------|------------|-------
+| Done   | Casting | `(t: T)` | `(t as T)` | Unsupported in TS |
+| Done   | Exports / Imports | TODO | TODO | ja |
+
+<br>
+<br>
+<br>
 
 ### Different syntax
 
@@ -44,6 +84,7 @@ Babel Plugin to transform Flow typed JavaScript to TypeScript (*WIP*).
 | Return type    | `$Call<F>`            | `ReturnType` |
 | Subtype        | `$Subtype<A>`         | `B extends A` |
 | Values         | `$Values<A>`          | `A[keyof A]` |
+<!-- | Exports        | `$Exports<A>`         | TODO | -->
 
 ### Not supported in TypeScript
 | Type             | Flow                | TypeScript   | Notes |
