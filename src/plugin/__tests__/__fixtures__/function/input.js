@@ -1,5 +1,5 @@
 // @flow
-type FunctionEmpty = () => void;
+type FunctionVoid = () => void;
 type FunctionSimple = (p1: number[], p2: boolean) => number;
 type FunctionMaybeParam = (p1: number, p2?: boolean) => number;
 type FunctionWithOptionalParams = (p1: string, p2?: {}, p3?: boolean) => void;
@@ -25,7 +25,6 @@ function functionWithOptionalParamAndInitializer(p1: string, p2?: number, p3?: b
 async function functionAsync(): Promise<number> {
   return 42;
 }
-
 
 const arrowFunctionEmpty = () => {};
 const arrowFunctionWithParams = (p1: {}, p2: boolean) => {};

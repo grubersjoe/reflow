@@ -38,4 +38,7 @@ class ClassWithGenerics<T1, T2> {
   m(p: T2) {}
 }
 
+class Component<T1, T2> {}
+class ClassWithGenericExactObject extends Component<{||}, ?Date> {}
+
 const classWithGenericsInstance = new ClassWithGenerics<string, Date>('string', new Date());

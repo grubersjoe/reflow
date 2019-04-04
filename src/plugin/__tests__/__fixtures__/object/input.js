@@ -1,11 +1,12 @@
 // @flow
+type EmptyObject = {};
+type EmptyExactObject = {||};
+
 type SealedObject = {
   p1: "string",
   p2: 1,
   p3: null,
 };
-
-type UnsealedObject = {};
 
 type ObjectSimple = {
   p4: string,
@@ -43,6 +44,13 @@ type ObjectWithStringLiteralKey = {
   "p19": number,
   p20: null,
   "p 21": boolean,
+};
+
+export type ComplexObject = {
+  buttonIcon: ?string,
+  +messageId: string,
+  +placeholder: Object,
+  +callback: null | (() => void),
 };
 
 type ObjectWithSpread = {

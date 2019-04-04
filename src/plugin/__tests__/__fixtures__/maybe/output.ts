@@ -23,6 +23,12 @@ type MaybeObjectWithProps = {
 type MaybeString = string | null | undefined;
 type MaybeStringArray = string[] | null | undefined;
 
+type MaybeVoid = void | null | undefined;
+type MaybeVoidArray = void[] | null | undefined;
+
+type MaybeFunction = (() => number) | null | undefined;
+type MaybeFunctionWitParens = (() => number) | null | undefined;
+type MaybeGenericArray = Array<number | null | undefined>;
 type MaybeUnion = (string | number) | null | undefined;
 
 function functionMaybeParameter(p: number | null | undefined) {}

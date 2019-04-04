@@ -8,7 +8,6 @@ import {
   tsAnyKeyword,
   tsArrayType,
   tsBooleanKeyword,
-  tsIntersectionType,
   tsLiteralType,
   tsNeverKeyword,
   tsNullKeyword,
@@ -16,7 +15,6 @@ import {
   tsStringKeyword,
   tsThisType,
   tsTupleType,
-  tsUnionType,
   tsUnknownKeyword,
   tsVoidKeyword,
 } from '@babel/types';
@@ -27,10 +25,12 @@ import { Stats } from '../../util/stats';
 import { PluginWarnings, WARNINGS } from '../warnings';
 
 import { convertFunctionTypeAnnotation } from './function';
-import { convertGenericTypeAnnotation } from './type-annotation';
+import { convertIntersectionTypeAnnotation } from './intersection';
 import { convertNullableTypeAnnotation } from './nullable';
 import { convertObjectTypeAnnotation } from './object';
+import { convertGenericTypeAnnotation } from './type-annotation';
 import { convertTypeofTypeAnnotation } from './typeof';
+import { convertUnionTypeAnnotation } from './union';
 
 export function convertFlowType(node: FlowType, path?: NodePath<Flow>): TSType {
   Stats.typeCounter.incrementFor(node.type);
@@ -65,7 +65,7 @@ export function convertFlowType(node: FlowType, path?: NodePath<Flow>): TSType {
       return convertObjectTypeAnnotation(node.body);
 
     case 'IntersectionTypeAnnotation':
-      return tsIntersectionType(node.types.map(type => convertFlowType(type)));
+      return convertIntersectionTypeAnnotation(node);
 
     case 'MixedTypeAnnotation':
       return tsUnknownKeyword();
@@ -101,7 +101,7 @@ export function convertFlowType(node: FlowType, path?: NodePath<Flow>): TSType {
       return convertTypeofTypeAnnotation(node);
 
     case 'UnionTypeAnnotation':
-      return tsUnionType(node.types.map(type => convertFlowType(type)));
+      return convertUnionTypeAnnotation(node);
 
     case 'VoidTypeAnnotation':
       return tsVoidKeyword();

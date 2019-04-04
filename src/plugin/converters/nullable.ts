@@ -5,16 +5,21 @@ import {
   tsNullKeyword,
   tsUndefinedKeyword,
   tsUnionType,
+  isTSFunctionType,
+  tsParenthesizedType,
 } from '@babel/types';
 import { convertFlowType } from './flow-type';
 
-import { insertIf } from '../../util/array';
-
 export function convertNullableTypeAnnotation(node: NullableTypeAnnotation): TSUnionType {
-  const type = convertFlowType(node.typeAnnotation);
+  const tsType = convertFlowType(node.typeAnnotation);
 
   return tsUnionType([
-    ...insertIf(!isTSNullKeyword(type), type),
+    // "?null" -> "null | undefined" not "null | null | undefined"
+    // Also function types need to be wrapped in parentheses in unions
+    ...(isTSNullKeyword(tsType)
+      ? []
+      : [isTSFunctionType(tsType) ? tsParenthesizedType(tsType) : tsType]),
+
     tsNullKeyword(),
     tsUndefinedKeyword(),
   ]);

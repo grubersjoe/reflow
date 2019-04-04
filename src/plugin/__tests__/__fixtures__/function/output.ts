@@ -1,5 +1,5 @@
 
-type FunctionEmpty = () => void;
+type FunctionVoid = () => void;
 type FunctionSimple = (p1: number[], p2: boolean) => number;
 type FunctionMaybeParam = (p1: number, p2?: boolean) => number;
 type FunctionWithOptionalParams = (p1: string, p2?: {}, p3?: boolean) => void;

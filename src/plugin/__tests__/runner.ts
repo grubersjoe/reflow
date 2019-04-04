@@ -54,6 +54,8 @@ export function runFixtureTests(
               const padLength = Math.min(String(expectedLines.length).length, 2);
               const testNumber = String(i + 1).padStart(padLength, '0');
 
+              // console.warn(chalk.yellow(`### ${inputFile} - ${testName}:${testNumber} │ ${line}`));
+
               test(`${testName}:${testNumber} │ ${line}`, () => {
                 expect(line).toEqual(expectedLines[i]);
               });

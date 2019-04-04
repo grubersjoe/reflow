@@ -135,11 +135,11 @@ function convertObjectTypeIndexer(props: Signature[], indexer: ObjectTypeIndexer
 
 export function convertObjectTypeAnnotation(node: ObjectTypeAnnotation): TSTypeLiteral {
   const { indexers, properties } = node;
-  let props: Signature[] = [];
+  let signatures: Signature[] = [];
 
   properties.forEach(prop => {
     if (isObjectTypeProperty(prop)) {
-      props.push(createPropertySignature(prop));
+      signatures.push(createPropertySignature(prop));
     }
   });
 
@@ -147,15 +147,15 @@ export function convertObjectTypeAnnotation(node: ObjectTypeAnnotation): TSTypeL
   // and can be accessed when merging spread properties with them.
   properties.forEach(prop => {
     if (isObjectTypeSpreadProperty(prop)) {
-      props = convertObjectTypeSpreadProperty(node, props, prop);
+      signatures = convertObjectTypeSpreadProperty(node, signatures, prop);
     }
   });
 
   if (indexers) {
     indexers.forEach(indexer => {
-      props = convertObjectTypeIndexer(props, indexer);
+      signatures = convertObjectTypeIndexer(signatures, indexer);
     });
   }
 
-  return tsTypeLiteral(props);
+  return tsTypeLiteral(signatures);
 }

@@ -1,7 +1,7 @@
 import { transformFileSync } from '@babel/core';
 import chalk from 'chalk';
 import glob from 'glob';
-import { statSync } from 'fs';
+import { statSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 
 import { logError, logPluginWarning } from '../util/log';
@@ -45,6 +45,17 @@ function transpileFiles(args: RunnerArgs): void {
 
       if (out === null) {
         logError(`Unable to transpile ${filePath}`);
+      } else {
+        // FIXME: do this correctly
+        const tsFilePath = filePath.replace('.js', '.tsx');
+
+        try {
+          writeFileSync(tsFilePath, out.code);
+          console.log(chalk.magenta(`Transpiling ${filePath}...`));
+          // unlinkSync(filePath);
+        } catch (error) {
+          logError('Wuat');
+        }
       }
     });
 
