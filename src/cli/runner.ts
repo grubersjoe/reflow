@@ -1,4 +1,5 @@
 import { transformFileSync } from '@babel/core';
+import generate from '@babel/generator';
 import chalk from 'chalk';
 import glob from 'glob';
 import { statSync, writeFileSync } from 'fs';
@@ -30,7 +31,13 @@ function getGlobOptions(options: object): object {
 function transpileFiles(args: RunnerArgs): void {
   const { globPattern, src, verbose } = args;
 
-  const babelOptions = getTransformOptions({ verbose });
+  const babelOptions = getTransformOptions(
+    { verbose },
+    {
+      retainLines: true,
+      comments: false,
+    },
+  );
 
   src.forEach(src => {
     const isDir = statSync(src).isDirectory();
@@ -40,7 +47,6 @@ function transpileFiles(args: RunnerArgs): void {
     const fileList = isDir ? glob.sync(globPattern, globOptions) : [resolve(src)];
 
     fileList.forEach(filePath => {
-      console.log(chalk.magenta(`Transpiling ${filePath}...`));
       const out = transformFileSync(filePath, babelOptions);
 
       if (out === null) {
@@ -50,6 +56,12 @@ function transpileFiles(args: RunnerArgs): void {
         const tsFilePath = filePath.replace('.js', '.tsx');
 
         try {
+          console.log(out);
+          console.log(out.code);
+          if (out.ast) {
+            console.log('----');
+            console.log(generate(out.ast).code);
+          }
           writeFileSync(tsFilePath, out.code);
           console.log(chalk.magenta(`Transpiling ${filePath}...`));
           // unlinkSync(filePath);

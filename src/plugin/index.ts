@@ -1,4 +1,4 @@
-import { PluginObj, TransformOptions } from '@babel/core';
+import { ParserOptions, PluginObj, TransformOptions } from '@babel/core';
 import {
   ClassDeclaration,
   Flow,
@@ -42,7 +42,7 @@ function buildPlugin(): PluginObj<PluginPass<VisitorNodes>> {
       ImportSpecifier: importSpecifierVisitor,
       Program: programVisitor,
     },
-    manipulateOptions(opts: TransformOptions, parserOpts: TransformOptions) {
+    manipulateOptions(opts: TransformOptions, parserOpts: ParserOptions) {
       setParserOptions(parserOpts);
     },
   };
