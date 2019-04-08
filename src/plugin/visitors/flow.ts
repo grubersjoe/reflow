@@ -10,7 +10,7 @@ import {
 } from '@babel/types';
 
 import { VisitorFunction } from '../types';
-import { PluginWarnings, WARNINGS } from '../warnings';
+import { PluginWarnings, WARNINGS } from '../util/warning';
 
 import { convertDeclareOpaqueType, convertOpaqueType } from '../converters/opaque';
 import { convertTypeAlias } from '../converters/type-alias';

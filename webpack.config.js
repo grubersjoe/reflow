@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = (env, argv) => {
   const mode = argv.mode || 'development';
@@ -25,9 +26,16 @@ module.exports = (env, argv) => {
       filename: 'overflow.js',
       path: path.resolve(__dirname, 'build')
     },
+    plugins: [
+      new webpack.BannerPlugin({
+        banner: "#!/usr/bin/env node",
+        entryOnly: true,
+        raw: true,
+      })
+    ],
     resolve: {
       extensions: ['.tsx', '.ts', '.js']
     },
     target: 'node',
-  }
+  };
 };

@@ -2,17 +2,12 @@ import { TransformOptions, transformFileSync } from '@babel/core';
 import chalk from 'chalk';
 import startCase from 'lodash/startCase';
 import { existsSync, readdirSync, readFileSync, statSync } from 'fs';
-import { cwd } from 'process';
-import { relative, resolve } from 'path';
 
-import { splitFixtureLines } from '../../util/string';
+import { relativePath, splitFixtureLines } from '../util/file';
+import { formatOutputCode } from '../util/format';
 
 const FIXTURE_INPUT_FILENAME = 'input.js';
 const FIXTURE_OUTPUT_FILENAME = 'output.ts';
-
-function relPath(...pathSegments: string[]): string {
-  return relative(cwd(), resolve(...pathSegments));
-}
 
 export function runFixtureTests(
   rootDir: string,
@@ -26,7 +21,7 @@ export function runFixtureTests(
   }
 
   files.forEach(testDir => {
-    const dir = relPath(rootDir, testDir);
+    const dir = relativePath(rootDir, testDir);
 
     if (statSync(dir).isDirectory()) {
       const testName = parentDirs
@@ -34,8 +29,8 @@ export function runFixtureTests(
         .map(startCase)
         .join('/');
 
-      const inputFile = relPath(dir, FIXTURE_INPUT_FILENAME);
-      const outputFile = relPath(dir, FIXTURE_OUTPUT_FILENAME);
+      const inputFile = relativePath(dir, FIXTURE_INPUT_FILENAME);
+      const outputFile = relativePath(dir, FIXTURE_OUTPUT_FILENAME);
 
       const inputFileExists = existsSync(inputFile);
       const outputFileExists = existsSync(outputFile);
@@ -50,13 +45,16 @@ export function runFixtureTests(
           }
 
           if (babelOutput.code) {
+            // Tests concerning the formatting should be ... formatted
+            if (testName.includes('formatting')) {
+              babelOutput.code = formatOutputCode(babelOutput.code, inputFile);
+            }
+
             splitFixtureLines(babelOutput.code).forEach((line, i) => {
               const padLength = Math.min(String(expectedLines.length).length, 2);
               const testNumber = String(i + 1).padStart(padLength, '0');
 
-              // console.warn(chalk.yellow(`### ${inputFile} - ${testName}:${testNumber} │ ${line}`));
-
-              test(`${testName}:${testNumber} │ ${line}`, () => {
+              test(`${testName}:${testNumber} │ ${line} === ${expectedLines[i]}`, () => {
                 expect(line).toEqual(expectedLines[i]);
               });
             });

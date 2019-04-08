@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-import { PluginWarning } from '../plugin/warnings';
+import { PluginWarning } from '../plugin/util/warning';
 
 function blank(n: number): string {
   return ' '.repeat(n);

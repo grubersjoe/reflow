@@ -1,2 +1,3 @@
 src/**/__coverage__/**/*
 src/**/__fixtures__/**/*
+**/*.mock.js

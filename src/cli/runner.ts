@@ -1,14 +1,14 @@
 import { transformFileSync } from '@babel/core';
-import generate from '@babel/generator';
 import chalk from 'chalk';
 import glob from 'glob';
 import { statSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 
 import { logError, logPluginWarning } from '../util/log';
-import { Stats, sortNumberMap } from '../util/stats';
+import { Stats, sortNumberMap } from '../plugin/util/stat';
+import { PluginWarnings } from '../plugin/util/warning';
 import { getTransformOptions } from '../plugin/options';
-import { PluginWarnings } from '../plugin/warnings';
+import { formatOutputCode } from '../plugin/util/format';
 
 export interface RunnerArgs {
   dryRun?: boolean;
@@ -31,13 +31,7 @@ function getGlobOptions(options: object): object {
 function transpileFiles(args: RunnerArgs): void {
   const { globPattern, src, verbose } = args;
 
-  const babelOptions = getTransformOptions(
-    { verbose },
-    {
-      retainLines: true,
-      comments: false,
-    },
-  );
+  const babelOptions = getTransformOptions({ verbose });
 
   src.forEach(src => {
     const isDir = statSync(src).isDirectory();
@@ -49,24 +43,18 @@ function transpileFiles(args: RunnerArgs): void {
     fileList.forEach(filePath => {
       const out = transformFileSync(filePath, babelOptions);
 
-      if (out === null) {
+      if (out === null || !out.code) {
         logError(`Unable to transpile ${filePath}`);
       } else {
         // FIXME: do this correctly
         const tsFilePath = filePath.replace('.js', '.tsx');
 
         try {
-          console.log(out);
-          console.log(out.code);
-          if (out.ast) {
-            console.log('----');
-            console.log(generate(out.ast).code);
-          }
-          writeFileSync(tsFilePath, out.code);
+          writeFileSync(tsFilePath, formatOutputCode(out.code, filePath));
           console.log(chalk.magenta(`Transpiling ${filePath}...`));
           // unlinkSync(filePath);
         } catch (error) {
-          logError('Wuat');
+          throw error;
         }
       }
     });

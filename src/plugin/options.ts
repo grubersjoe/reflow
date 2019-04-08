@@ -1,6 +1,6 @@
 import { TransformOptions, ParserOptions } from '@babel/core';
 
-import overflowPlugin, { PluginOptions } from '..';
+import overflowPlugin, { PluginOptions } from '.';
 
 /**
  * Create the Babel configuration for runners using the plugin
@@ -9,7 +9,7 @@ export function getTransformOptions(
   pluginOptions?: PluginOptions,
   overwrites?: TransformOptions,
 ): TransformOptions {
-  const defaultOptions = {
+  const defaultOptions: TransformOptions = {
     babelrc: false,
     configFile: false,
     plugins: [[overflowPlugin, pluginOptions]],
@@ -24,18 +24,13 @@ export function getTransformOptions(
 export function setParserOptions(parserOpts: ParserOptions): void {
   const plugins = parserOpts.plugins || [];
 
-  plugins.push('classProperties');
+  plugins.push('classProperties', 'dynamicImport', 'flow', 'jsx');
   plugins.push([
     'decorators',
     {
       decoratorsBeforeExport: true,
     },
   ]);
-  plugins.push('dynamicImport');
-  plugins.push('flow');
-  plugins.push('jsx');
 
   parserOpts.plugins = plugins;
-
-  parserOpts.startLine = 0;
 }

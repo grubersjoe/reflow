@@ -1,6 +1,6 @@
-import { splitFixtureLines } from '../string';
+import { splitFixtureLines } from '../file';
 
-test('splitLines() should ', () => {
+test('splitLines() should split fixture files into lines', () => {
   const code = `
     const foo = 3;
     // I'm a comment

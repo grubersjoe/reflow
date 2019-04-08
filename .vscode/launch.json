@@ -5,13 +5,31 @@
       "type": "node",
       "request": "launch",
       "args": [
+        "/home/jogu/git/wizard/src/services/i18n.js"
+      ],
+      "cwd": "${workspaceRoot}",
+      "env": {
+        "NODE_ENV": "development"
+      },
+      "name": "CLI",
+      "outFiles": [
+        "${workspaceFolder}/build/**/*.js",
+      ],
+      "program": "${workspaceRoot}/src/cli/index.ts",
+      "sourceMaps": true,
+      "stopOnEntry": false
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "args": [
         "src/plugin/__tests__/__fixtures__/playground/input.js"
       ],
       "cwd": "${workspaceRoot}",
       "env": {
         "NODE_ENV": "development"
       },
-      "name": "Debug",
+      "name": "Babel Plugin",
       "outFiles": [
         "${workspaceFolder}/build/**/*.js",
       ],

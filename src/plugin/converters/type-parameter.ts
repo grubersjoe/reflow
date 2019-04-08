@@ -11,7 +11,7 @@ import {
 } from '@babel/types';
 
 import { convertFlowType } from './flow-type';
-import { PluginWarnings, WARNINGS } from '../warnings';
+import { PluginWarnings, WARNINGS } from '../util/warning';
 
 export function convertTypeParameter(node: TypeParameter): TSTypeParameter {
   const typeParameter = tsTypeParameter();

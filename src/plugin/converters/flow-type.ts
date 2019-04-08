@@ -21,8 +21,8 @@ import {
 import { NodePath } from '@babel/traverse';
 
 import { NotImplementedError } from '../../util/error';
-import { Stats } from '../../util/stats';
-import { PluginWarnings, WARNINGS } from '../warnings';
+import { Stats } from '../util/stat';
+import { PluginWarnings, WARNINGS } from '../util/warning';
 
 import { convertFunctionTypeAnnotation } from './function';
 import { convertIntersectionTypeAnnotation } from './intersection';

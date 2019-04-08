@@ -16,9 +16,9 @@
     "target": "ESNext"
   },
   "exclude": [
-    "src/plugin/__tests__/__fixtures__/modules/*.ts"
+    "src/plugin/__tests__/__fixtures__/types/modules/*.ts"
   ],
   "include": [
-    "src/**/*"
+    "src/**/*.ts"
   ]
 }

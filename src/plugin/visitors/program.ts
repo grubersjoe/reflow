@@ -3,7 +3,7 @@
 import { Comment, Program } from '@babel/types';
 import { VisitorFunction } from '../types';
 
-const FLOW_DIRECTIVE = /(@flow(\s+(strict(-local)?|weak))?|@noflow)/;
+export const FLOW_DIRECTIVE = /(@flow(\s+(strict(-local)?|weak))?|@noflow)/;
 
 export const programVisitor: VisitorFunction<Program> = (path, state): void => {
   const comments: Comment[] = state.file.ast.comments;

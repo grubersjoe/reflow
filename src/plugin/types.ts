@@ -2,8 +2,6 @@ import { TransformOptions } from '@babel/core';
 import { NodePath, Scope, VisitNodeFunction } from '@babel/traverse';
 import { File } from '@babel/types';
 
-import { PluginOptions } from '.';
-
 // Missing in @types/babel__core
 export interface PluginPass<T> {
   cwd: string;
@@ -21,7 +19,7 @@ export interface PluginPass<T> {
   };
   filename?: string;
   key: string;
-  opts: PluginOptions;
+  opts: TransformOptions;
 }
 
 // Shorthand
