@@ -1,8 +1,8 @@
 import { transformFileSync } from '@babel/core';
 import chalk from 'chalk';
-import glob from 'glob';
-import { statSync, writeFileSync } from 'fs';
-import { resolve } from 'path';
+import { renameSync, statSync, writeFileSync } from 'fs';
+import glob, { IOptions as GlobOptions } from 'glob';
+import { extname, resolve } from 'path';
 
 import { logError, logPluginWarning } from '../util/log';
 import { Stats, sortNumberMap } from '../plugin/util/stat';
@@ -11,51 +11,54 @@ import { getTransformOptions } from '../plugin/options';
 import { formatOutputCode } from '../plugin/util/format';
 
 export interface RunnerArgs {
-  dryRun?: boolean;
-  globPattern: string;
-  verbose?: boolean;
-  stats?: boolean;
+  excludeDirs: string[];
+  includePattern: string;
   src: string[];
+  verbose?: boolean;
+  write?: boolean;
 }
 
-function getGlobOptions(options: object): object {
+function getGlobOptions(options: GlobOptions, excludeDirs: string[]): GlobOptions {
   const defaults = {
     absolute: true,
-    ignore: 'node_modules/**',
     strict: true,
   };
+
+  if (excludeDirs.length > 0) {
+    options.ignore = `**/*(${excludeDirs.join('|')})/**/*`;
+  }
+
+  console.log(options.ignore);
 
   return Object.assign(defaults, options);
 }
 
 function transpileFiles(args: RunnerArgs): void {
-  const { globPattern, src, verbose } = args;
+  const { excludeDirs, includePattern, src, verbose, write } = args;
 
   const babelOptions = getTransformOptions({ verbose });
 
   src.forEach(src => {
     const isDir = statSync(src).isDirectory();
-    const globOptions = getGlobOptions({ cwd: src });
+    const globOptions = getGlobOptions({ cwd: src }, excludeDirs);
 
     // Create a list of to be transpiled files
-    const fileList = isDir ? glob.sync(globPattern, globOptions) : [resolve(src)];
+    const inputFiles = isDir ? glob.sync(includePattern, globOptions) : [resolve(src)];
 
-    fileList.forEach(filePath => {
-      const out = transformFileSync(filePath, babelOptions);
+    inputFiles.forEach(inputFile => {
+      const out = transformFileSync(inputFile, babelOptions);
 
       if (out === null || !out.code) {
-        logError(`Unable to transpile ${filePath}`);
+        logError(`Unable to transpile ${inputFile}`);
       } else {
-        // FIXME: do this correctly
-        const tsFilePath = filePath.replace('.js', '.tsx');
+        const tsFile = inputFile.replace(extname(inputFile), '.tsx');
 
-        try {
-          writeFileSync(tsFilePath, formatOutputCode(out.code, filePath));
-          console.log(chalk.magenta(`Transpiling ${filePath}...`));
-          // unlinkSync(filePath);
-        } catch (error) {
-          throw error;
+        if (write) {
+          renameSync(inputFile, tsFile);
         }
+
+        writeFileSync(tsFile, formatOutputCode(out.code, tsFile));
+        console.log(chalk.magenta(`Transpiling ${inputFile}...`));
       }
     });
 

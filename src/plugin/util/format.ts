@@ -19,9 +19,10 @@ export const BLANK_LINE = /^[ \t]*$/;
  * https://prettier.io/docs/en/rationale.html#empty-lines
  *
  * Therefore, the following function tries to synchronize the blank lines of
- * two source code fragments. This means insert blank lines in given code
- * wherever the original source had them and remove superflous blank lines in
- * the output.
+ * two source code fragments. This means: insert blank lines in given code
+ * wherever the original code has them and remove superflous blank lines in the
+ * output (these are produced by Babel). This naively assumes that all code
+ * transformations will result in the same amount of lines.
  *
  * TODO: line comments are generated very strangely and need to be handled too.
  */
@@ -59,8 +60,10 @@ export function syncBlankLines(outputCode: string, originalFilePath: string): st
 }
 
 /**
- * Use Prettier to format output code
+ * Use Prettier to format output code.
  * https://prettier.io
+ *
+ * Moreover blank lines will be inserted wherever the original file has them.
  */
 export function formatOutputCode(
   code: string,
@@ -68,9 +71,7 @@ export function formatOutputCode(
   prettierOptions: PrettierOptions = defaultPrettierConfig,
 ): string {
   prettierOptions.parser = 'typescript';
-
   code = prettier.format(code, prettierOptions);
-  code = syncBlankLines(code, originalFilePath);
 
-  return code;
+  return syncBlankLines(code, originalFilePath);
 }

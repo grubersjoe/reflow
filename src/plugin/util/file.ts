@@ -7,9 +7,9 @@ export function relativePath(...pathSegments: string[]): string {
   return relative(cwd(), resolve(...pathSegments));
 }
 
-export function splitFixtureLines(code: Buffer | string): string[] {
-  const LINE_COMMENT = /^\s*\/\/.*/;
+const LINE_COMMENT = /^\s*\/\/.*/;
 
+export function splitFixtureLines(code: Buffer | string): string[] {
   return code
     .toString()
     .split(LINE_BREAK)
