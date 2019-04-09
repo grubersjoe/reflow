@@ -1,15 +1,7 @@
 import { ParserOptions, PluginObj, TransformOptions } from '@babel/core';
-import {
-  ClassDeclaration,
-  Flow,
-  FunctionDeclaration,
-  ImportDeclaration,
-  ImportSpecifier,
-  Program,
-} from '@babel/types';
 
 import { setParserOptions } from './options';
-import { PluginPass } from './types';
+import { PluginPass, VisitorNodes } from './types';
 
 import {
   classDeclarationVisitor,
@@ -17,19 +9,14 @@ import {
   importDeclarationVisitor,
   importSpecifierVisitor,
 } from './visitors/base';
+
+import { jsxVisitor } from './visitors/jsx';
 import { flowVisitor } from './visitors/flow';
 import { programVisitor } from './visitors/program';
 
 export interface PluginOptions {
   verbose?: boolean;
 }
-
-type VisitorNodes = Flow &
-  ClassDeclaration &
-  FunctionDeclaration &
-  ImportDeclaration &
-  ImportSpecifier &
-  Program;
 
 function buildPlugin(): PluginObj<PluginPass<VisitorNodes>> {
   return {
@@ -40,6 +27,7 @@ function buildPlugin(): PluginObj<PluginPass<VisitorNodes>> {
       FunctionDeclaration: functionDeclarationVisitor,
       ImportDeclaration: importDeclarationVisitor,
       ImportSpecifier: importSpecifierVisitor,
+      JSX: jsxVisitor,
       Program: programVisitor,
     },
     manipulateOptions(opts: TransformOptions, parserOpts: ParserOptions) {

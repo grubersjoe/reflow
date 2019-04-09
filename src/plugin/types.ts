@@ -1,6 +1,15 @@
 import { TransformOptions } from '@babel/core';
 import { NodePath, Scope, VisitNodeFunction } from '@babel/traverse';
-import { File } from '@babel/types';
+import {
+  File,
+  Flow,
+  ClassDeclaration,
+  FunctionDeclaration,
+  ImportDeclaration,
+  ImportSpecifier,
+  JSX,
+  Program,
+} from '@babel/types';
 
 // Missing in @types/babel__core
 export interface PluginPass<T> {
@@ -22,5 +31,12 @@ export interface PluginPass<T> {
   opts: TransformOptions;
 }
 
-// Shorthand
+export type VisitorNodes = Flow &
+  ClassDeclaration &
+  FunctionDeclaration &
+  ImportDeclaration &
+  ImportSpecifier &
+  JSX &
+  Program;
+
 export type VisitorFunction<T> = VisitNodeFunction<PluginPass<T>, T>;

@@ -5,7 +5,7 @@ import glob, { IOptions as GlobOptions } from 'glob';
 import { extname, resolve } from 'path';
 
 import { logError, logPluginWarning } from '../util/log';
-import { Stats, sortNumberMap } from '../plugin/util/stat';
+import { Metrics, sortNumberMap } from '../plugin/util/metric';
 import { PluginWarnings } from '../plugin/util/warning';
 import { getTransformOptions } from '../plugin/options';
 import { formatOutputCode } from '../plugin/util/format';
@@ -51,21 +51,22 @@ function transpileFiles(args: RunnerArgs): void {
       if (out === null || !out.code) {
         logError(`Unable to transpile ${inputFile}`);
       } else {
-        const tsFile = inputFile.replace(extname(inputFile), '.tsx');
+        const fileExt = Metrics.jsxFiles.has(inputFile) ? '.tsx' : '.ts';
+        const tsFile = inputFile.replace(extname(inputFile), fileExt);
 
         if (write) {
           renameSync(inputFile, tsFile);
         }
 
-        writeFileSync(tsFile, formatOutputCode(out.code, tsFile));
+        writeFileSync(tsFile, formatOutputCode(out.code, inputFile));
         console.log(chalk.magenta(`Transpiling ${inputFile}...`));
       }
     });
 
     PluginWarnings.getWarnings().forEach(logPluginWarning);
 
-    if (verbose && Stats.typeCounter.getCounter().size) {
-      console.log(sortNumberMap(Stats.typeCounter.getCounter()));
+    if (verbose && Metrics.typeCounter.getCounter().size) {
+      console.log(sortNumberMap(Metrics.typeCounter.getCounter()));
     }
   });
 }

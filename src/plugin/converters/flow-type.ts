@@ -21,7 +21,7 @@ import {
 import { NodePath } from '@babel/traverse';
 
 import { NotImplementedError } from '../../util/error';
-import { Stats } from '../util/stat';
+import { Metrics } from '../util/metric';
 import { PluginWarnings, WARNINGS } from '../util/warning';
 
 import { convertFunctionTypeAnnotation } from './function';
@@ -33,7 +33,7 @@ import { convertTypeofTypeAnnotation } from './typeof';
 import { convertUnionTypeAnnotation } from './union';
 
 export function convertFlowType(node: FlowType, path?: NodePath<Flow>): TSType {
-  Stats.typeCounter.incrementFor(node.type);
+  Metrics.typeCounter.incrementFor(node.type);
 
   switch (node.type) {
     case 'AnyTypeAnnotation':
