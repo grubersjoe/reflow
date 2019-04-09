@@ -32,24 +32,22 @@ function collectArgs(program: Command): RunnerArgs {
   }) as RunnerArgs;
 }
 
+const helpText = {
+  excludeDirs: 'list of recursively excluded directories',
+  includePattern: 'set the glob pattern for input files',
+  verbose: 'increase verbosity',
+  write: 'edit files in-place. A new TS file will be created alongside the original one otherwise.',
+};
+
 // Define the CLI interface
 program
   .version(pkg.version)
   .description('Overflow')
   .usage('[OPTION]... <FILES OR DIRECTORIES ...>')
-  .option('-e, --exclude-dirs <dirs ...>', 'list of recursively excluded directories', toArray, [
-    'node_modules',
-  ])
-  .option(
-    '-i, --include-pattern <pattern>',
-    'set the glob pattern for input files',
-    '**/*.{js,jsx}',
-  )
-  .option('-v, --verbose', 'increase verbosity')
-  .option(
-    '-w, --write',
-    'edit files in-place (beware!). A new TS file will be created alongside the original one otherwise.',
-  );
+  .option('-e, --exclude-dirs <dirs ...>', helpText.excludeDirs, toArray, ['node_modules'])
+  .option('-i, --include-pattern <pattern>', helpText.includePattern, '**/*.{js,jsx}')
+  .option('-v, --verbose', helpText.verbose)
+  .option('-w, --write', helpText.write);
 
 program.on('--help', () => {
   console.log('\nExamples:');
