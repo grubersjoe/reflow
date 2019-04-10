@@ -1,21 +1,22 @@
 import { transformFileSync } from '@babel/core';
 import chalk from 'chalk';
-import { renameSync, statSync, writeFileSync } from 'fs';
+import { renameSync, statSync, writeFileSync, readFileSync } from 'fs';
 import glob, { IOptions as GlobOptions } from 'glob';
 import { extname, resolve } from 'path';
 
-import { logError, logPluginWarning } from '../util/log';
+import { logError, logPluginWarning, printRuler } from '../util/log';
 import { Metrics, sortNumberMap } from '../plugin/util/metric';
 import { PluginWarnings } from '../plugin/util/warning';
 import { getTransformOptions } from '../plugin/options';
-import { formatOutputCode } from '../plugin/util/format';
+import { postProcessOutputCode } from '../plugin/util/format';
 
 export interface RunnerArgs {
+  dryRun?: boolean;
   excludeDirs: string[];
   includePattern: string;
   src: string[];
+  replace?: boolean;
   verbose?: boolean;
-  write?: boolean;
 }
 
 function getGlobOptions(options: GlobOptions, excludeDirs: string[]): GlobOptions {
@@ -28,13 +29,11 @@ function getGlobOptions(options: GlobOptions, excludeDirs: string[]): GlobOption
     options.ignore = `**/*(${excludeDirs.join('|')})/**/*`;
   }
 
-  console.log(options.ignore);
-
   return Object.assign(defaults, options);
 }
 
 function transpileFiles(args: RunnerArgs): void {
-  const { excludeDirs, includePattern, src, verbose, write } = args;
+  const { dryRun, excludeDirs, includePattern, src, replace, verbose } = args;
 
   const babelOptions = getTransformOptions({ verbose });
 
@@ -54,12 +53,21 @@ function transpileFiles(args: RunnerArgs): void {
         const fileExt = Metrics.jsxFiles.has(inputFile) ? '.tsx' : '.ts';
         const tsFile = inputFile.replace(extname(inputFile), fileExt);
 
-        if (write) {
-          renameSync(inputFile, tsFile);
-        }
+        const formattedOutput = postProcessOutputCode(out.code, readFileSync(inputFile));
 
-        writeFileSync(tsFile, formatOutputCode(out.code, inputFile));
-        console.log(chalk.magenta(`Transpiling ${inputFile}...`));
+        if (dryRun) {
+          console.log(chalk.blue(`[DRY RUN] Transpiling ${inputFile}...`));
+          console.log(formattedOutput);
+          printRuler();
+        } else {
+          console.log(chalk.magenta(`Transpiling ${inputFile}...`));
+
+          if (replace) {
+            renameSync(inputFile, tsFile);
+          }
+
+          writeFileSync(tsFile, formattedOutput);
+        }
       }
     });
 

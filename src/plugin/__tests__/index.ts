@@ -1,17 +1,20 @@
 import { TransformOptions, transformFileSync } from '@babel/core';
 import chalk from 'chalk';
+import glob from 'glob';
 import startCase from 'lodash/startCase';
-import { existsSync, readdirSync, readFileSync, statSync } from 'fs';
+import { readdirSync, readFileSync, statSync } from 'fs';
 
-import { relativePath, splitFixtureLines } from '../util/file';
-import { formatOutputCode } from '../util/format';
+import { TestError } from '../../util/error';
+import { relativePath as relPath, splitFixtureLines } from '../util/file';
+import { postProcessOutputCode } from '../util/format';
 
-const FIXTURE_INPUT_FILENAME = 'input.js';
-const FIXTURE_OUTPUT_FILENAME = 'output.ts';
+const INPUT_FIXTURE_GLOB = 'input.js';
+const OUTPUT_FIXTURE_GLOB = 'output.{ts,tsx}';
 
 export function runFixtureTests(
   rootDir: string,
   babelOptions: TransformOptions,
+  exact = false,
   parentDirs: string[] = [],
 ): void {
   const files = readdirSync(rootDir);
@@ -21,7 +24,7 @@ export function runFixtureTests(
   }
 
   files.forEach(testDir => {
-    const dir = relativePath(rootDir, testDir);
+    const dir = relPath(rootDir, testDir);
 
     if (statSync(dir).isDirectory()) {
       const testName = parentDirs
@@ -29,28 +32,27 @@ export function runFixtureTests(
         .map(startCase)
         .join('/');
 
-      const inputFile = relativePath(dir, FIXTURE_INPUT_FILENAME);
-      const outputFile = relativePath(dir, FIXTURE_OUTPUT_FILENAME);
+      const inputGlob = glob.sync(INPUT_FIXTURE_GLOB, { absolute: true, cwd: dir });
+      const inputFile = inputGlob.length === 1 ? inputGlob[0] : null;
 
-      const inputFileExists = existsSync(inputFile);
-      const outputFileExists = existsSync(outputFile);
+      const outputGlob = glob.sync(OUTPUT_FIXTURE_GLOB, { absolute: true, cwd: dir });
+      const outputFile = outputGlob.length === 1 ? outputGlob[0] : null;
 
-      if (inputFileExists && outputFileExists) {
+      if (inputFile && outputFile) {
         const babelOutput = transformFileSync(inputFile, babelOptions);
-        const expectedLines = splitFixtureLines(readFileSync(outputFile));
+        const expectedLines = splitFixtureLines(readFileSync(outputFile), !exact);
 
         describe(chalk.underline(testName), () => {
           if (!babelOutput) {
-            throw new Error(`Unable to transform file ${inputFile}.`);
+            throw new TestError(`Unable to transform file ${inputFile}.`);
           }
 
           if (babelOutput.code) {
-            // Tests concerning the formatting should be ... formatted
-            if (testName.includes('formatting')) {
-              babelOutput.code = formatOutputCode(babelOutput.code, inputFile);
-            }
+            const outputCode = exact
+              ? postProcessOutputCode(babelOutput.code, readFileSync(inputFile))
+              : babelOutput.code;
 
-            splitFixtureLines(babelOutput.code).forEach((line, i) => {
+            splitFixtureLines(outputCode, !exact).forEach((line, i) => {
               const padLength = Math.min(String(expectedLines.length).length, 2);
               const testNumber = String(i + 1).padStart(padLength, '0');
 
@@ -62,13 +64,13 @@ export function runFixtureTests(
             console.warn(chalk.yellow(`Input file ${inputFile} seems to be empty.`));
           }
         });
-      } else if (inputFileExists) {
-        throw new Error(`Fixture output file ${outputFile} does not exist.`);
-      } else if (outputFileExists) {
-        throw new Error(`Fixture input file ${inputFile} does not exist.`);
+      } else if (inputFile) {
+        throw new TestError(`Fixture output file ${outputFile} does not exist.`);
+      } else if (outputFile) {
+        throw new TestError(`Fixture input file ${inputFile} does not exist.`);
       } else {
         // Descend in next directory level
-        runFixtureTests(dir, babelOptions, [...parentDirs, testDir]);
+        runFixtureTests(dir, babelOptions, exact, [...parentDirs, testDir]);
       }
     }
   });

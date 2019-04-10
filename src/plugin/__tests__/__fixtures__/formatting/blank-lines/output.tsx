@@ -1,5 +1,4 @@
-// @flow
-import React, { type Node } from 'react';
+import React, { Node } from 'react';
 import styled from 'styled-components';
 import Icon from 'lib.components.icon';
 import Text from 'lib.components.text';
@@ -7,13 +6,13 @@ import spacing from 'lib.utils.style.spacing';
 import config from 'lib.config.style';
 
 type Props = {
-  label: string,
-  icon: string,
+  label: string;
+  icon: string;
   /**
    * - circle background color as css color string
    * - default: `config.colors.silent`
    */
-  circleColor?: string,
+  circleColor?: string;
 };
 
 const { colors } = config;

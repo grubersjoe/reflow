@@ -5,7 +5,8 @@
       "type": "node",
       "request": "launch",
       "args": [
-        "/home/jogu/git/wizard/src/services/i18n.js"
+        "--dry-run",
+        "/home/jogu/git/wizard/src/components/Form/DateField/index.js"
       ],
       "cwd": "${workspaceRoot}",
       "env": {

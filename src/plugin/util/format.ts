@@ -1,58 +1,122 @@
 import prettier, { Options as PrettierOptions } from 'prettier';
-import { readFileSync } from 'fs';
 
 import { FLOW_DIRECTIVE } from '../visitors/program';
 
 export const defaultPrettierConfig: PrettierOptions = {
-  trailingComma: 'all',
   semi: true,
   singleQuote: true,
+  tabWidth: 2,
+  trailingComma: 'all',
 };
 
-export const LINE_BREAK = /\r?\n/;
 export const BLANK_LINE = /^[ \t]*$/;
+export const LINE_BREAK = /\r?\n/;
+
+export const LINE_COMMENTS = /(^|[^:])\/\/.*$/gm;
+export const BLOCK_COMMENTS = /\/\*([\S\s]*?)\*\//gm;
+
+const LINE_COMMENT_AT_LINE_START = /^[ \t]*\/\/.*$/;
+const LINE_COMMENT_AT_LINE_END = /\S+ *[^:](\/\/.*)$/;
+
+const BLOCK_COMMENT_AT_END_OF_LINE = /\S+ *(\/\*.*\*\/)$/;
+const BLOCK_COMMENT_START = /^\s*\/\*/;
+const BLOCK_COMMENT_END = /\s*\*\//;
+
+function findMatch(line: string, regexp: RegExp): string | null {
+  const matches = line.match(regexp);
+
+  return matches && matches.length === 2 ? matches[1] : null;
+}
 
 /**
  * Since Babel uses an abstract synax tree, all information about whitespace is
- * lost after parsing. Neither does Prettier help here, because it won't add
- * additional blank lines to improve the visual appearance of the code:
+ * lost after parsing. Also Babel's `retainLines` option is not working as
+ * expected and will produce broken syntax. Neither does Prettier help here,
+ * because it won't add additional blank lines to improve the code's visual
+ * appearance:
+ *
  * https://prettier.io/docs/en/rationale.html#empty-lines
  *
- * Therefore, the following function tries to synchronize the blank lines of
- * two source code fragments. This means: insert blank lines in given code
- * wherever the original code has them and remove superflous blank lines in the
- * output (these are produced by Babel). This naively assumes that all code
- * transformations will result in the same amount of lines.
+ * Therefore, the following function tries to synchronize the blank lines and
+ * comments of two source code fragments. This means: insert blank lines in
+ * given code wherever the original code has them, remove superflous blank
+ * lines in the output and copy all comments. Comments are also handled here,
+ * because Babel does not reliably retain their position in the generated code.
+ * This approach naively assumes that all code transformations will result in
+ * (roughly) the same amount of lines. It's not perfect, but the best I came up
+ *  with.
  *
- * TODO: line comments are generated very strangely and need to be handled too.
+ * Side note: Multiple blank lines are not a problem, since Prettier will
+ * collapse those into a single blank line. So the following might produce more
+ * blank lines than necessary, but it is irrelevant here.
  */
-export function syncBlankLines(outputCode: string, originalFilePath: string): string {
+export function syncBlankLinesAndComments(
+  outputCode: string,
+  originalCode: Buffer | string,
+): string {
   const outputLines = outputCode.split(LINE_BREAK);
-  const originalLines = readFileSync(originalFilePath)
+
+  const originalLines = originalCode
     .toString()
-    .split(LINE_BREAK);
+    .split(LINE_BREAK)
+    .filter(line => !FLOW_DIRECTIVE.test(line));
+
+  let copyLine = false;
 
   if (originalLines.length === 0) {
     return outputCode;
   }
 
   // The Flow directive is removed in the output file
-  const lineOffset = FLOW_DIRECTIVE.test(originalLines[0]) ? -1 : 0;
+  // const lineOffset = FLOW_DIRECTIVE.test(originalLines[0]) ? -1 : 0;
 
-  originalLines.forEach((originalLine, i) => {
-    const line = i + lineOffset;
+  originalLines.forEach((originalLine, line) => {
     const outputLine = outputLines[line];
 
-    if (outputLine === undefined) {
+    if (outputLine === undefined || originalLine === outputLine) {
       return;
     }
 
-    if (BLANK_LINE.test(originalLine) && !BLANK_LINE.test(outputLine)) {
-      // Insert a extra blank line if it's present in original file but not in output
+    // Insert an extra blank line if it's present in original file but not in output
+    if (BLANK_LINE.test(originalLine)) {
       outputLines.splice(line, 0, '');
-    } else if (!BLANK_LINE.test(originalLine) && BLANK_LINE.test(outputLine)) {
-      // Remove superflous blank lines in output
+    }
+
+    // Remove superflous blank lines in output
+    if (BLANK_LINE.test(outputLine)) {
       outputLines.splice(line, 1);
+    }
+
+    // Copy (insert) line comments that occupy an entire line
+    if (LINE_COMMENT_AT_LINE_START.test(originalLine)) {
+      outputLines.splice(line, 0, originalLine);
+    }
+
+    // Append line comments appearing at the end of a line
+    const lineCommentAtEOL = findMatch(originalLine, LINE_COMMENT_AT_LINE_END);
+    if (lineCommentAtEOL) {
+      outputLines[line] = outputLine + lineCommentAtEOL;
+    }
+
+    // Beginning of block comment: start copying lines
+    if (BLOCK_COMMENT_START.test(originalLine)) {
+      copyLine = true;
+    }
+
+    // Inside of a block comment - continue copying
+    if (copyLine) {
+      outputLines.splice(line, 0, originalLine);
+    }
+
+    // End of block comment - stop copying
+    if (BLOCK_COMMENT_END.test(originalLine)) {
+      copyLine = false;
+    }
+
+    // Append block comments appearing at the end of a line
+    const blockCommentAtEOL = findMatch(originalLine, BLOCK_COMMENT_AT_END_OF_LINE);
+    if (blockCommentAtEOL) {
+      outputLines[line] = outputLine + blockCommentAtEOL;
     }
   });
 
@@ -60,18 +124,24 @@ export function syncBlankLines(outputCode: string, originalFilePath: string): st
 }
 
 /**
- * Use Prettier to format output code.
- * https://prettier.io
- *
- * Moreover blank lines will be inserted wherever the original file has them.
+ * Format the code generated by Babel to make it as similar as possible to the
+ * original code. This is done by inserting blank lines, copying comments and
+ * excuting Prettier (https://prettier.io).
  */
-export function formatOutputCode(
+export function postProcessOutputCode(
   code: string,
-  originalFilePath: string,
+  originalCode: Buffer | string,
   prettierOptions: PrettierOptions = defaultPrettierConfig,
 ): string {
   prettierOptions.parser = 'typescript';
+
   code = prettier.format(code, prettierOptions);
 
-  return syncBlankLines(code, originalFilePath);
+  code = code.replace(BLOCK_COMMENTS, '');
+  code = code.replace(LINE_COMMENTS, '');
+
+  code = syncBlankLinesAndComments(code, originalCode);
+  code = prettier.format(code, prettierOptions);
+
+  return code;
 }

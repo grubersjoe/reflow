@@ -6,6 +6,10 @@ function blank(n: number): string {
   return ' '.repeat(n);
 }
 
+export function printRuler(length: number = 80): void {
+  console.log('─'.repeat(length));
+}
+
 export function logError(message: string): void {
   console.error(`${blank(4)}${chalk.bold.redBright('Error')}: ${chalk.reset(message)}\n`);
 }

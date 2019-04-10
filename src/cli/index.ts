@@ -32,11 +32,13 @@ function collectArgs(program: Command): RunnerArgs {
   }) as RunnerArgs;
 }
 
+// prettier-ignore
 const helpText = {
+  dryRun: 'perform a trial run printing to stdout instead of writing a file',
   excludeDirs: 'list of recursively excluded directories',
   includePattern: 'set the glob pattern for input files',
+  replace: 'process files in-place. A new TS file will be created next to the original file otherwise.',
   verbose: 'increase verbosity',
-  write: 'edit files in-place. A new TS file will be created alongside the original one otherwise.',
 };
 
 // Define the CLI interface
@@ -44,10 +46,11 @@ program
   .version(pkg.version)
   .description('Overflow')
   .usage('[OPTION]... <FILES OR DIRECTORIES ...>')
+  .option('-d, --dry-run', helpText.dryRun)
   .option('-e, --exclude-dirs <dirs ...>', helpText.excludeDirs, toArray, ['node_modules'])
   .option('-i, --include-pattern <pattern>', helpText.includePattern, '**/*.{js,jsx}')
-  .option('-v, --verbose', helpText.verbose)
-  .option('-w, --write', helpText.write);
+  .option('-r, --replace', helpText.replace)
+  .option('-v, --verbose', helpText.verbose);
 
 program.on('--help', () => {
   console.log('\nExamples:');
