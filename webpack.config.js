@@ -5,7 +5,7 @@ module.exports = (env, argv) => {
   const mode = argv.mode || 'development';
 
   return {
-    devtool: 'sourcemap',
+    devtool: mode === 'development' ? 'sourcemap' : undefined,
     entry: './src/index.ts',
     mode: mode,
     module: {
