@@ -12,7 +12,6 @@ import {
 
 import { jsxVisitor } from './visitors/jsx';
 import { flowVisitor } from './visitors/flow';
-import { programVisitor } from './visitors/program';
 
 export interface PluginOptions {
   verbose?: boolean;
@@ -28,7 +27,6 @@ function buildPlugin(): PluginObj<PluginPass<VisitorNodes>> {
       ImportDeclaration: importDeclarationVisitor,
       ImportSpecifier: importSpecifierVisitor,
       JSX: jsxVisitor,
-      Program: programVisitor,
     },
     manipulateOptions(opts: TransformOptions, parserOpts: ParserOptions) {
       setParserOptions(parserOpts);

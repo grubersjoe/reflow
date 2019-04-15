@@ -6,7 +6,7 @@
       "request": "launch",
       "args": [
         "--dry-run",
-        "/home/jogu/git/wizard/src/components/Form/DateField/index.js"
+        "/home/jogu/git/wizard/src/containers/Form/PriceSummary/Product/SizeAmountTable.js"
       ],
       "cwd": "${workspaceRoot}",
       "env": {

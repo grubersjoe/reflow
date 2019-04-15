@@ -18,19 +18,20 @@ function m(x: number): ?number {
 
 // eslint-disable-next-line
 interface Interface {
+  // http://www.w3.org/2000/svg
   p: boolean;
 }
 
 const StyledComponent = styled.div`
   font-weight: 600;
-  text-transform: 'uppercase'; /* a JS-in-CSS comment */
+  text-transform: 'uppercase'; /* a CSS-in-JS comment */
 
   a:hover {
     color: blue;
   }
 `;
 
-const doubleSlashString = 'http://www.w3.org/2000/svg';
+const doubleSlashString = 'http://www.w3.org/2000/svg'; /* block comment */
 
 // Muliple
 // line comments

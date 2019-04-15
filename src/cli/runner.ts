@@ -45,6 +45,7 @@ function transpileFiles(args: RunnerArgs): void {
     const inputFiles = isDir ? glob.sync(includePattern, globOptions) : [resolve(src)];
 
     inputFiles.forEach(inputFile => {
+      console.log(chalk.magenta(`Transpiling ${inputFile}...`));
       const out = transformFileSync(inputFile, babelOptions);
 
       if (out === null || !out.code) {
@@ -56,12 +57,9 @@ function transpileFiles(args: RunnerArgs): void {
         const formattedOutput = postProcessOutputCode(out.code, readFileSync(inputFile));
 
         if (dryRun) {
-          console.log(chalk.blue(`[DRY RUN] Transpiling ${inputFile}...`));
           console.log(formattedOutput);
           printRuler();
         } else {
-          console.log(chalk.magenta(`Transpiling ${inputFile}...`));
-
           if (replace) {
             renameSync(inputFile, tsFile);
           }
