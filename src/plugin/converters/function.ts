@@ -19,11 +19,11 @@ import { convertTypeAnnotation } from './type-annotation';
 
 export function convertFunctionTypeParam(
   param: FunctionTypeParam,
-  defaultName: string,
+  fallbackName: string,
 ): Identifier {
   // The parameter might not have a name (param.name === null). This is possible, because Flow does
   // not require parameter names in function types - TypeScript does, however.
-  const id = identifier(isIdentifier(param.name) ? param.name.name : defaultName);
+  const id = identifier(isIdentifier(param.name) ? param.name.name : fallbackName);
 
   id.optional = param.optional;
   id.typeAnnotation = convertTypeAnnotation(param);
@@ -44,7 +44,9 @@ export function convertFunctionTypeAnnotation(node: FunctionTypeAnnotation): TSF
   const typeParameters = convertTypeParameterDeclaration(node.typeParameters);
 
   let functionParameters: (Identifier | RestElement)[] = node.params
-    ? node.params.map((param, i) => convertFunctionTypeParam(param, `p${i + 1}`))
+    ? node.params.map((param, i) => {
+        return convertFunctionTypeParam(param, node.params.length > 1 ? `p${i + 1}` : `p`);
+      })
     : [];
 
   if (node.rest) {

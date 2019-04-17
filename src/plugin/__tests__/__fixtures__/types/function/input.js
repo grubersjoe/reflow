@@ -9,8 +9,8 @@ type FunctionWithUnnamedParamMaybeReturn = ({}, number) => ?boolean;
 type FunctionWithUnnamedParamUnion = (string, number | {}) => boolean | null;
 type FunctionWithRestParam = (p: string, ...numbers: number[]) => number;
 type FunctionWithUnnamedRestParam = (p: string, ...number[]) => number;
-type FunctionWithFunctionParam = (f: (p: number) => boolean) => void
-type FunctionWithUnnamedFunctionParam = ((number) => boolean, string) => void;
+type FunctionWithFunctionParams = (f: (p: number) => boolean) => void
+type FunctionWithUnnamedFunctionParams = ((number) => boolean, string) => void;
 type FunctionWithTypeParam = <T>(p: T) => T;
 type FunctionWithTypeParams = <T1, T2>(p: T1) => T2;
 
