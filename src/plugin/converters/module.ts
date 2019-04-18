@@ -7,6 +7,8 @@ import {
   typeofTypeAnnotation,
 } from '@babel/types';
 
+import { convertReactImports } from './react/imports';
+
 function convertImportSpecifiers(path: NodePath<ImportDeclaration | ImportSpecifier>): void {
   const { node } = path;
   const specifiers = isImportDeclaration(node) ? node.specifiers : [node];
@@ -33,6 +35,7 @@ export function convertImportDeclaration(
   path: NodePath<ImportDeclaration>,
 ): ImportDeclaration {
   convertImportSpecifiers(path);
+  convertReactImports(path);
 
   // Strip Flow's `type` and `typeof` keywords in import declarations.
   node.importKind = null;

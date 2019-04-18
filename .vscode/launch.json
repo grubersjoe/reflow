@@ -24,7 +24,7 @@
       "type": "node",
       "request": "launch",
       "args": [
-        "src/plugin/__tests__/__fixtures__/playground/input.js"
+        "src/plugin/__tests__/__fixtures__/react/imports/node/simple/input.js"
       ],
       "cwd": "${workspaceRoot}",
       "env": {

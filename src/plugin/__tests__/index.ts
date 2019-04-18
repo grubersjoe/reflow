@@ -14,7 +14,7 @@ const OUTPUT_FIXTURE_GLOB = 'output.{ts,tsx}';
 export function runFixtureTests(
   rootDir: string,
   babelOptions: TransformOptions,
-  exact = false,
+  testFormatting = false,
   parentDirs: string[] = [],
 ): void {
   const files = readdirSync(rootDir);
@@ -30,7 +30,7 @@ export function runFixtureTests(
       const testName = parentDirs
         .concat(testDir)
         .map(startCase)
-        .join('/');
+        .join(' › ');
 
       const inputGlob = glob.sync(INPUT_FIXTURE_GLOB, { absolute: true, cwd: dir });
       const inputFile = inputGlob.length === 1 ? inputGlob[0] : null;
@@ -40,7 +40,7 @@ export function runFixtureTests(
 
       if (inputFile && outputFile) {
         const babelOutput = transformFileSync(inputFile, babelOptions);
-        const expectedLines = splitFixtureLines(readFileSync(outputFile), !exact);
+        const expectedLines = splitFixtureLines(readFileSync(outputFile), !testFormatting);
 
         describe(chalk.underline(testName), () => {
           if (!babelOutput) {
@@ -48,11 +48,11 @@ export function runFixtureTests(
           }
 
           if (babelOutput.code) {
-            const outputCode = exact
+            const outputCode = testFormatting
               ? postProcessOutputCode(babelOutput.code, readFileSync(inputFile))
               : babelOutput.code;
 
-            splitFixtureLines(outputCode, !exact).forEach((line, i) => {
+            splitFixtureLines(outputCode, !testFormatting).forEach((line, i) => {
               const padLength = Math.min(String(expectedLines.length).length, 2);
               const testNumber = String(i + 1).padStart(padLength, '0');
 
@@ -70,7 +70,7 @@ export function runFixtureTests(
         throw new TestError(`Fixture input file ${inputFile} does not exist.`);
       } else {
         // Descend in next directory level
-        runFixtureTests(dir, babelOptions, exact, [...parentDirs, testDir]);
+        runFixtureTests(dir, babelOptions, testFormatting, [...parentDirs, testDir]);
       }
     }
   });

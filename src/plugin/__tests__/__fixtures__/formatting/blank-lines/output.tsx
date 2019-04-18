@@ -1,4 +1,4 @@
-import React, { Node } from 'react';
+import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import Icon from 'lib.components.icon';
 import Text from 'lib.components.text';
@@ -46,7 +46,7 @@ const FlexWrapper = styled.div`
   }
 `;
 
-const ShareButton = (props: Props): Node => {
+const ShareButton = (props: Props): ReactNode => {
   const { icon, circleColor = colors.silent, label, ...rest } = props;
 
   // eslint-disable-next-line
