@@ -7,7 +7,7 @@ type AliasObjectLiteral = {
   p2: string,
   p3: null,
 };
-type AliasString = String;
+type AliasString = string;
 type AliasStringLiteral = "literal";
 type AliasUndefined = typeof undefined;
 type AliasUnsealedObject = {};

@@ -6,16 +6,18 @@ import overflowPlugin, { PluginOptions } from '.';
  * Create the Babel configuration for runners using the plugin
  */
 export function getTransformOptions(
-  pluginOptions?: PluginOptions,
-  overwrites?: TransformOptions,
+  args: {
+    pluginOptions?: PluginOptions;
+    transformOptions?: TransformOptions;
+  } = {},
 ): TransformOptions {
   const defaultOptions: TransformOptions = {
     babelrc: false,
     configFile: false,
-    plugins: [[overflowPlugin, pluginOptions]],
+    plugins: [[overflowPlugin, args.pluginOptions]],
   };
 
-  return Object.assign({}, defaultOptions, overwrites);
+  return Object.assign({}, defaultOptions, args.transformOptions);
 }
 
 /**

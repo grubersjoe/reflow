@@ -35,7 +35,7 @@ function getGlobOptions(options: GlobOptions, excludeDirs: string[]): GlobOption
 function transpileFiles(args: RunnerArgs): void {
   const { dryRun, excludeDirs, includePattern, src, replace, verbose } = args;
 
-  const babelOptions = getTransformOptions({ verbose });
+  const babelOptions = getTransformOptions({ pluginOptions: { verbose } });
 
   src.forEach(src => {
     const isDir = statSync(src).isDirectory();

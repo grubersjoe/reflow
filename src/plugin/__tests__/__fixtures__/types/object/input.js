@@ -49,7 +49,7 @@ type ObjectWithStringLiteralKey = {
 export type ComplexObject = {
   buttonIcon: ?string,
   +messageId: string,
-  +placeholder: Object,
+  +placeholder: object,
   +callback: null | (() => void),
 };
 
