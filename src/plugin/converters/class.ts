@@ -1,8 +1,8 @@
 import {
   ClassDeclaration,
-  isTypeParameterInstantiation,
-  isTypeParameterDeclaration,
   isClassMethod,
+  isTypeParameterDeclaration,
+  isTypeParameterInstantiation,
 } from '@babel/types';
 import {
   convertTypeParameterInstantiation,

@@ -1,9 +1,9 @@
 import {
-  OpaqueType,
   DeclareOpaqueType,
+  OpaqueType,
   TSTypeAliasDeclaration,
-  tsTypeAliasDeclaration,
   tsAnyKeyword,
+  tsTypeAliasDeclaration,
 } from '@babel/types';
 
 import { convertFlowType } from './flow-type';

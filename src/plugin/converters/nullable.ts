@@ -1,12 +1,12 @@
 import {
   NullableTypeAnnotation,
   TSUnionType,
+  isTSFunctionType,
   isTSNullKeyword,
   tsNullKeyword,
+  tsParenthesizedType,
   tsUndefinedKeyword,
   tsUnionType,
-  isTSFunctionType,
-  tsParenthesizedType,
 } from '@babel/types';
 import { convertFlowType } from './flow-type';
 
