@@ -1,5 +1,6 @@
 import {
   BaseNode,
+  DeclareInterface,
   Identifier,
   InterfaceDeclaration,
   InterfaceExtends,
@@ -33,7 +34,9 @@ export function convertInterfaceExtends(node: InterfaceExtends): TSExpressionWit
   return tsExpressionWithTypeArguments(id, typeParameters);
 }
 
-export function convertInterfaceDeclaration(node: InterfaceDeclaration): TSInterfaceDeclaration {
+export function convertInterfaceDeclaration(
+  node: InterfaceDeclaration | DeclareInterface,
+): TSInterfaceDeclaration {
   const typeParameters = convertTypeParameterDeclaration(node.typeParameters);
   const body = tsInterfaceBody(convertObjectTypeAnnotation(node.body).members);
 

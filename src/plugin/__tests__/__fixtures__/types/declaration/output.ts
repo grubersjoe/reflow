@@ -23,9 +23,12 @@ declare class DeclaredChildClass<T> extends Set<T> {
   constructor(p: string);
 }
 
-// declare interface DeclaredInterface<T> {
-//   (data: T, headers?: {}): {};
-// }
+declare interface DeclaredInterface<T> {
+  p: T;
+  q?: number;
+  f: (x: number) => string;
+}
+
 
 // // @ts-ignore
 // declare module 'declared-es-module' {

@@ -45,6 +45,11 @@ interface InterfaceWithVariance {
   contravariant: string[];
 }
 
+interface InterfaceWithCallable {
+  (x: number, y: number): string
+  <T>(p: Date): T
+}
+
 function functionWithInterfaceParameter(i: InterfaceSimple) {
   return i.f(5);
 }

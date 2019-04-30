@@ -23,9 +23,12 @@ declare class DeclaredChildClass<T> extends Set<T> {
   constructor(string): Set<T>;
 }
 
-// declare interface DeclaredInterface<T> {
-//   (data: T, headers?: {}): {};
-// }
+declare interface DeclaredInterface<T> {
+  p: T;
+  q?: number;
+  f(x: number): string;
+}
+
 
 // declare module 'declared-es-module' {
 //   declare var declaredESModuleVar: string;

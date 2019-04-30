@@ -3,11 +3,13 @@ import {
   ClassDeclaration,
   DeclareClass,
   DeclareFunction,
+  DeclareInterface,
   DeclareTypeAlias,
   Identifier,
   ObjectTypeAnnotation,
   StringLiteral,
   TSDeclareFunction,
+  TSInterfaceDeclaration,
   TSTypeAliasDeclaration,
   classBody,
   classDeclaration,
@@ -25,11 +27,12 @@ import {
 
 import { UnexpectedError } from '../../util/error';
 import { convertFlowType } from './flow-type';
-import { convertFunctionTypeParam } from './function';
+import { functionTypeParametersToIdentifiers } from './function';
 import {
   convertTypeParameterDeclaration,
   convertTypeParameterInstantiation,
 } from './type-parameter';
+import { convertInterfaceDeclaration } from './interface';
 
 function isConstructor(key: Identifier | StringLiteral): boolean {
   const methodName = isIdentifier(key) ? key.name : key.value;
@@ -44,11 +47,9 @@ function buildClassBody(node: ObjectTypeAnnotation): ClassBody {
         // @ts-ignore prop.method exists!
         if (prop.method && isFunctionTypeAnnotation(prop.value)) {
           const { value, key } = prop;
-          const typeParameters = convertTypeParameterDeclaration(value.typeParameters);
 
-          const params = value.params.map((param, i) => {
-            return convertFunctionTypeParam(param, value.params.length > 1 ? `p${i + 1}` : `p`);
-          });
+          const typeParameters = convertTypeParameterDeclaration(value.typeParameters);
+          const params = functionTypeParametersToIdentifiers(value.params) || [];
 
           const returnType = isConstructor(key)
             ? null
@@ -105,10 +106,7 @@ export function convertDeclareFunction(node: DeclareFunction): TSDeclareFunction
 
     const typeParameters = convertTypeParameterDeclaration(typeAnnotation.typeParameters);
     const returnType = tsTypeAnnotation(convertFlowType(typeAnnotation.returnType));
-
-    const params = typeAnnotation.params.map((param, i) => {
-      return convertFunctionTypeParam(param, typeAnnotation.params.length > 1 ? `p${i + 1}` : `p`);
-    });
+    const params = functionTypeParametersToIdentifiers(typeAnnotation.params) || [];
 
     declareFunction = tsDeclareFunction(id, typeParameters, params, returnType);
   } else {
@@ -118,6 +116,13 @@ export function convertDeclareFunction(node: DeclareFunction): TSDeclareFunction
   declareFunction.declare = true;
 
   return declareFunction;
+}
+
+export function convertDeclareInterface(node: DeclareInterface): TSInterfaceDeclaration {
+  const _interface = convertInterfaceDeclaration(node);
+  _interface.declare = true;
+
+  return _interface;
 }
 
 export function convertDeclareTypeAlias(node: DeclareTypeAlias): TSTypeAliasDeclaration {

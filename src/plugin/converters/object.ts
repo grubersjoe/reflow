@@ -1,20 +1,24 @@
 import {
   Identifier,
   ObjectTypeAnnotation,
+  ObjectTypeCallProperty,
   ObjectTypeIndexer,
   ObjectTypeProperty,
   ObjectTypeSpreadProperty,
   StringLiteral,
+  TSCallSignatureDeclaration,
   TSIndexSignature,
   TSPropertySignature,
   TSTypeLiteral,
   identifier,
+  isFunctionTypeAnnotation,
   isIdentifier,
   isObjectTypeProperty,
   isObjectTypeSpreadProperty,
   isStringLiteral,
   isTSPropertySignature,
   isTSTypeLiteral,
+  tsCallSignatureDeclaration,
   tsIndexSignature,
   tsPropertySignature,
   tsTypeAnnotation,
@@ -24,8 +28,10 @@ import {
 import { convertFlowType } from './flow-type';
 
 import { UnexpectedError } from '../../util/error';
+import { convertTypeParameterDeclaration } from './type-parameter';
+import { functionTypeParametersToIdentifiers } from './function';
 
-type Signature = TSIndexSignature | TSPropertySignature;
+type Signature = TSCallSignatureDeclaration | TSIndexSignature | TSPropertySignature;
 type SignatureKey = Identifier | StringLiteral;
 
 function signatureKeysAreEqual(signature: Signature, key: SignatureKey): boolean {
@@ -51,11 +57,11 @@ function signatureKeysAreEqual(signature: Signature, key: SignatureKey): boolean
 }
 
 function replaceProperty(
-  props: Signature[],
+  signatures: Signature[],
   key: SignatureKey,
   updatedProp: TSPropertySignature,
 ): Signature[] {
-  return props.map(prop => (signatureKeysAreEqual(prop, key) ? updatedProp : prop));
+  return signatures.map(prop => (signatureKeysAreEqual(prop, key) ? updatedProp : prop));
 }
 
 function createPropertySignature(prop: ObjectTypeProperty): TSPropertySignature {
@@ -73,7 +79,7 @@ function createPropertySignature(prop: ObjectTypeProperty): TSPropertySignature 
 
 function convertObjectTypeSpreadProperty(
   node: ObjectTypeAnnotation,
-  props: Signature[],
+  signatures: Signature[],
   prop: ObjectTypeSpreadProperty,
 ): Signature[] {
   const type = convertFlowType(prop.argument);
@@ -87,18 +93,22 @@ function convertObjectTypeSpreadProperty(
           throw new UnexpectedError(`Unexpected property name type: ${key.type}`);
         }
 
-        const parentProp = props.find(prop => signatureKeysAreEqual(prop, key));
+        const parentProp = signatures.find(prop => signatureKeysAreEqual(prop, key));
 
         if (parentProp && parentProp.typeAnnotation) {
           if (node.exact) {
             // Overwrite parent property signature with the object spread one, when exact object
             // notation is used.
-            props = replaceProperty(props, key, tsPropertySignature(key, innerProp.typeAnnotation));
+            signatures = replaceProperty(
+              signatures,
+              key,
+              tsPropertySignature(key, innerProp.typeAnnotation),
+            );
           } else {
             // Extend the type of the parent property signature with an union of its own type and
             // the type of the object spread property otherwise.
-            props = replaceProperty(
-              props,
+            signatures = replaceProperty(
+              signatures,
               key,
               tsPropertySignature(
                 key,
@@ -112,29 +122,51 @@ function convertObjectTypeSpreadProperty(
             );
           }
         } else {
-          props.push(innerProp);
+          signatures.push(innerProp);
         }
       }
     });
   }
 
-  return props;
+  return signatures;
 }
 
-function convertObjectTypeIndexer(props: Signature[], indexer: ObjectTypeIndexer): Signature[] {
+function convertObjectTypeCallProperty(
+  signatures: Signature[],
+  callProp: ObjectTypeCallProperty,
+): Signature[] {
+  if (!isFunctionTypeAnnotation(callProp.value)) {
+    return signatures;
+  }
+
+  const { value } = callProp;
+
+  const typeParameters = convertTypeParameterDeclaration(value.typeParameters);
+  const params = functionTypeParametersToIdentifiers(value.params) || [];
+  const typeAnnotation = tsTypeAnnotation(convertFlowType(value.returnType));
+
+  signatures.push(tsCallSignatureDeclaration(typeParameters, params, typeAnnotation));
+
+  return signatures;
+}
+
+function convertObjectTypeIndexer(
+  signatures: Signature[],
+  indexer: ObjectTypeIndexer,
+): Signature[] {
   const key = indexer.id || identifier('key');
   key.typeAnnotation = tsTypeAnnotation(convertFlowType(indexer.key));
 
   const typeAnnotation = tsTypeAnnotation(convertFlowType(indexer.value));
   const propIndexSignature = tsIndexSignature([key], typeAnnotation);
 
-  props.push(propIndexSignature);
+  signatures.push(propIndexSignature);
 
-  return props;
+  return signatures;
 }
 
 export function convertObjectTypeAnnotation(node: ObjectTypeAnnotation): TSTypeLiteral {
-  const { indexers, properties } = node;
+  const { callProperties, indexers, properties } = node;
   let signatures: Signature[] = [];
 
   properties.forEach(prop => {
@@ -150,6 +182,12 @@ export function convertObjectTypeAnnotation(node: ObjectTypeAnnotation): TSTypeL
       signatures = convertObjectTypeSpreadProperty(node, signatures, prop);
     }
   });
+
+  if (callProperties) {
+    callProperties.forEach(callProp => {
+      signatures = convertObjectTypeCallProperty(signatures, callProp);
+    });
+  }
 
   if (indexers) {
     indexers.forEach(indexer => {

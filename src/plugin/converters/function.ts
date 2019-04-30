@@ -17,7 +17,7 @@ import { convertFlowType } from './flow-type';
 import { convertTypeParameterDeclaration } from './type-parameter';
 import { convertTypeAnnotation } from './type-annotation';
 
-export function convertFunctionTypeParam(
+export function functionTypeParamToIdentifier(
   param: FunctionTypeParam,
   fallbackName: string,
 ): Identifier {
@@ -31,6 +31,18 @@ export function convertFunctionTypeParam(
   return id;
 }
 
+export function functionTypeParametersToIdentifiers(
+  params: FunctionTypeParam[] | null,
+): Identifier[] | null {
+  if (params === null) {
+    return null;
+  }
+
+  return params.map((param, i) => {
+    return functionTypeParamToIdentifier(param, params.length > 1 ? `p${i + 1}` : `p`);
+  });
+}
+
 export function convertFunctionTypeRestParam(param: FunctionTypeParam): RestElement {
   const id = identifier(isIdentifier(param.name) ? param.name.name : 'rest');
   const restElem = restElement(id);
@@ -42,20 +54,11 @@ export function convertFunctionTypeRestParam(param: FunctionTypeParam): RestElem
 
 export function convertFunctionTypeAnnotation(node: FunctionTypeAnnotation): TSFunctionType {
   const typeParameters = convertTypeParameterDeclaration(node.typeParameters);
-
-  let functionParameters: (Identifier | RestElement)[] = node.params
-    ? node.params.map((param, i) => {
-        return convertFunctionTypeParam(param, node.params.length > 1 ? `p${i + 1}` : `p`);
-      })
-    : [];
-
-  if (node.rest) {
-    functionParameters = functionParameters.concat(convertFunctionTypeRestParam(node.rest));
-  }
-
+  const functionParameters = functionTypeParametersToIdentifiers(node.params) || [];
+  const restParameters = node.rest ? [convertFunctionTypeRestParam(node.rest)] : [];
   const returnType = tsTypeAnnotation(convertFlowType(node.returnType));
 
-  return tsFunctionType(typeParameters, functionParameters, returnType);
+  return tsFunctionType(typeParameters, [...functionParameters, ...restParameters], returnType);
 }
 
 /**

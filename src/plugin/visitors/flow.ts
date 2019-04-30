@@ -2,6 +2,7 @@ import {
   Flow,
   isDeclareClass,
   isDeclareFunction,
+  isDeclareInterface,
   isDeclareOpaqueType,
   isDeclareTypeAlias,
   isInterfaceDeclaration,
@@ -18,6 +19,7 @@ import { PluginWarnings, WARNINGS } from '../util/warning';
 import {
   convertDeclareClass,
   convertDeclareFunction,
+  convertDeclareInterface,
   convertDeclareTypeAlias,
 } from '../converters/declaration';
 import { convertInterfaceDeclaration } from '../converters/interface';
@@ -38,6 +40,10 @@ export const flowVisitor: VisitorFunction<Flow> = (path): void => {
 
   if (isDeclareFunction(node)) {
     path.replaceWith(convertDeclareFunction(node));
+  }
+
+  if (isDeclareInterface(node)) {
+    path.replaceWith(convertDeclareInterface(node));
   }
 
   if (isDeclareTypeAlias(node)) {
