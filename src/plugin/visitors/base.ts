@@ -3,26 +3,35 @@ import {
   FunctionDeclaration,
   ImportDeclaration,
   ImportSpecifier,
+  isClassDeclaration,
+  isFunctionDeclaration,
+  isImportDeclaration,
+  isImportSpecifier,
 } from '@babel/types';
 
 import { VisitorFunction } from '../types';
 import { convertClassDeclaration } from '../converters/class';
-import { convertFunctionDeclaration } from '../converters/function';
 import { convertImportDeclaration, convertImportSpecifier } from '../converters/module';
+import { convertFunctionDeclaration } from '../converters/function';
 
-export const classDeclarationVisitor: VisitorFunction<ClassDeclaration> = (path): void => {
-  path.replaceWith(convertClassDeclaration(path.node));
-};
+export const baseVisitor: VisitorFunction<
+  ClassDeclaration | FunctionDeclaration | ImportDeclaration | ImportSpecifier
+> = (path): void => {
+  const { node } = path;
 
-export const functionDeclarationVisitor: VisitorFunction<FunctionDeclaration> = (path): void => {
-  path.replaceWith(convertFunctionDeclaration(path.node));
-};
+  if (isClassDeclaration(node)) {
+    path.replaceWith(convertClassDeclaration(node));
+  }
 
-// Note: There is no need to convert export declarations
-export const importDeclarationVisitor: VisitorFunction<ImportDeclaration> = (path): void => {
-  path.replaceWith(convertImportDeclaration(path.node, path));
-};
+  if (isFunctionDeclaration(node)) {
+    path.replaceWith(convertFunctionDeclaration(node));
+  }
 
-export const importSpecifierVisitor: VisitorFunction<ImportSpecifier> = (path): void => {
-  path.replaceWith(convertImportSpecifier(path.node, path));
+  if (isImportDeclaration(node) && path.isImportDeclaration()) {
+    path.replaceWith(convertImportDeclaration(node, path));
+  }
+
+  if (isImportSpecifier(node) && path.isImportSpecifier()) {
+    path.replaceWith(convertImportSpecifier(node, path));
+  }
 };

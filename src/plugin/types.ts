@@ -8,7 +8,6 @@ import {
   ImportDeclaration,
   ImportSpecifier,
   JSX,
-  Program,
 } from '@babel/types';
 
 // Missing in @types/babel__core
@@ -31,12 +30,11 @@ export interface PluginPass<T> {
   opts: TransformOptions;
 }
 
-export type VisitorNodes = Flow &
-  ClassDeclaration &
+export type VisitorNodes = ClassDeclaration &
+  Flow &
   FunctionDeclaration &
   ImportDeclaration &
   ImportSpecifier &
-  JSX &
-  Program;
+  JSX;
 
 export type VisitorFunction<T> = VisitNodeFunction<PluginPass<T>, T>;

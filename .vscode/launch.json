@@ -4,15 +4,15 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "CLI",
       "args": [
         "--dry-run",
-        "/home/jogu/git/wizard/src/containers/Form/PriceSummary/Product/SizeAmountTable.js"
+        "src/plugin/__tests__/__fixtures__/types/declaration/input.js"
       ],
       "cwd": "${workspaceRoot}",
       "env": {
         "NODE_ENV": "development"
       },
-      "name": "CLI",
       "outFiles": [
         "${workspaceFolder}/build/**/*.js",
       ],
@@ -23,6 +23,7 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Babel Plugin",
       "args": [
         "src/plugin/__tests__/__fixtures__/react/imports/node/simple/input.js"
       ],
@@ -30,7 +31,6 @@
       "env": {
         "NODE_ENV": "development"
       },
-      "name": "Babel Plugin",
       "outFiles": [
         "${workspaceFolder}/build/**/*.js",
       ],

@@ -1,4 +1,4 @@
-// @flow
+
 import React, { type Node } from 'react';
 import styled from 'styled-components';
 import Icon from 'lib.components.icon';

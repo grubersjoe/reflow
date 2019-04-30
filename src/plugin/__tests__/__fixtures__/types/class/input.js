@@ -13,6 +13,12 @@ class C1 {
   }
 }
 
+class ClassWithConstructorReturnType {
+  constructor(): Date {
+    return new Date();
+  }
+}
+
 type ClassTypeAlias = Class<C1>;
 type ClassTypeAliasFromInstance = Class<typeof c1>;
 type InstanceTypeAlias = C1;

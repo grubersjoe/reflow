@@ -2,6 +2,7 @@ import {
   ClassDeclaration,
   isTypeParameterInstantiation,
   isTypeParameterDeclaration,
+  isClassMethod,
 } from '@babel/types';
 import {
   convertTypeParameterInstantiation,
@@ -9,7 +10,7 @@ import {
 } from './type-parameter';
 
 export function convertClassDeclaration(node: ClassDeclaration): ClassDeclaration {
-  const { superTypeParameters, typeParameters } = node;
+  const { body, superTypeParameters, typeParameters } = node;
 
   if (isTypeParameterInstantiation(superTypeParameters)) {
     node.superTypeParameters = convertTypeParameterInstantiation(superTypeParameters);
@@ -18,6 +19,14 @@ export function convertClassDeclaration(node: ClassDeclaration): ClassDeclaratio
   if (isTypeParameterDeclaration(typeParameters)) {
     node.typeParameters = convertTypeParameterDeclaration(typeParameters);
   }
+
+  // Flow allows to specify the return type of constructor functions. This is
+  // forbidden in TypeScript. So the the type annotation needs to be removed.
+  body.body.forEach(elem => {
+    if (isClassMethod(elem) && elem.kind === 'constructor') {
+      elem.returnType = null;
+    }
+  });
 
   return node;
 }

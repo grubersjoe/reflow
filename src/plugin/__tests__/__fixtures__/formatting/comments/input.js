@@ -1,4 +1,5 @@
 // @flow
+// $FlowFixMe
 import styled from 'styled';
 
 // Fixture file to test formatting

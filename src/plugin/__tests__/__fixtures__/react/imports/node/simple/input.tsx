@@ -5,6 +5,6 @@ interface Props {
   margin?: string;
 }
 
-const C = (props: Props): Node => <div>Hello, world.</div>;
+const C = (props: Props): ReactNode => <div>Hello, world.</div>;
 
 export default C;

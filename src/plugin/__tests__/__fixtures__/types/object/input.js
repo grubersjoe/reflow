@@ -47,10 +47,10 @@ type ObjectWithStringLiteralKey = {
 };
 
 export type ComplexObject = {
-  buttonIcon: ?string,
-  +messageId: string,
-  +placeholder: object,
-  +callback: null | (() => void),
+  p22: ?string,
+  +p23: string,
+  +p24: {},
+  +p25: null | (() => void),
 };
 
 type ObjectWithSpread = {

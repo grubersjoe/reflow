@@ -7,7 +7,7 @@ import { Metrics } from '../util/metric';
  * To avoid syntax errors when using angle brackets it's important to give
  * output TypeScript code the "correct" file extension (.ts vs .tsx).
  *
- * So keep in mind, which files are actually using JSX.
+ * So track which files are actually using JSX.
  */
 export const jsxVisitor: VisitorFunction<JSX> = (path, state): void => {
   if (state.filename) {
