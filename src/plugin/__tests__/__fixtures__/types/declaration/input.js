@@ -29,16 +29,26 @@ declare interface DeclaredInterface<T> {
   f(x: number): string;
 }
 
+declare module 'declared-es-module' {
+  declare var declaredESModuleVar: string;
+  declare function delcaredESModuleFunction(): null;
 
-// declare module 'declared-es-module' {
-//   declare var declaredESModuleVar: string;
-//   declare export var declaredESModuleExportedVar: ?Date;
+  declare export var declaredESModuleExportedVar: ?Date;
+  declare export function declaredESModuleExportedFunction(p: ?number): number;
 
-//   declare export default () => typeof declaredESModuleVar;
-// }
+  declare class declaredESModuleClass {
+    toString(): string;
+  }
+  declare export class declaredESModuleExportedClass {
+    toString(): string;
+  }
 
-// declare module 'declared-commonjs-module' {
-//   declare module.exports: {
-//     compare(x: string, y: string): boolean;
-//   };
-// }
+  declare interface declaredESModuleInterface {
+    toString(): string;
+  }
+  declare export interface declaredESModuleExportedInterface {
+    toString(): string;
+  }
+
+  declare export default () => string;
+}

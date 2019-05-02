@@ -26,23 +26,31 @@ declare class DeclaredChildClass<T> extends Set<T> {
 declare interface DeclaredInterface<T> {
   p: T;
   q?: number;
-  f: (x: number) => string;
+  f(x: number): string;
 }
 
+declare module 'declared-es-module' {
+  var declaredESModuleVar: string;
+  function delcaredESModuleFunction(): null;
 
-// // @ts-ignore
-// declare module 'declared-es-module' {
-//   var declaredESModuleVar: string;
-//   export var declaredESModuleExportedVar: Date | null | undefined;
+  export var declaredESModuleExportedVar: Date | null | undefined;
+  export function declaredESModuleExportedFunction(p: number | null | undefined): number;
 
-//   // let foo = () => typeof declaredESModuleVar;
 
-//   // export default foo;
-// }
+  class declaredESModuleClass {
+    toString(): string;
+  }
+  export class declaredESModuleExportedClass {
+    toString(): string;
+  }
 
-// // @ts-ignore
-// declare module 'declared-commonjs-module' {
-//   function compare(x: string, y: string): boolean;
+  interface declaredESModuleInterface {
+    toString(): string;
+  }
+  export interface declaredESModuleExportedInterface {
+    toString(): string;
+  }
 
-//   export = compare;
-// }
+  const _default: () => string;
+  export default _default;
+}

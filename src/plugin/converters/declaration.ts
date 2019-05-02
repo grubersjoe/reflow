@@ -1,31 +1,50 @@
 import {
   ClassBody,
   ClassDeclaration,
+  Declaration,
   DeclareClass,
   DeclareFunction,
   DeclareInterface,
+  DeclareModule,
   DeclareTypeAlias,
+  Flow,
   Identifier,
   ObjectTypeAnnotation,
+  Statement,
   StringLiteral,
   TSDeclareFunction,
   TSInterfaceDeclaration,
+  TSModuleDeclaration,
   TSTypeAliasDeclaration,
   classBody,
   classDeclaration,
   classProperty,
+  exportDefaultDeclaration,
+  exportNamedDeclaration,
+  identifier,
+  isDeclareClass,
+  isDeclareExportDeclaration,
+  isDeclareFunction,
+  isDeclareInterface,
+  isDeclareVariable,
+  isFlowType,
   isFunctionTypeAnnotation,
   isIdentifier,
+  isInterfaceDeclaration,
   isObjectTypeProperty,
+  isTSType,
   isTypeAnnotation,
-  isTypeParameterDeclaration,
   tsDeclareFunction,
   tsDeclareMethod,
+  tsModuleBlock,
+  tsModuleDeclaration,
   tsTypeAliasDeclaration,
   tsTypeAnnotation,
+  variableDeclaration,
+  variableDeclarator,
 } from '@babel/types';
 
-import { UnexpectedError } from '../../util/error';
+import { UnexpectedError, NotImplementedError } from '../../util/error';
 import { convertFlowType } from './flow-type';
 import { functionTypeParametersToIdentifiers } from './function';
 import {
@@ -40,11 +59,10 @@ function isConstructor(key: Identifier | StringLiteral): boolean {
   return methodName === 'constructor';
 }
 
-function buildClassBody(node: ObjectTypeAnnotation): ClassBody {
+function createClassBody(node: ObjectTypeAnnotation): ClassBody {
   return classBody(
     node.properties.map(prop => {
       if (isObjectTypeProperty(prop)) {
-        // @ts-ignore prop.method exists!
         if (prop.method && isFunctionTypeAnnotation(prop.value)) {
           const { value, key } = prop;
 
@@ -77,66 +95,124 @@ function buildClassBody(node: ObjectTypeAnnotation): ClassBody {
   );
 }
 
-export function convertDeclareClass(node: DeclareClass): ClassDeclaration {
-  const _class = classDeclaration(node.id, null, buildClassBody(node.body));
+export function convertDeclareClass(node: DeclareClass, declare: boolean = true): ClassDeclaration {
+  const classDec = classDeclaration(node.id, null, createClassBody(node.body));
 
-  _class.declare = true;
-  _class.typeParameters = convertTypeParameterDeclaration(node.typeParameters);
+  classDec.declare = declare;
+  classDec.typeParameters = convertTypeParameterDeclaration(node.typeParameters);
 
   node.extends &&
     node.extends.forEach(_extend => {
       if (isIdentifier(_extend.id)) {
-        _class.superClass = _extend.id;
-        _class.superTypeParameters = convertTypeParameterInstantiation(_extend.typeParameters);
+        classDec.superClass = _extend.id;
+        classDec.superTypeParameters = convertTypeParameterInstantiation(_extend.typeParameters);
       }
     });
 
-  return _class;
+  return classDec;
 }
 
-export function convertDeclareFunction(node: DeclareFunction): TSDeclareFunction {
+export function convertDeclareFunction(
+  node: DeclareFunction,
+  declare: boolean = true,
+): TSDeclareFunction {
   const { id } = node;
-  let declareFunction: TSDeclareFunction | null = null;
+  let functionDec: TSDeclareFunction | null = null;
 
   if (
     isTypeAnnotation(id.typeAnnotation) &&
     isFunctionTypeAnnotation(id.typeAnnotation.typeAnnotation)
   ) {
     const { typeAnnotation } = id.typeAnnotation;
-
     const typeParameters = convertTypeParameterDeclaration(typeAnnotation.typeParameters);
     const returnType = tsTypeAnnotation(convertFlowType(typeAnnotation.returnType));
     const params = functionTypeParametersToIdentifiers(typeAnnotation.params) || [];
 
-    declareFunction = tsDeclareFunction(id, typeParameters, params, returnType);
+    functionDec = tsDeclareFunction(id, typeParameters, params, returnType);
   } else {
-    declareFunction = tsDeclareFunction(id, null, []);
+    functionDec = tsDeclareFunction(id, null, []);
   }
 
-  declareFunction.declare = true;
+  functionDec.declare = declare;
 
-  return declareFunction;
+  return functionDec;
 }
 
-export function convertDeclareInterface(node: DeclareInterface): TSInterfaceDeclaration {
-  const _interface = convertInterfaceDeclaration(node);
-  _interface.declare = true;
+export function convertDeclareInterface(
+  node: DeclareInterface,
+  declare: boolean = true,
+): TSInterfaceDeclaration {
+  const interfaceDec = convertInterfaceDeclaration(node);
+  interfaceDec.declare = declare;
 
-  return _interface;
+  return interfaceDec;
+}
+
+function convertModuleStatement(statement: Statement | Flow): Declaration {
+  if (isDeclareClass(statement)) {
+    return convertDeclareClass(statement, false);
+  }
+
+  if (isDeclareFunction(statement)) {
+    return convertDeclareFunction(statement, false);
+  }
+
+  if (isDeclareInterface(statement)) {
+    return convertDeclareInterface(statement, false);
+  }
+
+  if (isDeclareVariable(statement)) {
+    return variableDeclaration('var', [variableDeclarator(statement.id)]);
+  }
+
+  if (isInterfaceDeclaration(statement)) {
+    return convertInterfaceDeclaration(statement);
+  }
+
+  throw new NotImplementedError(`No conversion for ${statement.type}`);
+}
+
+export function convertDeclareModule(node: DeclareModule): TSModuleDeclaration {
+  const statements = node.body.body.reduce<Statement[]>((acc, statement) => {
+    if (isDeclareExportDeclaration(statement) && statement.declaration) {
+      const { declaration, specifiers } = statement;
+
+      if (statement.default) {
+        // Arbitrary expressions are forbidden in export assignments in ambient
+        // contexts in TS. So add a `_default` property, initialize it with the
+        // Flow expression and export that by default (https://bit.ly/2Wi3b88).
+        const defaultExport = isFlowType(declaration) ? convertFlowType(declaration) : declaration;
+        const defaultPropId = identifier('_default');
+
+        defaultPropId.typeAnnotation = isTSType(defaultExport)
+          ? tsTypeAnnotation(defaultExport)
+          : null;
+
+        const defaultProp = variableDeclaration('const', [variableDeclarator(defaultPropId)]);
+
+        acc.push(defaultProp);
+        acc.push(exportDefaultDeclaration(identifier('_default')));
+      } else {
+        acc.push(exportNamedDeclaration(convertModuleStatement(declaration), specifiers || []));
+      }
+    } else {
+      acc.push(convertModuleStatement(statement));
+    }
+
+    return acc;
+  }, []);
+
+  const moduleDec = tsModuleDeclaration(node.id, tsModuleBlock(statements));
+  moduleDec.declare = true;
+
+  return moduleDec;
 }
 
 export function convertDeclareTypeAlias(node: DeclareTypeAlias): TSTypeAliasDeclaration {
-  const typeParameters = isTypeParameterDeclaration(node.typeParameters)
-    ? convertTypeParameterDeclaration(node.typeParameters)
-    : null;
+  const typeParameters = convertTypeParameterDeclaration(node.typeParameters);
+  const typeAliasDec = tsTypeAliasDeclaration(node.id, typeParameters, convertFlowType(node.right));
 
-  const typeAliasDeclaration = tsTypeAliasDeclaration(
-    node.id,
-    typeParameters,
-    convertFlowType(node.right),
-  );
+  typeAliasDec.declare = true;
 
-  typeAliasDeclaration.declare = true;
-
-  return typeAliasDeclaration;
+  return typeAliasDec;
 }

@@ -19,6 +19,7 @@ function buildPlugin(): PluginObj<PluginPass<VisitorNodes>> {
       FunctionDeclaration: baseVisitor,
       ImportDeclaration: baseVisitor,
       ImportSpecifier: baseVisitor,
+      // @ts-ignore
       Flow: flowVisitor,
       JSX: jsxVisitor,
     },

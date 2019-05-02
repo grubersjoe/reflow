@@ -2,7 +2,7 @@
 interface InterfaceSimple {
   p: Date;
   q?: number;
-  f: (x: number) => string;
+  f(x: number): string;
 }
 
 class InterfaceClassSimple implements InterfaceSimple {
@@ -35,8 +35,8 @@ interface InterfaceWithIndexer {
 
 interface InterfaceWithGenerics<T1, T2, T3> {
   p: T1;
-  f: (x: T2) => T3;
-  g: (x: T3, y: T3) => number;
+  f(x: T2): T3;
+  g(x: T3, y: T3): number;
 }
 
 interface InterfaceWithVariance {
@@ -58,7 +58,7 @@ const arrowFunctionWithInterfaceParameter: (i: InterfaceSimple) => Date = i => i
 
 const objectWithInterfaceType: {
   x: number;
-  f: (p: string) => number;
+  f(p: string): number;
 } = {
   x: 1,
   f: p => p.length
@@ -66,11 +66,11 @@ const objectWithInterfaceType: {
 
 interface InterfaceAlias {
   p: Date;
-  f: (x: number) => number;
+  f(x: number): number;
 }
 
 interface InterfaceAliasWithExtend extends InterfaceAlias {
-  g: (x: number) => string;
+  g(x: number): string;
 }
 
 interface InterfaceAliasWithGenerics<T> extends Map<T, T> {
@@ -78,4 +78,3 @@ interface InterfaceAliasWithGenerics<T> extends Map<T, T> {
 }
 
 type InterfaceAliasGeneric = InterfaceSimple;
-

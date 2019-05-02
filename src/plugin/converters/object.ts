@@ -6,9 +6,9 @@ import {
   ObjectTypeProperty,
   ObjectTypeSpreadProperty,
   StringLiteral,
-  TSCallSignatureDeclaration,
-  TSIndexSignature,
+  TSMethodSignature,
   TSPropertySignature,
+  TSTypeElement,
   TSTypeLiteral,
   identifier,
   isFunctionTypeAnnotation,
@@ -20,6 +20,7 @@ import {
   isTSTypeLiteral,
   tsCallSignatureDeclaration,
   tsIndexSignature,
+  tsMethodSignature,
   tsPropertySignature,
   tsTypeAnnotation,
   tsTypeLiteral,
@@ -29,12 +30,11 @@ import { convertFlowType } from './flow-type';
 
 import { UnexpectedError } from '../../util/error';
 import { convertTypeParameterDeclaration } from './type-parameter';
-import { functionTypeParametersToIdentifiers } from './function';
+import { functionTypeParametersToIdentifiers, convertFunctionTypeAnnotation } from './function';
 
-type Signature = TSCallSignatureDeclaration | TSIndexSignature | TSPropertySignature;
 type SignatureKey = Identifier | StringLiteral;
 
-function signatureKeysAreEqual(signature: Signature, key: SignatureKey): boolean {
+function signatureKeysAreEqual(signature: TSTypeElement, key: SignatureKey): boolean {
   if (isTSPropertySignature(signature)) {
     if (isIdentifier(signature.key) && isIdentifier(key)) {
       return signature.key.name === key.name;
@@ -57,11 +57,31 @@ function signatureKeysAreEqual(signature: Signature, key: SignatureKey): boolean
 }
 
 function replaceProperty(
-  signatures: Signature[],
+  signatures: TSTypeElement[],
   key: SignatureKey,
   updatedProp: TSPropertySignature,
-): Signature[] {
+): TSTypeElement[] {
   return signatures.map(prop => (signatureKeysAreEqual(prop, key) ? updatedProp : prop));
+}
+
+function createMethodSignature(prop: ObjectTypeProperty): TSMethodSignature {
+  const { key, optional, value } = prop;
+
+  if (!isFunctionTypeAnnotation(value)) {
+    throw new UnexpectedError(`prop.value must be a FunctionTypeAnnotation.`);
+  }
+
+  const functionType = convertFunctionTypeAnnotation(value);
+  const methodSignature = tsMethodSignature(
+    key,
+    functionType.typeParameters,
+    functionType.parameters,
+    functionType.typeAnnotation,
+  );
+
+  methodSignature.optional = optional;
+
+  return methodSignature;
 }
 
 function createPropertySignature(prop: ObjectTypeProperty): TSPropertySignature {
@@ -72,16 +92,16 @@ function createPropertySignature(prop: ObjectTypeProperty): TSPropertySignature 
   propSignature.readonly = variance && variance.kind === 'plus';
 
   // Note: TypeScript does not suppport write-only properties. So Flow's variance.kind === 'minus'
-  // is ignored.
+  // has to be ignored.
 
   return propSignature;
 }
 
 function convertObjectTypeSpreadProperty(
   node: ObjectTypeAnnotation,
-  signatures: Signature[],
+  signatures: TSTypeElement[],
   prop: ObjectTypeSpreadProperty,
-): Signature[] {
+): TSTypeElement[] {
   const type = convertFlowType(prop.argument);
 
   if (isTSTypeLiteral(type)) {
@@ -132,9 +152,9 @@ function convertObjectTypeSpreadProperty(
 }
 
 function convertObjectTypeCallProperty(
-  signatures: Signature[],
+  signatures: TSTypeElement[],
   callProp: ObjectTypeCallProperty,
-): Signature[] {
+): TSTypeElement[] {
   if (!isFunctionTypeAnnotation(callProp.value)) {
     return signatures;
   }
@@ -151,9 +171,9 @@ function convertObjectTypeCallProperty(
 }
 
 function convertObjectTypeIndexer(
-  signatures: Signature[],
+  signatures: TSTypeElement[],
   indexer: ObjectTypeIndexer,
-): Signature[] {
+): TSTypeElement[] {
   const key = indexer.id || identifier('key');
   key.typeAnnotation = tsTypeAnnotation(convertFlowType(indexer.key));
 
@@ -167,11 +187,15 @@ function convertObjectTypeIndexer(
 
 export function convertObjectTypeAnnotation(node: ObjectTypeAnnotation): TSTypeLiteral {
   const { callProperties, indexers, properties } = node;
-  let signatures: Signature[] = [];
+  let signatures: TSTypeElement[] = [];
 
   properties.forEach(prop => {
     if (isObjectTypeProperty(prop)) {
-      signatures.push(createPropertySignature(prop));
+      if (isFunctionTypeAnnotation(prop.value) && prop.method) {
+        signatures.push(createMethodSignature(prop));
+      } else {
+        signatures.push(createPropertySignature(prop));
+      }
     }
   });
 

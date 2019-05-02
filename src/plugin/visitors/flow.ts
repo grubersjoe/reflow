@@ -11,6 +11,7 @@ import {
   isTypeAnnotation,
   isTypeCastExpression,
   isTypeParameterDeclaration,
+  isDeclareModule,
 } from '@babel/types';
 
 import { VisitorFunction } from '../types';
@@ -19,6 +20,7 @@ import { PluginWarnings, WARNINGS } from '../util/warning';
 import {
   convertDeclareClass,
   convertDeclareFunction,
+  convertDeclareModule,
   convertDeclareInterface,
   convertDeclareTypeAlias,
 } from '../converters/declaration';
@@ -44,6 +46,10 @@ export const flowVisitor: VisitorFunction<Flow> = (path): void => {
 
   if (isDeclareInterface(node)) {
     path.replaceWith(convertDeclareInterface(node));
+  }
+
+  if (isDeclareModule(node)) {
+    path.replaceWith(convertDeclareModule(node));
   }
 
   if (isDeclareTypeAlias(node)) {
