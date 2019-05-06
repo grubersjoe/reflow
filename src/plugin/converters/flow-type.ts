@@ -52,7 +52,7 @@ export function convertFlowType(node: FlowType, path?: NodePath<Flow>): TSType {
       return tsNeverKeyword();
 
     case 'ExistsTypeAnnotation':
-      PluginWarnings.enable(WARNINGS.ExistsTypeAnnotation);
+      PluginWarnings.enable(WARNINGS.existsTypeAnnotation);
       return tsAnyKeyword();
 
     case 'FunctionTypeAnnotation':

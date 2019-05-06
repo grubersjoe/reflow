@@ -21,8 +21,8 @@ export function functionTypeParamToIdentifier(
   param: FunctionTypeParam,
   fallbackName: string,
 ): Identifier {
-  // The parameter might not have a name (param.name === null). This is possible, because Flow does
-  // not require parameter names in function types - TypeScript does, however.
+  // In contrast to TypeScript, parameter names in function types are optional
+  // in Flow.
   const id = identifier(isIdentifier(param.name) ? param.name.name : fallbackName);
 
   id.optional = param.optional;

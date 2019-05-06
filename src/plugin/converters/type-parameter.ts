@@ -27,7 +27,7 @@ export function convertTypeParameter(node: TypeParameter): TSTypeParameter {
   }
 
   if (node.variance) {
-    PluginWarnings.enable(WARNINGS.GenericTypeAnnotation.Variance);
+    PluginWarnings.enable(WARNINGS.genericTypeAnnotation.variance);
   }
 
   return typeParameter;

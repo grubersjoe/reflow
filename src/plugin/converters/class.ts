@@ -4,6 +4,8 @@ import {
   isTypeParameterDeclaration,
   isTypeParameterInstantiation,
 } from '@babel/types';
+
+import { PluginWarnings, WARNINGS } from '../util/warning';
 import {
   convertTypeParameterInstantiation,
   convertTypeParameterDeclaration,
@@ -23,7 +25,8 @@ export function convertClassDeclaration(node: ClassDeclaration): ClassDeclaratio
   // Flow allows to specify the return type of constructor functions. This is
   // forbidden in TypeScript. So the the type annotation needs to be removed.
   body.body.forEach(elem => {
-    if (isClassMethod(elem) && elem.kind === 'constructor') {
+    if (isClassMethod(elem) && elem.kind === 'constructor' && elem.returnType) {
+      PluginWarnings.enable(WARNINGS.class.constructorReturnType);
       elem.returnType = null;
     }
   });

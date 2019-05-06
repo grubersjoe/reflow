@@ -20,8 +20,8 @@ function convertImportSpecifiers(path: NodePath<ImportDeclaration | ImportSpecif
       if (binding) {
         binding.referencePaths.map(path => {
           if (isFlowType(path.parent)) {
-            // Note: The transformation of the Flow type is not perfomed here, but will be handled
-            // by the TypeofTypeAnnotation converter.
+            // Note: The Flow type won't be transformed here, but will be
+            // handled by the TypeofTypeAnnotation converter.
             path.parentPath.replaceWith(typeofTypeAnnotation(path.parent));
           }
         });

@@ -13,15 +13,19 @@ import {
   identifier,
   isFunctionTypeAnnotation,
   isIdentifier,
+  isNumberTypeAnnotation,
   isObjectTypeProperty,
   isObjectTypeSpreadProperty,
   isStringLiteral,
+  isStringTypeAnnotation,
   isTSPropertySignature,
   isTSTypeLiteral,
   tsCallSignatureDeclaration,
   tsIndexSignature,
   tsMethodSignature,
+  tsNumberKeyword,
   tsPropertySignature,
+  tsStringKeyword,
   tsTypeAnnotation,
   tsTypeLiteral,
   tsUnionType,
@@ -29,6 +33,7 @@ import {
 import { convertFlowType } from './flow-type';
 
 import { UnexpectedError } from '../../util/error';
+import { PluginWarnings, WARNINGS } from '../util/warning';
 import { convertTypeParameterDeclaration } from './type-parameter';
 import { functionTypeParametersToIdentifiers, convertFunctionTypeAnnotation } from './function';
 
@@ -91,8 +96,11 @@ function createPropertySignature(prop: ObjectTypeProperty): TSPropertySignature 
   propSignature.optional = optional;
   propSignature.readonly = variance && variance.kind === 'plus';
 
-  // Note: TypeScript does not suppport write-only properties. So Flow's variance.kind === 'minus'
-  // has to be ignored.
+  // TypeScript doesn't suppport write-only properties. So Flow's
+  // variance.kind === 'minus' must be ignored.
+  if (variance && variance.kind === 'minus') {
+    PluginWarnings.enable(WARNINGS.objectTypeProperty.variance);
+  }
 
   return propSignature;
 }
@@ -117,16 +125,17 @@ function convertObjectTypeSpreadProperty(
 
         if (parentProp && parentProp.typeAnnotation) {
           if (node.exact) {
-            // Overwrite parent property signature with the object spread one, when exact object
-            // notation is used.
+            // Overwrite parent property signature with the object spread one,
+            // when exact object notation is used.
             signatures = replaceProperty(
               signatures,
               key,
               tsPropertySignature(key, innerProp.typeAnnotation),
             );
           } else {
-            // Extend the type of the parent property signature with an union of its own type and
-            // the type of the object spread property otherwise.
+            // Extend the type of the parent property signature with an union
+            // of its own type and the type of the object spread property
+            // otherwise.
             signatures = replaceProperty(
               signatures,
               key,
@@ -174,13 +183,29 @@ function convertObjectTypeIndexer(
   signatures: TSTypeElement[],
   indexer: ObjectTypeIndexer,
 ): TSTypeElement[] {
-  const key = indexer.id || identifier('key');
-  key.typeAnnotation = tsTypeAnnotation(convertFlowType(indexer.key));
-
+  const { id, key } = indexer;
   const typeAnnotation = tsTypeAnnotation(convertFlowType(indexer.value));
-  const propIndexSignature = tsIndexSignature([key], typeAnnotation);
 
-  signatures.push(propIndexSignature);
+  // TypeScript only allows number or string as key type. Add both index
+  // signatures if another type is used in Flow.
+  const isValidKeyType = isNumberTypeAnnotation(key) || isStringTypeAnnotation(key);
+
+  if (isValidKeyType) {
+    const tsKey = id || identifier('key');
+    tsKey.typeAnnotation = tsTypeAnnotation(convertFlowType(key));
+    signatures.push(tsIndexSignature([tsKey], typeAnnotation));
+  } else {
+    signatures.push(
+      ...[tsNumberKeyword(), tsStringKeyword()].map(type => {
+        const key = id || identifier('key');
+        key.typeAnnotation = tsTypeAnnotation(type);
+
+        return tsIndexSignature([key], typeAnnotation);
+      }),
+    );
+
+    PluginWarnings.enable(WARNINGS.indexSignatures.invalidKey);
+  }
 
   return signatures;
 }

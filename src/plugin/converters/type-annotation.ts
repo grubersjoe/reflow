@@ -38,6 +38,7 @@ export function convertGenericTypeAnnotation(
 
   if (isIdentifier(id)) {
     if (typeParameters) {
+      // Utility types
       switch (id.name) {
         case 'Class':
           return convertClassUtility(typeParameters, path);

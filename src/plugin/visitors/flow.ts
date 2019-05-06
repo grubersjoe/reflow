@@ -65,7 +65,7 @@ export const flowVisitor: VisitorFunction<Flow> = (path): void => {
   }
 
   if (isOpaqueType(node)) {
-    PluginWarnings.enable(WARNINGS.OpaqueType);
+    PluginWarnings.enable(WARNINGS.opaqueType);
     path.replaceWith(convertOpaqueType(node));
   }
 

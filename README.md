@@ -75,35 +75,35 @@ completely equivalently in TypeScript and will result in a loss of (some) type i
 list of unsupported Flow features in TypeScript below. Some type annotations don't require any
 transformation, since they share the same syntax in Flow and TypeScript.
 
-| Done               | Type                         | Flow                           | TypeScript                            |
-| ------------------ | ---------------------------- | ------------------------------ | ------------------------------------- |
-| :white_check_mark: | Array type                   | `Array<number>`                | `Array<number>`                       |
-| :white_check_mark: | Boolean literal type         | `true`                         | `true`                                |
-| :white_check_mark: | Boolean type                 | `boolean`                      | `boolean`                             |
-| :white_check_mark: | **Empty type**               | `empty`                        | `never`                               |
-| :white_check_mark: | **Exact object type**        | `{\| p: number \|}`            | `{ p: number }`                       |
-| :white_check_mark: | **Function type**            | `(string, boolean) => number`  | `(p1: string, p2: boolean) => number` |
-| :white_check_mark: | Generic type annotation      | `let date: <FlowType>`         | `let date: <TSType>`                  |
-| :white_check_mark: | **Generics**                 | `type Generic<T: Animal> = T`  | `type Generic<T extends Animal> = T`  |
-| :white_check_mark: | **Interface type** :warning: | `interface { +p: number }`     | `interface { readonly p: number }`    |
-| :white_check_mark: | Intersection type            | `type Intersection = T1 & T2`  | `type Intersection = T1 & T2`         |
-| :white_check_mark: | **Mixed type**               | `mixed`                        | `unknown`                             |
-| :white_check_mark: | Null literal type            | `null`                         | `null`                                |
-| :white_check_mark: | **Nullable type** = Maybe    | `?number`                      | `number \| null \| undefined`         |
-| :white_check_mark: | Number literal type          | `42`                           | `42`                                  |
-| :white_check_mark: | Number type                  | `number`                       | `number`                              |
-| :white_check_mark: | **Module exports / imports** | `import type T from './types'` | `import T from './types`              |
-| :white_check_mark: | **Object type**              | `{ [string]: number }`         | `{ [key: string]: number }`           |
-| :white_check_mark: | **Opaque type** :warning:    | `opaque type Opaque = number`  | `type Opaque = number`                |
-| :white_check_mark: | String literal type          | `'literal'`                    | `'literal'`                           |
-| :white_check_mark: | String type                  | `string`                       | `string`                              |
-| :white_check_mark: | This type                    | `this`                         | `this`                                |
-| :white_check_mark: | Tuple type                   | `[Date, number]`               | `[Date, number]`                      |
-| :white_check_mark: | **Type alias**               | `type Type = <FlowType>`       | `type Type = <TSType>`                |
-| :white_check_mark: | **Type casting**             | `(t: T)`                       | `(t as T)`                            |
-| :white_check_mark: | **Typeof type**              | `typeof undefined`             | `undefined`                           |
-| :white_check_mark: | Union type                   | `number \| null`               | `number \| null`                      |
-| :white_check_mark: | Void type                    | `void`                         | `void`                                |
+| Done               | Type                         | Flow                                  | TypeScript                                    |
+| ------------------ | ---------------------------- | ------------------------------------- | --------------------------------------------- |
+| :white_check_mark: | Array type                   | `Array<number>`                       | `Array<number>`                               |
+| :white_check_mark: | Boolean literal type         | `true`                                | `true`                                        |
+| :white_check_mark: | Boolean type                 | `boolean`                             | `boolean`                                     |
+| :white_check_mark: | **Empty type**               | `empty`                               | `never`                                       |
+| :white_check_mark: | **Exact object type**        | `{\| p: number \|}`                   | `{ p: number }`                               |
+| :white_check_mark: | **Function type**            | `(string, boolean) => number`         | `(p1: string, p2: boolean) => number`         |
+| :white_check_mark: | Generic type annotation      | `let v: <FlowType>`                   | `let v: <TSType>`                             |
+| :white_check_mark: | **Generics**                 | `type Generic<T: SuperClass> = T`     | `type Generic<T extends SuperClass> = T`      |
+| :white_check_mark: | **Interface type** :warning: | `interface { +p1: number, p2: null }` | `interface { readonly p1: number, p2: null }` |
+| :white_check_mark: | Intersection type            | `type Intersection = T1 & T2`         | `type Intersection = T1 & T2`                 |
+| :white_check_mark: | **Mixed type**               | `mixed`                               | `unknown`                                     |
+| :white_check_mark: | Null literal type            | `null`                                | `null`                                        |
+| :white_check_mark: | **Nullable type** = Maybe    | `?number`                             | `number \| null \| undefined`                 |
+| :white_check_mark: | Number literal type          | `42`                                  | `42`                                          |
+| :white_check_mark: | Number type                  | `number`                              | `number`                                      |
+| :white_check_mark: | **Module exports / imports** | `import type T from './types'`        | `import T from './types`                      |
+| :white_check_mark: | **Object type**              | `{ [string]: number }`                | `{ [key: string]: number }`                   |
+| :white_check_mark: | **Opaque type** :warning:    | `opaque type Opaque = number`         | `type Opaque = number`                        |
+| :white_check_mark: | String literal type          | `'literal'`                           | `'literal'`                                   |
+| :white_check_mark: | String type                  | `string`                              | `string`                                      |
+| :white_check_mark: | This type                    | `this`                                | `this`                                        |
+| :white_check_mark: | Tuple type                   | `[Date, number]`                      | `[Date, number]`                              |
+| :white_check_mark: | **Type alias**               | `type Type = <FlowType>`              | `type Type = <TSType>`                        |
+| :white_check_mark: | **Type casting**             | `(t: T)`                              | `(t as T)`                                    |
+| :white_check_mark: | **Typeof type**              | `typeof undefined`                    | `undefined`                                   |
+| :white_check_mark: | Union type                   | `number \| null`                      | `number \| null`                              |
+| :white_check_mark: | Void type                    | `void`                                | `void`                                        |
 
 ### Utility types
 
@@ -131,7 +131,7 @@ transformation, since they share the same syntax in Flow and TypeScript.
 
 ### Declarations
 
-| Done               | Type                               | Flow                                         | TypeScript                                               |
+| Done               | Declaration                        | Flow                                         | TypeScript                                               |
 | ------------------ | ---------------------------------- | -------------------------------------------- | -------------------------------------------------------- |
 | :white_check_mark: | Declare class                      | `declare class C {}`                         | `declare class C {}`                                     |
 | :white_check_mark: | **Declare function**               | `declare function f(number): any`            | `declare function f(p: number): any`                     |
@@ -145,12 +145,40 @@ transformation, since they share the same syntax in Flow and TypeScript.
 
 ---
 
-### Unsupported FlowJS features
+### Unsupported FlowJS features / syntax
 
 The following Flow JS features are currently not supported in TypeScript:
 
-- [Existential Type](https://github.com/Microsoft/TypeScript/issues/14466): `*`
-- [Opaque Type](https://github.com/Microsoft/TypeScript/issues/14520): `opaque type`
-- Variance: `interface I { -contravariant: any; }`
+- [Constructor return types](https://github.com/Microsoft/TypeScript/issues/11588)
 
-  TypeScript supports covariance however.
+  TypeScript intentionally doesn't support return types for constructor functions. These will be
+  removed by Reflow.
+
+- [Existential Type](https://github.com/Microsoft/TypeScript/issues/14466)
+
+  `*` becomes `any`.
+
+- [Function types with unnamed parameters](https://flow.org/en/docs/types/functions/#toc-function-types)
+
+  In contrast to TypeScript, parameter names can be omitted in Flow (`({}, Date) => boolean`).
+  Therefore Reflow inserts parameter names automatically (`p` for a single parameter and `p{i}` for
+  multiple ones): `(p1: {}, p2: Date) => boolean`.
+
+- Index signatures
+
+  `{ [string]: number }`
+
+  Flow allows any type for keys in index signatures, but Typescript only accepts `string` or
+  `number`. Reflow will add index signatures both for `string` and `number` if a different type is
+  specified in Flow.
+
+- [Opaque Type](https://github.com/Microsoft/TypeScript/issues/14520)
+
+  `opaque type T` is transformed to a plain type alias.
+
+- [Variance](https://github.com/Microsoft/TypeScript/issues/1394)
+
+  `interface I { -contravariant: any; } => interface I { contravariant: any }`
+
+  Flow's contravariance sigil (`-`) is not expressible in Typescript. However, TypeScript does
+  support covariance for certain type (`+` becomes `readonly`).

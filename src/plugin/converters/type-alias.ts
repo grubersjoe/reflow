@@ -19,8 +19,8 @@ export function convertTypeAlias(
   const typeParameters = convertTypeParameterDeclaration(node.typeParameters);
   const typeAnnotation = convertFlowType(node.right, path);
 
-  // A type alias for an interface type is not allowed in TypeScript.
-  // Replace the type alias with an equivalent interface declaration in this case.
+  // A type alias for an interface type is not allowed in TypeScript. Replace
+  // the type alias with an equivalent interface declaration in this case.
   if (isInterfaceTypeAnnotation(node.right)) {
     return convertInterfaceTypeAlias(node as TypeAliasForInterfaceType);
   }
