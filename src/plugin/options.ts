@@ -1,6 +1,6 @@
 import { TransformOptions, ParserOptions } from '@babel/core';
 
-import overflowPlugin, { PluginOptions } from '.';
+import reflowPlugin, { PluginOptions } from '.';
 
 /**
  * Create the Babel configuration for runners using the plugin
@@ -14,7 +14,7 @@ export function getTransformOptions(
   const defaultOptions: TransformOptions = {
     babelrc: false,
     configFile: false,
-    plugins: [[overflowPlugin, args.pluginOptions]],
+    plugins: [[reflowPlugin, args.pluginOptions]],
   };
 
   return Object.assign({}, defaultOptions, args.transformOptions);

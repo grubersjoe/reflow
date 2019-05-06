@@ -1,7 +1,7 @@
 image: node:11
 
 cache:
-  key: "node_modules-overflow"
+  key: 'node_modules-reflow'
   paths:
     - node_modules/
 
@@ -24,7 +24,7 @@ build:
   script:
     - yarn build
   artifacts:
-    name: overflow
+    name: reflow
     paths:
       - build
   only:

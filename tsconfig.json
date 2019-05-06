@@ -4,10 +4,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "preserve",
-    "lib": [
-      "dom",
-      "es2018"
-    ],
+    "lib": ["dom", "es2018"],
     "module": "ESNext",
     "moduleResolution": "node",
     "noEmit": true,
@@ -20,7 +17,5 @@
     "src/plugin/__tests__/__fixtures__/formatting/**/*.ts",
     "src/plugin/__tests__/__fixtures__/types/modules/*.ts"
   ],
-  "include": [
-    "src/**/*.ts",
-  ]
+  "include": ["src/**/*.ts"]
 }

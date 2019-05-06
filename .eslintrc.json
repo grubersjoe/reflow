@@ -15,13 +15,14 @@
     "project": "./tsconfig.json",
     "sourceType": "module"
   },
-  "plugins": [
-    "@typescript-eslint"
-  ],
+  "plugins": ["@typescript-eslint"],
   "rules": {
-    "@typescript-eslint/explicit-function-return-type": [1, {
-      "allowExpressions": true
-    }],
+    "@typescript-eslint/explicit-function-return-type": [
+      1,
+      {
+        "allowExpressions": true
+      }
+    ],
     "@typescript-eslint/indent": 0,
     "curly": 0,
     "no-console": 0,

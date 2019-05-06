@@ -13,9 +13,9 @@ module.exports = (env, argv) => {
         {
           test: /\.ts$/,
           use: 'babel-loader',
-          exclude: /node_modules/
+          exclude: /node_modules/,
         },
-      ]
+      ],
     },
     output: {
       // These options are necessary to make debugging in VS Code possible,
@@ -23,18 +23,18 @@ module.exports = (env, argv) => {
       devtoolFallbackModuleFilenameTemplate: '[absolute-resource-path]?[hash]',
       devtoolModuleFilenameTemplate: '[absolute-resource-path]',
 
-      filename: 'overflow.js',
-      path: path.resolve(__dirname, 'build')
+      filename: 'reflow.js',
+      path: path.resolve(__dirname, 'build'),
     },
     plugins: [
       new webpack.BannerPlugin({
-        banner: "#!/usr/bin/env node",
+        banner: '#!/usr/bin/env node',
         entryOnly: true,
         raw: true,
-      })
+      }),
     ],
     resolve: {
-      extensions: ['.tsx', '.ts', '.js']
+      extensions: ['.tsx', '.ts', '.js'],
     },
     target: 'node',
   };

@@ -9,6 +9,7 @@ declare type DeclaredTypeWithGeneric<T> = {
 };
 
 declare function declaredFunction(x: number): string;
+declare function declaredFunctionWithoutParamName(boolean): void;
 declare type DeclaredArrowFunction = (...nums: Array<number>) => number;
 
 declare class DeclaredClass {

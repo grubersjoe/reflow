@@ -6,7 +6,7 @@
   "license": "MIT",
   "private": true,
   "bin": {
-    "overflow": "./build/overflow.js"
+    "reflow": "./build/reflow.js"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -56,7 +56,7 @@
     "build": "node --max_old_space_size=4096 ./node_modules/.bin/webpack --mode=production --progress",
     "clean": "rm -rv build/*",
     "dev": "webpack -w",
-    "format": "prettier --write 'src/**/*'",
+    "format": "prettier --write 'src/**/*' './*.{js,json,md}'",
     "lint": "eslint --max-warnings=0 'src/**/*.ts'",
     "test": "jest",
     "test:coverage": "jest --coverage && xdg-open src/plugin/__tests__/__coverage__/lcov-report/index.html",

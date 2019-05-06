@@ -44,7 +44,7 @@ const helpText = {
 // Define the CLI interface
 program
   .version(pkg.version)
-  .description('Overflow')
+  .description('Reflow')
   .usage('[OPTION]... <FILES OR DIRECTORIES ...>')
   .option('-d, --dry-run', helpText.dryRun)
   .option('-e, --exclude-dirs <dirs ...>', helpText.excludeDirs, toArray, ['node_modules'])
@@ -54,8 +54,8 @@ program
 
 program.on('--help', () => {
   console.log('\nExamples:');
-  console.log(`  $ overflow --write src/`);
-  console.log(`  $ overflow -exclude-patterns '**/__tests__/**/*','foo/*.js' src/lib/`);
+  console.log(`  $ reflow --write src/`);
+  console.log(`  $ reflow -exclude-patterns '**/__tests__/**/*','mocks/*.js' src/lib/`);
 });
 
 program.parse(process.argv);

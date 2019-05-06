@@ -1,94 +1,156 @@
-# Overflow
+# Reflow
 
-Babel Plugin to transform Flow typed JavaScript to TypeScript.
+> Babel Plugin to automatically migrate a [Flow JS](https://flow.org/) typed JavaScript code base to
+> [TypeScript](https://www.typescriptlang.org/).
+
+**Careful: this is still work in progress!**
+
+This package transforms your Flow JS type annotations to equivalent TypeScript code. While this
+should reduce the effort to migrate a large code base to TypeScript drastically, you will most
+likely still need to manually fix and refactor the resulting code. After the transformation new type
+errors will probably occur and existing type annotations _may_ prove to be inaccurate. This program
+helps you with the tedious task to rewrite the syntax, but it can't magically fix semantic problems
+obviously.
+
+The type system of TypeScript and Flow share a lot of similarities but still there are some
+fundamental and many subtle differences. See this excellent repository for a detailed
+[comparison](https://github.com/niieani/typescript-vs-flowtype) and good overview. One major
+difference for example is the purely structural type system of TypeScript versus the partly nominal
+one used in Flow JS.
+
+## Installation
+
+```
+yarn add --dev babel-reflow
+```
+
+## Usage
+
+### CLI
+
+Install the package as project dependency and run `npx reflow` afterwards. Alternatively you might
+want to install Reflow globally so you can simply type `reflow`:
+
+```shell
+yarn global add babel-reflow
+```
+
+Usage is as follows:
+
+```shell
+Usage: reflow [OPTION]... <FILES OR DIRECTORIES ...>
+
+Reflow
+
+Options:
+  -V, --version                    output the version number
+  -d, --dry-run                    perform a trial run printing to stdout instead of writing a file
+  -e, --exclude-dirs <dirs ...>    list of recursively excluded directories (default: ["node_modules"])
+  -i, --include-pattern <pattern>  set the glob pattern for input files (default: "**/*.{js,jsx}")
+  -r, --replace                    process files in-place. A new TS file will be created next to the original file otherwise.
+  -v, --verbose                    increase verbosity
+  -h, --help                       output usage information
+
+Examples:
+  $ reflow --write src/
+  $ reflow -exclude-patterns '**/__tests__/**/*','mocks/*.js' src/lib/
+
+```
+
+### Programmatically
+
+TODO
+
+### As Babel plugin (not recommended)
+
+This is probably a bad idea. Please don't do that.
 
 ## Transformations
 
 ### Base types
 
-The examples have been chosen to give an overview and show some of the syntax differences. Many of the basic type annotations do not require any syntax transformation.
+The following examples have been chosen to show some of the syntax differences between Flow and
+TypeScript. Bold types need to be transformed, the ones with a warning sign can't be expressed
+completely equivalently in TypeScript and will result in a loss of (some) type information. See the
+list of unsupported Flow features in TypeScript below. Some type annotations don't require any
+transformation, since they share the same syntax in Flow and TypeScript.
 
-| Status | Type                  | Flow                           | TypeScript | Notes |
-|--------|-----------------------|--------------------------------|------------|-------|
-| Done   | Any type | `any` | `any` |  |
-| Done   | Array type | `Array<number>`, `number[]` | `number[]` |  |
-| Done   | Boolean literal type | `type BoolLiteral = true` | `type BoolLiteral = true` |  |
-| Done   | Boolean type | `type Boolean = boolean ` | `type Boolean = boolean` |  |
-| Done   | Empty type | `type Empty = empty` | `type Empty = never` | *undocumented* |
-| Done   | Exact object type | `type ExactObject = {\| p: number \|}` | `type ExactObject = { p: number }` | TS default behaviour |
-| Done   | Function type | `type Function = (string) => number` | `type Function = (p1: string) => number` |  |
-| Done   | Generic type | `type Generic<T: Animal> = T;` | `type Generic<T extends Animal> = T;` |  |
-| Done   | Interface type | `interface { +p: number }` | `interface { readonly p: number }` |  |
-| Done   | Intersection type | `type Intersection = T1 & T2` | `type Intersection = T1 & T2` |  |
-| Done   | Mixed type | `type Mixed = mixed` | `type Mixed = unknown` |  |
-| Done   | Null literal type | `type Null = null` | `type Null = null` |  |
-| Done   | Nullable type (Maybe) | `type Maybe = ?number` | `type Maybe = number \| null \| undefined` |  |
-| Done   | Number literal type | `type NumberLiteral = 3` | `type NumberLiteral = 3` |  |
-| Done   | Number type | `type Number = number` | `type Number = number` |  |
-| Done   | Object type | `type Object = { [string]: number }` | `type Object = { [key: string]: number }` |  |
-| Done   | Opaque type | `opaque type Opaque = number` | `type Opaque = number` | Unsupported in TS |
-| Done   | String literal type | `type StringLiteral = 'string'` | `type StringLiteral = 'string'` |  |
-| Done   | String type | `type String = string` | `type String = string` |  |
-| Done   | This type | `type This = this` | `type This = this` |  |
-| Done   | Tuple type | `type Tuple = [Date, number]` | `type Tuple = [Date, number]` |  |
-| Done   | Typeof type | `type Typeof = typeof undefined` | `type Typeof = undefined` |  |
-| Done   | Union type | `type Union = number \| null` | `type Union = number \| null` |  |
-| Done   | Void type | `type Void = void` | `type Void = void` |  |
+| Done               | Type                         | Flow                           | TypeScript                            |
+| ------------------ | ---------------------------- | ------------------------------ | ------------------------------------- |
+| :white_check_mark: | Array type                   | `Array<number>`                | `Array<number>`                       |
+| :white_check_mark: | Boolean literal type         | `true`                         | `true`                                |
+| :white_check_mark: | Boolean type                 | `boolean`                      | `boolean`                             |
+| :white_check_mark: | **Empty type**               | `empty`                        | `never`                               |
+| :white_check_mark: | **Exact object type**        | `{\| p: number \|}`            | `{ p: number }`                       |
+| :white_check_mark: | **Function type**            | `(string, boolean) => number`  | `(p1: string, p2: boolean) => number` |
+| :white_check_mark: | Generic type annotation      | `let date: <FlowType>`         | `let date: <TSType>`                  |
+| :white_check_mark: | **Generics**                 | `type Generic<T: Animal> = T`  | `type Generic<T extends Animal> = T`  |
+| :white_check_mark: | **Interface type** :warning: | `interface { +p: number }`     | `interface { readonly p: number }`    |
+| :white_check_mark: | Intersection type            | `type Intersection = T1 & T2`  | `type Intersection = T1 & T2`         |
+| :white_check_mark: | **Mixed type**               | `mixed`                        | `unknown`                             |
+| :white_check_mark: | Null literal type            | `null`                         | `null`                                |
+| :white_check_mark: | **Nullable type** = Maybe    | `?number`                      | `number \| null \| undefined`         |
+| :white_check_mark: | Number literal type          | `42`                           | `42`                                  |
+| :white_check_mark: | Number type                  | `number`                       | `number`                              |
+| :white_check_mark: | **Module exports / imports** | `import type T from './types'` | `import T from './types`              |
+| :white_check_mark: | **Object type**              | `{ [string]: number }`         | `{ [key: string]: number }`           |
+| :white_check_mark: | **Opaque type** :warning:    | `opaque type Opaque = number`  | `type Opaque = number`                |
+| :white_check_mark: | String literal type          | `'literal'`                    | `'literal'`                           |
+| :white_check_mark: | String type                  | `string`                       | `string`                              |
+| :white_check_mark: | This type                    | `this`                         | `this`                                |
+| :white_check_mark: | Tuple type                   | `[Date, number]`               | `[Date, number]`                      |
+| :white_check_mark: | **Type alias**               | `type Type = <FlowType>`       | `type Type = <TSType>`                |
+| :white_check_mark: | **Type casting**             | `(t: T)`                       | `(t as T)`                            |
+| :white_check_mark: | **Typeof type**              | `typeof undefined`             | `undefined`                           |
+| :white_check_mark: | Union type                   | `number \| null`               | `number \| null`                      |
+| :white_check_mark: | Void type                    | `void`                         | `void`                                |
 
 ### Utility types
 
-| Status | Type                  | Flow                           | TypeScript | Notes |
-|--------|-----------------------|--------------------------------|------------|-------
-| Done   | ExistsTypeAnnotation (Existential) | `*` | `any` | Unsupported in TS |
+| Done               | Utility Type                   | Flow                  | TypeScript    |
+| ------------------ | ------------------------------ | --------------------- | ------------- |
+| :construction:     | Call                           | `$Call<F, T...>`      | TODO          |
+| :white_check_mark: | Class                          | `Class<T>`            | `typeof T`    |
+| :construction:     | Difference                     | `$Diff<A, B>`         | TODO          |
+| :construction:     | Element type                   | `$ElementType<T, K>`  | `T[k]`        |
+| :construction:     | Exact                          | `$Exact<T>`           | `T`           |
+| :white_check_mark: | **Existential type** :warning: | `*`                   | `any`         |
+| :construction:     | Keys                           | `$Keys<T>`            | `keyof T`     |
+| :construction:     | None maybe type                | `$NonMaybeType<T>`    | TODO          |
+| :construction:     | Object map                     | `$ObjMap<T, F>`       | TODO          |
+| :construction:     | Object map with key            | `$ObjMapi<T, F>`      | TODO          |
+| :construction:     | Property type                  | `$PropertyType<T, k>` | `T[k]`        |
+| :construction:     | Tuple map                      | `$TupleMap<T, F>`     | TODO          |
+| :white_check_mark: | ReadOnly                       | `$ReadOnly<T>`        | `Readonly<T>` |
+| :construction:     | Rest                           | `$Rest<A, B>`         | `Exclude`     |
+| :construction:     | Return type                    | `$Call<F>`            | `ReturnType`  |
+| :construction:     | Shape                          | `$Shape<T>`           | TODO          |
+| :construction:     | Values                         | `$Values<T>`          | `T[keyof T]`  |
+|                    | <s>Subtype</s>                 | _deprecated_          |               |
+|                    | <s>Supertype</s>               | _deprecated_          |               |
 
-### Language constructs
+### Declarations
 
-| Status | Construct             | Flow                           | TypeScript | Notes |
-|--------|-----------------------|--------------------------------|------------|-------
-| Done   | Casting | `(t: T)` | `(t as T)` | Unsupported in TS |
-| Done   | Exports / Imports | TODO | TODO | ja |
+| Done               | Type                               | Flow                                         | TypeScript                                               |
+| ------------------ | ---------------------------------- | -------------------------------------------- | -------------------------------------------------------- |
+| :white_check_mark: | Declare class                      | `declare class C {}`                         | `declare class C {}`                                     |
+| :white_check_mark: | **Declare function**               | `declare function f(number): any`            | `declare function f(p: number): any`                     |
+| :white_check_mark: | Declare interface                  | `declare interface I {}`                     | `declare interface I {}`                                 |
+| :white_check_mark: | Declare module                     | `declare module 'esmodule' {}`               | `declare module 'esmodule' {}`                           |
+| :white_check_mark: | **Declare module statement**       | `declare var varInModuleDeclaration: string` | `var varInModuleDeclaration: string`                     |
+| :white_check_mark: | **Declare ES module export**       | `declare export default () => string`        | `const _default: () => string; export default _default;` |
+| :construction:     | **Declare CommonJS module export** | `TODO`                                       | TODO                                                     |
+| :white_check_mark: | **Declare type alias**             | `declare type T: number`                     | `declare type T = number`                                |
+| :white_check_mark: | Declare variable                   | `declare var v: any`                         | `declare var v: any`                                     |
 
-<br>
-<br>
-<br>
+---
 
-### Different syntax
+### Unsupported FlowJS features
 
-| Type                  | Flow                           | TypeScript |
-|-----------------------|--------------------------------|------------|
-| Casting               | `(a: A)`                       | `(a as A)` |
-| Exact type            | `{\| a: A \|}`                 | `{ a: A }` |
-| Function              | `(A, B) => C`                  | `(a: A, b: B) => C` |
-| Import default type   | `import type A from './b'`     | `import A from './b'` |
-| Import named type     | `import type { A } from './b'` | `import { A } from './b'` |
-| Index                 | `{ [A]: B }`                   | `{ [key: A]: B }` |
-| Maybe                 | `?type`                        | `type \| null \| undefined` |
-| Mixed                 | `mixed`                        | `unknown` |
-| Type parameter bounds | `<A: string>`                  | `<A extends string>` |
-| Variance              | `interface A { +b: B, -c: C }` | `interface A { readonly b: B, c: C }` |
+The following Flow JS features are currently not supported in TypeScript:
 
-### Utilities
+- [Existential Type](https://github.com/Microsoft/TypeScript/issues/14466): `*`
+- [Opaque Type](https://github.com/Microsoft/TypeScript/issues/14520): `opaque type`
+- Variance: `interface I { -contravariant: any; }`
 
-|                | Flow                  | TypeScript |
-|----------------|-----------------------|------------|
-| Class          | `Class<A>`            | `typeof A` |
-| Dependent type | `$ObjMap<T, F>`       | TODO |
-| Difference     | `$Diff<A, B>`         | TODO |
-| Element type   | `$ElementType<T, K>`  | `T[k]` |
-| Exact          | `$Exact<A>`           | `A` |
-| Keys           | `$Keys<A>`            | `keyof A` |
-| Mapped tuple   | `$TupleMap<T, F>`     | TODO |
-| Property type  | `$PropertyType<T, k>` | `T[k]` |
-| ReadOnly       | `$ReadOnly<A>`        | `Readonly<A>` |
-| Rest           | `$Rest<A, B>`         | `Exclude` |
-| Return type    | `$Call<F>`            | `ReturnType` |
-| Subtype        | `$Subtype<A>`         | `B extends A` |
-| Values         | `$Values<A>`          | `A[keyof A]` |
-<!-- | Exports        | `$Exports<A>`         | TODO | -->
-
-### Not supported in TypeScript
-| Type             | Flow                | TypeScript   | Notes |
-|------------------|---------------------|--------------|------|
-| Existential type | `*`                 | `any`        | https://github.com/Microsoft/TypeScript/issues/14466 |
-| Opaque types     | `opaque type A = B` | `type A = B` | Not expressible |
-| Supertype        | `$Supertype<A>`     | `any`        | https://github.com/Microsoft/TypeScript/issues/14520 |
+  TypeScript supports covariance however.

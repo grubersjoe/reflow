@@ -1,18 +1,18 @@
 module.exports = {
-  "presets": [
+  presets: [
     [
-      "@babel/preset-env",
+      '@babel/preset-env',
       {
-        "targets": {
-          "node": "10"
-        }
-      }
+        targets: {
+          node: '10',
+        },
+      },
     ],
     [
-      "@babel/preset-typescript",
+      '@babel/preset-typescript',
       {
-        "jsxPragma": "preserve"
-      }
-    ]
+        jsxPragma: 'preserve',
+      },
+    ],
   ],
 };
