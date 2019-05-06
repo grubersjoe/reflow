@@ -8,6 +8,8 @@
 
 **Careful! This is still under construction!**
 
+[![Coverage Status](https://coveralls.io/repos/github/grubersjoe/reflow/badge.svg?branch=master)](https://coveralls.io/github/grubersjoe/reflow?branch=master)
+
 This package transforms your Flow JS type annotations to equivalent TypeScript code. While this
 should reduce the effort to migrate a large code base to TypeScript drastically, you will most
 likely still need to manually fix and refactor the resulting code. After the transformation new type
