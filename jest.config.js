@@ -1,7 +1,6 @@
 module.exports = {
-  coverageDirectory: 'plugin/__tests__/__coverage__/',
+  coverageDirectory: '.coverage',
   coverageReporters: ['lcov', 'text'],
   preset: 'ts-jest',
-  rootDir: 'src/',
-  testRegex: '/__tests__/.*.test.ts$',
+  testRegex: 'src/.*/__tests__/.+.test.ts$',
 };

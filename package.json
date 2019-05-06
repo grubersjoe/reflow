@@ -22,6 +22,7 @@
     "@typescript-eslint/eslint-plugin": "^1.7.0",
     "@typescript-eslint/parser": "^1.7.0",
     "babel-loader": "^8.0.5",
+    "coveralls": "^3.0.3",
     "eslint": "^5.16.0",
     "eslint-plugin-node": "^8.0.1",
     "flow-bin": "^0.98.0",
@@ -59,7 +60,8 @@
     "format": "prettier --write 'src/**/*' './*.{js,json,md}'",
     "lint": "eslint --max-warnings=0 'src/**/*.ts'",
     "test": "jest",
-    "test:coverage": "jest --coverage && xdg-open src/plugin/__tests__/__coverage__/lcov-report/index.html",
+    "test:ci": "jest -i --ci",
+    "test:coverage": "jest --coverage && xdg-open .coverage/lcov-report/index.html",
     "typecheck": "tsc"
   },
   "husky": {

@@ -15,9 +15,9 @@ before_script:
 test:
   stage: test
   script:
+    - yarn typecheck
     - yarn lint
     - yarn test
-    - yarn typecheck
 
 build:
   stage: build
