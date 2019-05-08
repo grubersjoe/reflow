@@ -3,6 +3,7 @@ import { ImportDeclaration, isImportSpecifier } from '@babel/types';
 
 const TYPE_IMPORT_MAP: Map<string, string> = new Map();
 
+// A "Node" is called "ReactNode" in TypeScript's React type definitions
 TYPE_IMPORT_MAP.set('Node', 'ReactNode');
 
 export function convertReactImports(path: NodePath<ImportDeclaration>): void {

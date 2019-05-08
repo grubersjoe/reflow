@@ -3,7 +3,7 @@ import program, { Command } from 'commander';
 
 import pkg from '../../package.json';
 import { logError } from '../util/log';
-import { run, RunnerArgs } from './runner';
+import { run, CliArgs as CommandLineArgs } from './runner';
 
 function toArray(...values: string[]): string[] {
   return values.filter(val => typeof val === 'string');
@@ -26,17 +26,20 @@ function validateArgs(args: string[]): boolean {
 }
 
 // Create the desired argument data structure for the Runner
-function collectArgs(program: Command): RunnerArgs {
+function collectArgs(program: Command): CommandLineArgs {
   return Object.assign({}, program.opts(), {
     src: program.args,
-  }) as RunnerArgs;
+  }) as CommandLineArgs;
 }
 
 // prettier-ignore
-const helpText = {
+const help: {
+  [arg in Exclude<keyof(CommandLineArgs), 'src'>]: string;
+} = {
   dryRun: 'perform a trial run printing to stdout instead of writing a file',
   excludeDirs: 'list of recursively excluded directories',
   includePattern: 'set the glob pattern for input files',
+  replaceDecorators: 'replace class @decorators with ordinary function calls',
   replace: 'process files in-place. A new TS file will be created next to the original file otherwise.',
   verbose: 'increase verbosity',
 };
@@ -46,11 +49,12 @@ program
   .version(pkg.version)
   .description('Reflow')
   .usage('[OPTION]... <FILES OR DIRECTORIES ...>')
-  .option('-d, --dry-run', helpText.dryRun)
-  .option('-e, --exclude-dirs <dirs ...>', helpText.excludeDirs, toArray, ['node_modules'])
-  .option('-i, --include-pattern <pattern>', helpText.includePattern, '**/*.{js,jsx}')
-  .option('-r, --replace', helpText.replace)
-  .option('-v, --verbose', helpText.verbose);
+  .option('-d, --dry-run', help.dryRun)
+  .option('-e, --exclude-dirs <dirs ...>', help.excludeDirs, toArray, ['node_modules'])
+  .option('-i, --include-pattern <pattern>', help.includePattern, '**/*.{js,jsx}')
+  .option('-r, --replace', help.replace)
+  .option('-D, --replace-decorators', help.replaceDecorators, false)
+  .option('-v, --verbose', help.verbose, false);
 
 program.on('--help', () => {
   console.log('\nExamples:');

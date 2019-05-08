@@ -16,7 +16,7 @@ import { convertIdentifier } from './identifier';
 import { convertFlowType } from './flow-type';
 import { convertTypeParameterInstantiation } from './type-parameter';
 import { convertClassUtility, convertReadOnlyArray } from './utility';
-import { optimizeNonPrimitiveType } from '../optimizers/non-primitive-types';
+import { convertNonPrimitiveType } from '../refactoring/non-primitive-types';
 
 interface TypeAnnotationWithFlowType extends BaseNode {
   typeAnnotation: FlowType;
@@ -48,7 +48,7 @@ export function convertGenericTypeAnnotation(
       }
     }
 
-    id.name = optimizeNonPrimitiveType(id.name);
+    id.name = convertNonPrimitiveType(id.name);
   }
 
   return tsTypeReference(id, typeParameters);

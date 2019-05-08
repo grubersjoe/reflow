@@ -20,7 +20,7 @@ function m(x: number): ?number {
 // eslint-disable-next-line
 interface Interface {
   // http://www.w3.org/2000/svg
-  p: boolean;
+  p: boolean; //comment without space
 }
 
 const StyledComponent = styled.div`

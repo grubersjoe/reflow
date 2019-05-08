@@ -1,13 +1,13 @@
 import { TransformOptions, ParserOptions } from '@babel/core';
 
-import reflowPlugin, { PluginOptions } from '.';
+import reflowPlugin, { ReflowOptions } from '.';
 
 /**
  * Create the Babel configuration for runners using the plugin
  */
 export function getTransformOptions(
   args: {
-    pluginOptions?: PluginOptions;
+    pluginOptions?: ReflowOptions;
     transformOptions?: TransformOptions;
   } = {},
 ): TransformOptions {

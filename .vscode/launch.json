@@ -7,7 +7,8 @@
       "name": "CLI",
       "args": [
         "--dry-run",
-        "src/plugin/__tests__/__fixtures__/types/declaration/input.js"
+        "--replace-decorators",
+        "src/plugin/__tests__/__fixtures__/refactoring/replace-decorators/input.js"
       ],
       "cwd": "${workspaceRoot}",
       "env": {

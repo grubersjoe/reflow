@@ -10,6 +10,8 @@ import {
   JSX,
 } from '@babel/types';
 
+import { ReflowOptions } from './index';
+
 // Missing in @types/babel__core
 export interface PluginPass<T> {
   cwd: string;
@@ -27,7 +29,7 @@ export interface PluginPass<T> {
   };
   filename?: string;
   key: string;
-  opts: TransformOptions;
+  opts: TransformOptions & ReflowOptions;
 }
 
 export type VisitorNodes = ClassDeclaration &

@@ -5,7 +5,7 @@ export const BLANK_LINE = /^[ \t]*$/;
 export const LINE_BREAK = /\r?\n/;
 
 export const BLOCK_COMMENTS = /\s*\/\*([\S\s]*?)\*\//gm;
-export const LINE_COMMENTS = /\s*(?<![:|}])\/\/.*$/gm;
+export const LINE_COMMENTS = /(?<!\S)\s*(?<![:|}])\/\/.*$/gm;
 
 const BLOCK_COMMENT_AT_END_OF_LINE = /(?<!^|[^\S])[ \t]*\/\*.*\*\/$/;
 const BLOCK_COMMENT_START = /^\s*\/\*/;

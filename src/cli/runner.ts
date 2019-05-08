@@ -10,13 +10,14 @@ import { PluginWarnings } from '../plugin/util/warning';
 import { getTransformOptions } from '../plugin/options';
 import { postProcessOutputCode } from '../plugin/util/format';
 
-export interface RunnerArgs {
+import { ReflowOptions } from '../plugin/';
+
+export interface CliArgs extends ReflowOptions {
   dryRun?: boolean;
   excludeDirs: string[];
   includePattern: string;
   src: string[];
   replace?: boolean;
-  verbose?: boolean;
 }
 
 function getGlobOptions(options: GlobOptions, excludeDirs: string[]): GlobOptions {
@@ -32,10 +33,15 @@ function getGlobOptions(options: GlobOptions, excludeDirs: string[]): GlobOption
   return Object.assign(defaults, options);
 }
 
-function transpileFiles(args: RunnerArgs): void {
-  const { dryRun, excludeDirs, includePattern, src, replace, verbose } = args;
+function transpileFiles(args: CliArgs): void {
+  const { dryRun, excludeDirs, includePattern, src, replace, replaceDecorators, verbose } = args;
 
-  const babelOptions = getTransformOptions({ pluginOptions: { verbose } });
+  const babelOptions = getTransformOptions({
+    pluginOptions: {
+      replaceDecorators,
+      verbose,
+    },
+  });
 
   src.forEach(src => {
     const isDir = statSync(src).isDirectory();
@@ -77,6 +83,6 @@ function transpileFiles(args: RunnerArgs): void {
   });
 }
 
-export function run(args: RunnerArgs): void {
+export function run(args: CliArgs): void {
   transpileFiles(args);
 }

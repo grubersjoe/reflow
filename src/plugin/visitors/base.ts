@@ -3,7 +3,6 @@ import {
   FunctionDeclaration,
   ImportDeclaration,
   ImportSpecifier,
-  isClassDeclaration,
   isFunctionDeclaration,
   isImportDeclaration,
   isImportSpecifier,
@@ -14,13 +13,17 @@ import { convertClassDeclaration } from '../converters/class';
 import { convertImportDeclaration, convertImportSpecifier } from '../converters/module';
 import { convertFunctionDeclaration } from '../converters/function';
 
-export const baseVisitor: VisitorFunction<
-  ClassDeclaration | FunctionDeclaration | ImportDeclaration | ImportSpecifier
-> = (path): void => {
+export type BaseVisitorTypes =
+  | ClassDeclaration
+  | FunctionDeclaration
+  | ImportDeclaration
+  | ImportSpecifier;
+
+export const baseVisitor: VisitorFunction<BaseVisitorTypes> = (path, state): void => {
   const { node } = path;
 
-  if (isClassDeclaration(node)) {
-    path.replaceWith(convertClassDeclaration(node));
+  if (path.isClassDeclaration()) {
+    path.replaceWith(convertClassDeclaration(path, state));
   }
 
   if (isFunctionDeclaration(node)) {

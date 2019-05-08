@@ -1,3 +1,4 @@
+import { NodePath } from '@babel/core';
 import {
   ClassDeclaration,
   isClassMethod,
@@ -5,13 +6,20 @@ import {
   isTypeParameterInstantiation,
 } from '@babel/types';
 
+import { PluginPass } from '../types';
 import { PluginWarnings, WARNINGS } from '../util/warning';
 import {
   convertTypeParameterInstantiation,
   convertTypeParameterDeclaration,
 } from './type-parameter';
+import { replaceClassDecorators } from '../refactoring/replace-decorators';
+import { BaseVisitorTypes } from '../visitors/base';
 
-export function convertClassDeclaration(node: ClassDeclaration): ClassDeclaration {
+export function convertClassDeclaration(
+  path: NodePath<ClassDeclaration>,
+  state: PluginPass<BaseVisitorTypes>,
+): NodePath<ClassDeclaration> {
+  const { node } = path;
   const { body, superTypeParameters, typeParameters } = node;
 
   if (isTypeParameterInstantiation(superTypeParameters)) {
@@ -31,5 +39,9 @@ export function convertClassDeclaration(node: ClassDeclaration): ClassDeclaratio
     }
   });
 
-  return node;
+  if (state.opts.replaceDecorators) {
+    path.replaceWith(replaceClassDecorators(path));
+  }
+
+  return path;
 }
