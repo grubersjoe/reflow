@@ -1,9 +1,14 @@
-import fs from 'fs';
+import fs, { lstatSync } from 'fs';
 import program, { Command } from 'commander';
+import { extname } from 'path';
 
 import pkg from '../../package.json';
 import { logError } from '../util/log';
-import { run, CliArgs as CommandLineArgs } from './runner';
+import { transpileFiles, CommandLineArgs } from './runner';
+
+export const VALID_SOURCE_FILETYPES = ['.js', '.jsx'];
+export const DEFAULT_EXCLUDE_DIRECTORIES = ['node_modules'];
+export const DEFAULT_INCLUDE_PATTERN = '**/*.{js,jsx}';
 
 function toArray(...values: string[]): string[] {
   return values.filter(val => typeof val === 'string');
@@ -16,25 +21,37 @@ function validateArgs(args: string[]): boolean {
     return false;
   }
 
-  const srcExists = args.every(dir => fs.existsSync(dir));
+  const allSourcesExist = args.every(source => fs.existsSync(source));
 
-  if (!srcExists) {
+  if (!allSourcesExist) {
     logError('Not all input directories or files exist');
   }
 
-  return srcExists;
+  const validFileType = args
+    .filter(source => lstatSync(source).isFile())
+    .every(source => VALID_SOURCE_FILETYPES.includes(extname(source)));
+
+  if (!validFileType) {
+    logError(
+      `Invalid source file type. Only ${VALID_SOURCE_FILETYPES.join(
+        ' and ',
+      )} files are allowed as input!`,
+    );
+  }
+
+  return allSourcesExist && validFileType;
 }
 
 // Create the desired argument data structure for the Runner
 function collectArgs(program: Command): CommandLineArgs {
   return Object.assign({}, program.opts(), {
-    src: program.args,
+    sources: program.args,
   }) as CommandLineArgs;
 }
 
 // prettier-ignore
 const help: {
-  [arg in Exclude<keyof(CommandLineArgs), 'src'>]: string;
+  [arg in Exclude<keyof (CommandLineArgs), 'sources'>]: string;
 } = {
   dryRun: 'perform a trial run printing to stdout instead of writing a file',
   excludeDirs: 'list of recursively excluded directories',
@@ -50,8 +67,8 @@ program
   .description('Reflow')
   .usage('[OPTION]... <FILES OR DIRECTORIES ...>')
   .option('-d, --dry-run', help.dryRun)
-  .option('-e, --exclude-dirs <dirs ...>', help.excludeDirs, toArray, ['node_modules'])
-  .option('-i, --include-pattern <pattern>', help.includePattern, '**/*.{js,jsx}')
+  .option('-e, --exclude-dirs <dirs ...>', help.excludeDirs, toArray, DEFAULT_EXCLUDE_DIRECTORIES)
+  .option('-i, --include-pattern <pattern>', help.includePattern, DEFAULT_INCLUDE_PATTERN)
   .option('-r, --replace', help.replace)
   .option('-D, --replace-decorators', help.replaceDecorators, false)
   .option('-v, --verbose', help.verbose, false);
@@ -62,7 +79,7 @@ program.on('--help', () => {
   console.log(`  $ reflow -exclude-patterns '**/__tests__/**/*','mocks/*.js' src/lib/`);
 });
 
-program.parse(process.argv);
-
-// Run the application
-validateArgs(program.args) ? run(collectArgs(program)) : program.help();
+export default () => {
+  program.parse(process.argv);
+  validateArgs(program.args) ? transpileFiles(collectArgs(program)) : program.help();
+};

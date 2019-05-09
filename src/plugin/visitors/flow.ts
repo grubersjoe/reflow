@@ -30,8 +30,9 @@ import { convertTypeAlias } from '../converters/type-alias';
 import { convertTypeAnnotation } from '../converters/type-annotation';
 import { convertTypeCastExpression } from '../converters/type-cast';
 import { convertTypeParameterDeclaration } from '../converters/type-parameter';
+import { Metrics } from '../util/metric';
 
-export const flowVisitor: VisitorFunction<Flow> = (path): void => {
+export const flowVisitor: VisitorFunction<Flow> = (path, state): void => {
   const { node } = path;
 
   // TODO: Go through all remaining Flow type nodes and verify which ones need to be handled!
@@ -83,5 +84,18 @@ export const flowVisitor: VisitorFunction<Flow> = (path): void => {
 
   if (isTypeParameterDeclaration(node)) {
     path.replaceWith(convertTypeParameterDeclaration(node) || path);
+  }
+
+  // Declaration files need to get the ".d.ts" file extension
+  if (state.filename) {
+    switch (node.type) {
+      case 'DeclareClass':
+      case 'DeclareFunction':
+      case 'DeclareInterface':
+      case 'DeclareModule':
+      case 'DeclareTypeAlias':
+      case 'DeclareVariable':
+        Metrics.fileTypes.set(state.filename, '.d.ts');
+    }
   }
 };

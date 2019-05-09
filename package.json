@@ -59,9 +59,9 @@
     "dev": "webpack -w",
     "format": "prettier --write 'src/**/*' './*.{js,json,md}'",
     "lint": "eslint --max-warnings=0 'src/**/*.ts'",
-    "test": "jest",
-    "test:ci": "jest -i --ci",
-    "test:coverage": "jest --coverage && open .coverage/lcov-report/index.html",
+    "test": "jest -i --silent",
+    "test:ci": "yarn test --ci",
+    "test:coverage": "yarn test --coverage && xdg-open .coverage/lcov-report/index.html",
     "typecheck": "tsc"
   },
   "husky": {

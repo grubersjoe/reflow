@@ -11,13 +11,14 @@ import { getTransformOptions } from '../plugin/options';
 import { postProcessOutputCode } from '../plugin/util/format';
 
 import { ReflowOptions } from '../plugin/';
+import { DEFAULT_EXCLUDE_DIRECTORIES, DEFAULT_INCLUDE_PATTERN } from '.';
 
-export interface CliArgs extends ReflowOptions {
+export interface CommandLineArgs extends ReflowOptions {
   dryRun?: boolean;
-  excludeDirs: string[];
-  includePattern: string;
-  src: string[];
+  excludeDirs?: string[];
+  includePattern?: string;
   replace?: boolean;
+  sources: string[];
 }
 
 function getGlobOptions(options: GlobOptions, excludeDirs: string[]): GlobOptions {
@@ -33,8 +34,12 @@ function getGlobOptions(options: GlobOptions, excludeDirs: string[]): GlobOption
   return Object.assign(defaults, options);
 }
 
-function transpileFiles(args: CliArgs): void {
-  const { dryRun, excludeDirs, includePattern, src, replace, replaceDecorators, verbose } = args;
+export function transpileFiles(args: CommandLineArgs): string[] {
+  const writtenFiles: string[] = [];
+  const { dryRun, replace, replaceDecorators, sources, verbose } = args;
+
+  const excludeDirs = args.excludeDirs || DEFAULT_EXCLUDE_DIRECTORIES;
+  const includePattern = args.includePattern || DEFAULT_INCLUDE_PATTERN;
 
   const babelOptions = getTransformOptions({
     pluginOptions: {
@@ -43,22 +48,22 @@ function transpileFiles(args: CliArgs): void {
     },
   });
 
-  src.forEach(src => {
-    const isDir = statSync(src).isDirectory();
-    const globOptions = getGlobOptions({ cwd: src }, excludeDirs);
+  sources.forEach(source => {
+    const isDir = statSync(source).isDirectory();
+    const globOptions = getGlobOptions({ cwd: source }, excludeDirs);
 
     // Create a list of to be transpiled files
-    const inputFiles = isDir ? glob.sync(includePattern, globOptions) : [resolve(src)];
+    const inputFiles = isDir ? glob.sync(includePattern, globOptions) : [resolve(source)];
 
     inputFiles.forEach(inputFile => {
       console.log(chalk.magenta(`Transpiling ${inputFile}...`));
       const out = transformFileSync(inputFile, babelOptions);
 
       if (out === null || !out.code) {
-        logError(`Unable to transpile ${inputFile}`);
+        logError(`Unable to transpile ${inputFile}`, 4);
       } else {
-        const fileExt = Metrics.jsxFiles.has(inputFile) ? '.tsx' : '.ts';
-        const tsFile = inputFile.replace(extname(inputFile), fileExt);
+        const fileExtension = Metrics.fileTypes.get(inputFile) || '.ts';
+        const tsFile = inputFile.replace(extname(inputFile), fileExtension);
 
         const formattedOutput = postProcessOutputCode(out.code, readFileSync(inputFile));
 
@@ -71,6 +76,7 @@ function transpileFiles(args: CliArgs): void {
           }
 
           writeFileSync(tsFile, formattedOutput);
+          writtenFiles.push(tsFile);
         }
       }
     });
@@ -81,8 +87,6 @@ function transpileFiles(args: CliArgs): void {
       console.log(sortNumberMap(Metrics.typeCounter.getCounter()));
     }
   });
-}
 
-export function run(args: CliArgs): void {
-  transpileFiles(args);
+  return writtenFiles;
 }

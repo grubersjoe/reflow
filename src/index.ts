@@ -1,1 +1,3 @@
-import './cli';
+import reflow from './cli';
+
+reflow();

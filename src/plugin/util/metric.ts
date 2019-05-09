@@ -3,6 +3,8 @@ interface Counter {
   incrementFor(key: string): void;
 }
 
+export type TSFileExtension = '.ts' | '.tsx' | '.d.ts';
+
 export function createCounter(): Counter {
   let count = new Map<string, number>();
 
@@ -28,5 +30,5 @@ export function sortNumberMap<T>(counter: Map<T, number>): Map<T, number> {
 
 export const Metrics = {
   typeCounter: createCounter(),
-  jsxFiles: new Set<string>(),
+  fileTypes: new Map<string, TSFileExtension>(),
 };
