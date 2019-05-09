@@ -1,5 +1,5 @@
 {
-  "name": "@grubersjoe/babel-plugin-transform-flow-to-typescript",
+  "name": "babel-reflow",
   "version": "0.0.1",
   "description": "Babel Plugin to automatically migrate a Flow JS typed JavaScript code base to TypeScript",
   "author": "Jonathan Gruber <gruberjonathan@gmail.com>",
@@ -61,7 +61,7 @@
     "lint": "eslint --max-warnings=0 'src/**/*.ts'",
     "test": "jest",
     "test:ci": "jest -i --ci",
-    "test:coverage": "jest --coverage && xdg-open .coverage/lcov-report/index.html",
+    "test:coverage": "jest --coverage && open .coverage/lcov-report/index.html",
     "typecheck": "tsc"
   },
   "husky": {
