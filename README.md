@@ -1,21 +1,19 @@
 # Reflow
 
-> Babel Plugin to automatically migrate a [Flow JS](https://flow.org/) typed JavaScript code base to
-> [TypeScript](https://www.typescriptlang.org/).
+**Babel Plugin to automatically migrate a [Flow JS](https://flow.org/) typed JavaScript code base to
+[TypeScript](https://www.typescriptlang.org/).**
 
 [![CircleCI](https://circleci.com/gh/grubersjoe/reflow.svg?style=shield)](https://circleci.com/gh/grubersjoe/reflow)
 [![Coverage](https://coveralls.io/repos/github/grubersjoe/reflow/badge.svg?branch=master)](https://coveralls.io/github/grubersjoe/reflow?branch=master)
 
-**Careful! This is still under construction!**
+### Careful! This is still in an early stage and alpha software. It may break at any time.
 
-[![Coverage Status](https://coveralls.io/repos/github/grubersjoe/reflow/badge.svg?branch=master)](https://coveralls.io/github/grubersjoe/reflow?branch=master)
-
-This package transforms your Flow JS type annotations to equivalent TypeScript code. While this
-should reduce the effort to migrate a large code base to TypeScript drastically, you will most
-likely still need to manually fix and refactor the resulting code. After the transformation new type
-errors will probably occur and existing type annotations _may_ prove to be inaccurate. This program
-helps you with the tedious task to rewrite the syntax, but it can't magically fix semantic problems
-obviously.
+Reflow transforms your Flow JS type annotations to equivalent TypeScript code. While this should
+reduce the effort to migrate a large code base to TypeScript drastically, you will most likely still
+need to manually fix and refactor the resulting code. After the transformation new type errors will
+probably occur and existing type annotations _may_ prove to be inaccurate. This program helps you
+with the tedious task to migrate Flow syntax to TypeScript, but it can't magically fix
+semanticproblems obviously.
 
 The type system of TypeScript and Flow share a lot of similarities but still there are some
 fundamental and many subtle differences. See this excellent repository for a detailed
@@ -23,10 +21,13 @@ fundamental and many subtle differences. See this excellent repository for a det
 difference for example is the purely structural type system of TypeScript versus the partly nominal
 one used in Flow JS.
 
+Reflow has built-in support for React, JSX and some proposed JavaScript features like class
+properties, dynamic imports and decorators.
+
 ## Installation
 
 ```
-yarn add --dev babel-reflow
+yarn add --dev TBA
 ```
 
 ## Usage
@@ -37,7 +38,7 @@ Install the package as project dependency and run `npx reflow` afterwards. Alter
 want to install Reflow globally so you can simply type `reflow`:
 
 ```shell
-yarn global add babel-reflow
+yarn global add TBA
 ```
 
 Usage is as follows:
@@ -152,38 +153,92 @@ transformation, since they share the same syntax in Flow and TypeScript.
 
 ### Unsupported FlowJS features / syntax
 
-The following Flow JS features are currently not supported in TypeScript:
+The following Flow features are not equivalently expressible or need to be adapted in TypeScript:
 
-- [Constructor return types](https://github.com/Microsoft/TypeScript/issues/11588)
+- **[Constructor return types](https://github.com/Microsoft/TypeScript/issues/11588)**
 
   TypeScript intentionally doesn't support return types for constructor functions. These will be
   removed by Reflow.
 
-- [Existential Type](https://github.com/Microsoft/TypeScript/issues/14466)
+- **[Existential Type](https://github.com/Microsoft/TypeScript/issues/14466)**
 
-  `*` becomes `any`.
+  Flow's [existential type](https://flow.org/en/docs/types/utilities/#toc-existential-type) has been
+  deprecated and should be avoided. Still Reflow supports it and will transform it to `any`.
 
-- [Function types with unnamed parameters](https://flow.org/en/docs/types/functions/#toc-function-types)
+- **[Function types with unnamed parameters](https://flow.org/en/docs/types/functions/#toc-function-types)**
 
-  In contrast to TypeScript, parameter names can be omitted in Flow (`({}, Date) => boolean`).
-  Therefore Reflow inserts parameter names automatically (`p` for a single parameter and `p{i}` for
-  multiple ones): `(p1: {}, p2: Date) => boolean`.
+  In contrast to TypeScript, parameter names can be omitted in Flow. Therefore Reflow inserts
+  parameter names automatically (`p` for a single parameter and `p{i}` for multiple ones).
 
-- Index signatures
+  ```
+  type FunctionType = ({}, Date) => string;             // Flow
+  type FunctionType = (p1: {}, p2: Date) => string;    // TypeScript
+  ```
 
-  `{ [string]: number }`
+- **[Index signatures](https://flow.org/en/docs/types/objects/#toc-objects-as-maps)**
 
   Flow allows any type for keys in index signatures, but Typescript only accepts `string` or
   `number`. Reflow will add index signatures both for `string` and `number` if a different type is
   specified in Flow.
 
-- [Opaque Type](https://github.com/Microsoft/TypeScript/issues/14520)
+  ```
+  // Flow
+  declare type KeyType;
+  interface I = {
+    [key: KeyType]: number
+  }
 
-  `opaque type T` is transformed to a plain type alias.
+  // TypeScript
+  interface I = {
+    [key: number]: number;
+    [key: string]: number;
+  }
+  ```
 
-- [Variance](https://github.com/Microsoft/TypeScript/issues/1394)
+- **[Opaque Type](https://github.com/Microsoft/TypeScript/issues/14520)**
 
-  `interface I { -contravariant: any; } => interface I { contravariant: any }`
+  Opaque types are not supported in TypeScript and are transformed to an ordinary type alias.
 
-  Flow's contravariance sigil (`-`) is not expressible in Typescript. However, TypeScript does
-  support covariance for certain type (`+` becomes `readonly`).
+  ```
+  opaque type T = number;  // Flow
+  type T = number;         // TypeScript
+  ```
+
+- **[Variance](https://github.com/Microsoft/TypeScript/issues/1394)**
+
+  Flow's contravariance sigil `-` is not expressible in Typescript and will be omitted. However,
+  TypeScript does support covariance for certain types (`+` becomes `readonly`).
+
+  ```
+  // Flow
+  interface I {
+    +covariant: any;
+    -contravariant: any;
+  }
+
+  // TypeScript
+  interface I {
+    readonly covariant: any;
+    contravariant: any;
+  }
+  ```
+
+## Development
+
+Clone this repository and install the project dependencies:
+
+```
+yarn install
+```
+
+There are various npm scripts for different tasks:
+
+```
+yarn build          # Create a production build
+yarn format         # Format the code with Prettier
+yarn dev            # Build in development mode and watch for changes
+yarn lint           # Run ESLint
+yarn test           # Run fixture tests
+yarn test:coverage  # Run the tests with coverage report
+yarn typecheck      # Check the types (via TypeScript)
+```

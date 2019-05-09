@@ -1,8 +1,8 @@
 {
   "name": "@grubersjoe/babel-plugin-transform-flow-to-typescript",
   "version": "0.0.1",
-  "description": "Babel Plugin to migrate Flow typed JavaScript to TypeScript",
-  "author": "Jonathan Gruber <jogu@spreadshirt.net>",
+  "description": "Babel Plugin to automatically migrate a Flow JS typed JavaScript code base to TypeScript",
+  "author": "Jonathan Gruber <gruberjonathan@gmail.com>",
   "license": "MIT",
   "private": true,
   "bin": {
