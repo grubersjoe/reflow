@@ -1,12 +1,12 @@
 # Reflow
 
-**Babel Plugin to automatically migrate a [Flow JS](https://flow.org/) typed JavaScript code base to
-[TypeScript](https://www.typescriptlang.org/).**
+> Babel Plugin to migrate a [Flow JS](https://flow.org/) typed JavaScript code base to
+[TypeScript](https://www.typescriptlang.org/).
 
 [![CircleCI](https://circleci.com/gh/grubersjoe/reflow.svg?style=shield)](https://circleci.com/gh/grubersjoe/reflow)
 [![Coverage](https://coveralls.io/repos/github/grubersjoe/reflow/badge.svg?branch=master)](https://coveralls.io/github/grubersjoe/reflow?branch=master)
 
-### Careful! This is still in an early stage and alpha software. It may break at any time.
+**Careful! This is still in an early stage and may break anytime.**
 
 Reflow transforms your Flow JS type annotations to equivalent TypeScript code. While this should
 reduce the effort to migrate a large code base to TypeScript drastically, you will most likely still
