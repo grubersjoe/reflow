@@ -1,16 +1,13 @@
 // @flow
-import React, { Component, type ReactNode } from 'react';
-
-@A(
+@a(
   x,
   y,
 )
-@B
-@C()
-class C extends Component {
-  render(): ReactNode {
-    return <div>Hello, world!</div>;
-  }
-}
 
-export default C;
+@b
+@c()
+class C1 {}
+
+class C2 {}
+
+export default C1;
