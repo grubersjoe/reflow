@@ -1,40 +1,44 @@
 import {
+  ArrowFunctionExpression,
   ClassDeclaration,
   FunctionDeclaration,
+  FunctionExpression,
   ImportDeclaration,
   ImportSpecifier,
-  isFunctionDeclaration,
-  isImportDeclaration,
-  isImportSpecifier,
 } from '@babel/types';
 
 import { VisitorFunction } from '../types';
 import { convertClassDeclaration } from '../converters/class';
 import { convertImportDeclaration, convertImportSpecifier } from '../converters/module';
-import { convertFunctionDeclaration } from '../converters/function';
+import { convertOptionalFunctionParameters } from '../converters/function';
 
-export type BaseVisitorTypes =
+export type BaseVisitorNodes =
+  | ArrowFunctionExpression
   | ClassDeclaration
+  | FunctionExpression
   | FunctionDeclaration
+  | ArrowFunctionExpression
   | ImportDeclaration
   | ImportSpecifier;
 
-export const baseVisitor: VisitorFunction<BaseVisitorTypes> = (path, state): void => {
-  const { node } = path;
-
+export const baseVisitor: VisitorFunction<BaseVisitorNodes> = (path, state): void => {
   if (path.isClassDeclaration()) {
     path.replaceWith(convertClassDeclaration(path, state));
   }
 
-  if (isFunctionDeclaration(node)) {
-    path.replaceWith(convertFunctionDeclaration(node));
+  if (
+    path.isFunctionDeclaration() ||
+    path.isFunctionExpression() ||
+    path.isArrowFunctionExpression()
+  ) {
+    path.replaceWith(convertOptionalFunctionParameters(path.node));
   }
 
-  if (isImportDeclaration(node) && path.isImportDeclaration()) {
-    path.replaceWith(convertImportDeclaration(node, path));
+  if (path.isImportDeclaration() && path.isImportDeclaration()) {
+    path.replaceWith(convertImportDeclaration(path));
   }
 
-  if (isImportSpecifier(node) && path.isImportSpecifier()) {
-    path.replaceWith(convertImportSpecifier(node, path));
+  if (path.isImportSpecifier() && path.isImportSpecifier()) {
+    path.replaceWith(convertImportSpecifier(path));
   }
 };

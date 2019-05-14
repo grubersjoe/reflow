@@ -13,11 +13,11 @@ import {
   convertTypeParameterDeclaration,
 } from './type-parameter';
 import { replaceClassDecorators } from '../refactoring/replace-decorators';
-import { BaseVisitorTypes } from '../visitors/base';
+import { BaseVisitorNodes } from '../visitors/base';
 
 export function convertClassDeclaration(
   path: NodePath<ClassDeclaration>,
-  state: PluginPass<BaseVisitorTypes>,
+  state: PluginPass<BaseVisitorNodes>,
 ): NodePath<ClassDeclaration> {
   const { node } = path;
   const { body, superTypeParameters, typeParameters } = node;

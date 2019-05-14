@@ -16,8 +16,10 @@ function buildPlugin(): PluginObj<PluginPass<VisitorNodes>> {
   return {
     name: 'reflow',
     visitor: {
+      ArrowFunctionExpression: baseVisitor,
       ClassDeclaration: baseVisitor,
       FunctionDeclaration: baseVisitor,
+      FunctionExpression: baseVisitor,
       ImportDeclaration: baseVisitor,
       ImportSpecifier: baseVisitor,
       // @ts-ignore

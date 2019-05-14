@@ -20,6 +20,11 @@ function functionSimpleWithReturn(p1: number, p2: number): boolean {
   return p1 === p2;
 }
 function functionWithInitializer(p1: string, p2: boolean = false) {}
+function functionWithFunctionrAsReturn() {
+  return function (p: number = 5) {
+    return p;
+  };
+}
 function functionWithOptionalParam(p1: string[], p2?: boolean) {}
 function functionWithOptionalParamAndInitializer(p1: string, p2?: number, p3: boolean = false) {}
 async function functionAsync(): Promise<number> {
@@ -29,3 +34,4 @@ async function functionAsync(): Promise<number> {
 const arrowFunctionEmpty = () => {};
 const arrowFunctionWithParams = (p1: {}, p2: boolean) => {};
 const arrowFunctionWithOptionalParam: (x: number, y?: number) => number = x => x;
+const arrowFunctionWithFunctionrAsReturn = () => (p: Date = new Date()) => p;

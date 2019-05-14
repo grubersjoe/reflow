@@ -1,5 +1,7 @@
 import {
+  ArrowFunctionExpression,
   FunctionDeclaration,
+  FunctionExpression,
   FunctionTypeAnnotation,
   FunctionTypeParam,
   Identifier,
@@ -61,15 +63,15 @@ export function convertFunctionTypeAnnotation(node: FunctionTypeAnnotation): TSF
   return tsFunctionType(typeParameters, [...functionParameters, ...restParameters], returnType);
 }
 
-/**
- * Flow allows optional parameters with an initializer - TypeScript does not!
- * (x: string, y: ?number = 1) ... => (x: string, y: number = 1) ...
- */
-export function convertFunctionDeclaration(node: FunctionDeclaration): FunctionDeclaration {
+// Flow allows *optional* parameters to be initialized - TypeScript does not.
+export function convertOptionalFunctionParameters<
+  F extends FunctionDeclaration | FunctionExpression | ArrowFunctionExpression
+>(node: F): F {
   node.params = node.params.map(param => {
     if (isAssignmentPattern(param) && isIdentifier(param.left) && param.left.optional) {
       param.left.optional = false;
     }
+
     return param;
   });
 

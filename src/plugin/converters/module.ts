@@ -30,27 +30,21 @@ function convertImportSpecifiers(path: NodePath<ImportDeclaration | ImportSpecif
   }
 }
 
-export function convertImportDeclaration(
-  node: ImportDeclaration,
-  path: NodePath<ImportDeclaration>,
-): ImportDeclaration {
+export function convertImportDeclaration(path: NodePath<ImportDeclaration>): ImportDeclaration {
   convertImportSpecifiers(path);
   convertReactImports(path);
 
   // Strip Flow's `type` and `typeof` keywords in import declarations.
-  node.importKind = null;
+  path.node.importKind = null;
 
-  return node;
+  return path.node;
 }
 
-export function convertImportSpecifier(
-  node: ImportSpecifier,
-  path: NodePath<ImportSpecifier>,
-): ImportSpecifier {
+export function convertImportSpecifier(path: NodePath<ImportSpecifier>): ImportSpecifier {
   convertImportSpecifiers(path);
 
   // Strip Flow's `type` and `typeof` keywords in import declarations.
-  node.importKind = null;
+  path.node.importKind = null;
 
-  return node;
+  return path.node;
 }
