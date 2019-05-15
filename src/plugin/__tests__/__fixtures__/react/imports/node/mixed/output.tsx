@@ -1,5 +1,5 @@
 
-import React, { Component, ReactNode } from 'react';
+import React, { Component, ReactElement, ReactNode } from 'react';
 
 interface Props {
   margin?: string;

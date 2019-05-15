@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, type Node } from 'react';
+import React, { Component, type Element, type Node } from 'react';
 
 interface Props {
   margin?: string;
