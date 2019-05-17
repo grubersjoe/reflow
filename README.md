@@ -1,7 +1,7 @@
 # Reflow
 
 > Babel Plugin to migrate a [Flow JS](https://flow.org/) typed JavaScript code base to
-[TypeScript](https://www.typescriptlang.org/).
+> [TypeScript](https://www.typescriptlang.org/).
 
 [![CircleCI](https://circleci.com/gh/grubersjoe/reflow.svg?style=shield)](https://circleci.com/gh/grubersjoe/reflow)
 [![Coverage](https://coveralls.io/repos/github/grubersjoe/reflow/badge.svg?branch=master)](https://coveralls.io/github/grubersjoe/reflow?branch=master)
