@@ -1,5 +1,4 @@
-import prettier, { Options as PrettierOptions } from 'prettier';
-import prettierFork from 'prettier-ts';
+import prettier, { Options as PrettierOptions } from 'prettier-ts';
 
 export const BLANK_LINE = /^[ \t]*$/;
 export const LINE_BREAK = /\r?\n/;
@@ -17,16 +16,14 @@ const LINE_COMMENT_AT_END_OF_LINE = /(?<!^|[^\S]|:|})[ \t]*\/\/.*$/;
 const FLOW_DIRECTIVE = /(@flow(\s+(strict(-local)?|weak))?|@noflow)/;
 
 function getPrettierConfig(overrides?: PrettierOptions): PrettierOptions {
-  return Object.assign(
-    {},
-    {
-      semi: true,
-      singleQuote: true,
-      tabWidth: 2,
-      trailingComma: 'all',
-    },
-    overrides,
-  );
+  const defaults: PrettierOptions = {
+    semi: true,
+    singleQuote: true,
+    tabWidth: 2,
+    trailingComma: 'all',
+  };
+
+  return Object.assign({}, defaults, overrides);
 }
 
 function getMatch(line: string, regexp: RegExp): string | null {
@@ -131,21 +128,23 @@ export function postProcessOutputCode(
   outputCode = outputCode.replace(BLOCK_COMMENTS, '');
   outputCode = outputCode.replace(LINE_COMMENTS, '');
 
-  // This forked version of Prettier will *always* break ObjectExpressions into
-  // multiple lines (even then they would fit into one line)
-  originalCode = prettierFork.format(
+  // This forked version of Prettier has an option to *always* wrap objects
+  // into multiple lines (even then they would fit into one line)
+  originalCode = prettier.format(
     originalCode.toString(),
     getPrettierConfig({
       parser: 'babel',
       printWidth: Infinity,
+      wrapObjects: true,
     }),
   );
 
-  outputCode = prettierFork.format(
+  outputCode = prettier.format(
     outputCode,
     getPrettierConfig({
       parser: 'typescript',
       printWidth: Infinity,
+      wrapObjects: true,
     }),
   );
 
