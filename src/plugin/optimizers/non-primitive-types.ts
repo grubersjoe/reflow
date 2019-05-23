@@ -4,7 +4,7 @@
  *
  * https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html
  */
-export function convertNonPrimitiveType(type: string): string {
+export function replaceNonPrimitiveType(type: string): string {
   switch (type) {
     case 'Boolean':
     case 'Number':

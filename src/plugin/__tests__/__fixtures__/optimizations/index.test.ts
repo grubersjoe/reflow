@@ -3,9 +3,9 @@ import { resolve } from 'path';
 import { getTransformOptions } from '../../../options';
 import { runFixtureTests } from '../..';
 
-describe('Refactoring', () => {
+describe('Optimizations', () => {
   runFixtureTests(
-    resolve('src/plugin/__tests__/__fixtures__/refactoring/'),
+    resolve('src/plugin/__tests__/__fixtures__/optimizations/'),
     getTransformOptions({
       pluginOptions: {
         replaceDecorators: true,

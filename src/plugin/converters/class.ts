@@ -12,7 +12,7 @@ import {
   convertTypeParameterInstantiation,
   convertTypeParameterDeclaration,
 } from './type-parameter';
-import { replaceClassDecorators } from '../refactoring/replace-decorators';
+import { replaceClassDecorators } from '../optimizers/decorators';
 import { BaseVisitorNodes } from '../visitors/base';
 
 export function convertClassDeclaration(

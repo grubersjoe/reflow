@@ -39,7 +39,8 @@ export function replaceClassDecorators(
 
         // Search for exports with this binding
         if (isExportDefaultDeclaration(defaultExport) && node.decorators) {
-          // Add a call expression for every decorator recursively
+          // Add a call expression for every decorator recursively. Also note
+          // the call to reverse() to achieve nesting in correct order.
           node.decorators.reverse().forEach(decorator => {
             const { declaration } = defaultExport;
 

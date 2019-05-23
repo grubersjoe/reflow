@@ -1,5 +1,4 @@
 [ignore]
-src/plugin/__tests__/__fixtures__/refactoring/replace-decorators/input.js
 
 [include]
 **/__fixtures__/**/*.js

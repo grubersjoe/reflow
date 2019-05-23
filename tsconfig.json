@@ -15,7 +15,7 @@
   },
   "exclude": [
     "src/plugin/__tests__/__fixtures__/formatting/**/*.ts",
-    "src/plugin/__tests__/__fixtures__/refactoring/replace-decorators/*.ts",
+    "src/plugin/__tests__/__fixtures__/optimizations/decorators/*.ts",
     "src/plugin/__tests__/__fixtures__/types/modules/*.ts"
   ],
   "include": ["src/**/*.ts"]

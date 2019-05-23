@@ -1,11 +1,12 @@
 // @flow
-@a(
+@d1(
   x,
   y,
 )
 
-@b
-@c()
+@d2()
+@d3
+@d4('arg')
 class C1 {}
 
 class C2 {}
