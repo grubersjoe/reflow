@@ -8,7 +8,7 @@ export function relativePath(...pathSegments: string[]): string {
 }
 
 export function splitFixtureLines(code: Buffer | string, filter = true): string[] {
-  code = code.toString().trim();
+  code = String(code).trim();
 
   if (filter) {
     code = code.replace(BLOCK_COMMENTS, '');

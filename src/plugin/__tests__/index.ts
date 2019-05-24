@@ -4,9 +4,10 @@ import glob from 'glob';
 import startCase from 'lodash/startCase';
 import { readdirSync, readFileSync, statSync } from 'fs';
 
+import { ReflowOptions } from '..';
 import { TestError } from '../../util/error';
 import { relativePath as relPath, splitFixtureLines } from '../util/file';
-import { postProcessOutputCode } from '../util/format';
+import { formatOutputCode } from '../util/format';
 
 const INPUT_FIXTURE_GLOB = 'input.js';
 const OUTPUT_FIXTURE_GLOB = 'output.{ts,tsx}';
@@ -14,6 +15,7 @@ const OUTPUT_FIXTURE_GLOB = 'output.{ts,tsx}';
 export function runFixtureTests(
   rootDir: string,
   babelOptions: TransformOptions,
+  pluginOptions: ReflowOptions = {},
   testFormatting = false,
   parentDirs: string[] = [],
 ): void {
@@ -49,7 +51,7 @@ export function runFixtureTests(
 
           if (babelOutput.code) {
             const outputCode = testFormatting
-              ? postProcessOutputCode(babelOutput.code, readFileSync(inputFile))
+              ? formatOutputCode(babelOutput.code, String(readFileSync(inputFile)), pluginOptions)
               : babelOutput.code;
 
             splitFixtureLines(outputCode, !testFormatting).forEach((line, i) => {
@@ -70,7 +72,7 @@ export function runFixtureTests(
         throw new TestError(`Fixture input file ${inputFile} does not exist.`);
       } else {
         // Descend in next directory level
-        runFixtureTests(dir, babelOptions, testFormatting, [...parentDirs, testDir]);
+        runFixtureTests(dir, babelOptions, pluginOptions, testFormatting, [...parentDirs, testDir]);
       }
     }
   });

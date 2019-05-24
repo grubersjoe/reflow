@@ -5,10 +5,10 @@ import glob, { IOptions as GlobOptions } from 'glob';
 import { extname, resolve } from 'path';
 
 import { logError, logPluginWarning, printRuler } from '../util/log';
+import { formatOutputCode } from '../plugin/util/format';
 import { Metrics, sortNumberMap } from '../plugin/util/metric';
 import { PluginWarnings } from '../plugin/util/warning';
 import { getTransformOptions } from '../plugin/options';
-import { postProcessOutputCode } from '../plugin/util/format';
 
 import { ReflowOptions } from '../plugin/';
 import { DEFAULT_EXCLUDE_DIRECTORIES, DEFAULT_INCLUDE_PATTERN } from '.';
@@ -35,18 +35,15 @@ function getGlobOptions(options: GlobOptions, excludeDirs: string[]): GlobOption
 }
 
 export function transpileFiles(args: CommandLineArgs): string[] {
-  const writtenFiles: string[] = [];
   const { dryRun, replace, replaceDecorators, sources, verbose } = args;
 
   const excludeDirs = args.excludeDirs || DEFAULT_EXCLUDE_DIRECTORIES;
   const includePattern = args.includePattern || DEFAULT_INCLUDE_PATTERN;
 
-  const babelOptions = getTransformOptions({
-    pluginOptions: {
-      replaceDecorators,
-      verbose,
-    },
-  });
+  const pluginOptions: ReflowOptions = { replaceDecorators, verbose };
+  const babelOptions = getTransformOptions({ pluginOptions });
+
+  const writtenFiles: string[] = [];
 
   sources.forEach(source => {
     const isDir = statSync(source).isDirectory();
@@ -65,7 +62,11 @@ export function transpileFiles(args: CommandLineArgs): string[] {
         const fileExtension = Metrics.fileTypes.get(inputFile) || '.ts';
         const tsFile = inputFile.replace(extname(inputFile), fileExtension);
 
-        const formattedOutput = postProcessOutputCode(out.code, readFileSync(inputFile));
+        const formattedOutput = formatOutputCode(
+          out.code,
+          String(readFileSync(inputFile)),
+          pluginOptions,
+        );
 
         if (dryRun) {
           console.log(formattedOutput);

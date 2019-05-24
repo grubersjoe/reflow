@@ -1,5 +1,7 @@
 import prettier, { Options as PrettierOptions } from 'prettier-ts';
 
+import { ReflowOptions } from '..';
+
 export const BLANK_LINE = /^[ \t]*$/;
 export const LINE_BREAK = /\r?\n/;
 
@@ -13,10 +15,13 @@ const BLOCK_COMMENT_END = /\s*\*\//;
 const LINE_COMMENT_AT_BEGINNING_OF_LINE = /^[ \t]*\/\/.*$/;
 const LINE_COMMENT_AT_END_OF_LINE = /(?<!^|[^\S]|:|})[ \t]*\/\/.*$/;
 
+const DECORATOR = /^[ \t]*@.+$/;
+
 const FLOW_DIRECTIVE = /(@flow(\s+(strict(-local)?|weak))?|@noflow)/;
 
 function getPrettierConfig(overrides?: PrettierOptions): PrettierOptions {
   const defaults: PrettierOptions = {
+    parser: 'typescript',
     semi: true,
     singleQuote: true,
     tabWidth: 2,
@@ -52,9 +57,9 @@ function getMatch(line: string, regexp: RegExp): string | null {
 export function syncBlankLinesAndComments(
   originalCode: Buffer | string,
   outputCode: string,
+  pluginOptions: ReflowOptions,
 ): string {
-  const originalLines = originalCode
-    .toString()
+  const originalLines = String(originalCode)
     .split(LINE_BREAK)
     .filter(line => !FLOW_DIRECTIVE.test(line));
 
@@ -62,8 +67,8 @@ export function syncBlankLinesAndComments(
 
   let copyLine = false;
 
-  originalLines.forEach((originalLine, line) => {
-    const outputLine = outputLines[line];
+  originalLines.forEach((originalLine, lineNumber) => {
+    const outputLine = outputLines[lineNumber];
 
     if (outputLine === undefined || originalLine === outputLine) {
       return;
@@ -71,7 +76,7 @@ export function syncBlankLinesAndComments(
 
     // Insert an extra blank line if it's present in original file but not in output
     if (BLANK_LINE.test(originalLine)) {
-      outputLines.splice(line, 0, '');
+      outputLines.splice(lineNumber, 0, '');
     }
 
     // Beginning of block comment: start copying lines
@@ -81,7 +86,7 @@ export function syncBlankLinesAndComments(
 
     // Inside of a block comment - continue copying
     if (copyLine) {
-      outputLines.splice(line, 0, originalLine);
+      outputLines.splice(lineNumber, 0, originalLine);
     }
 
     // End of block comment - stop copying
@@ -92,18 +97,24 @@ export function syncBlankLinesAndComments(
     // Append block comments appearing at the end of a line
     const blockCommentAtEndOfLine = getMatch(originalLine, BLOCK_COMMENT_AT_END_OF_LINE);
     if (blockCommentAtEndOfLine) {
-      outputLines[line] = outputLine + blockCommentAtEndOfLine;
+      outputLines[lineNumber] = outputLine + blockCommentAtEndOfLine;
     }
 
     // Copy line comments that occupy an entire line
     if (LINE_COMMENT_AT_BEGINNING_OF_LINE.test(originalLine)) {
-      outputLines.splice(line, 0, originalLine);
+      outputLines.splice(lineNumber, 0, originalLine);
     }
 
     // Append line comments appearing at the end of a line
     const lineCommentAtEndOfLine = getMatch(originalLine, LINE_COMMENT_AT_END_OF_LINE);
     if (lineCommentAtEndOfLine) {
-      outputLines[line] = outputLine + lineCommentAtEndOfLine;
+      outputLines[lineNumber] = outputLine + lineCommentAtEndOfLine;
+    }
+
+    // Replace each decorator with blank lines to keep line count consistent
+    // while formatting.
+    if (pluginOptions.replaceDecorators && DECORATOR.test(originalLine)) {
+      outputLines.splice(lineNumber, 0, '');
     }
   });
 
@@ -116,40 +127,35 @@ export function syncBlankLinesAndComments(
  * Prettier, inserting blank lines and copying comments from the original
  * source to the output.
  */
-export function postProcessOutputCode(
+export function formatOutputCode(
   outputCode: string,
-  originalCode: Buffer | string,
-  prettierOptions: PrettierOptions = getPrettierConfig(),
+  originalCode: string,
+  pluginOptions: ReflowOptions,
 ): string {
-  prettierOptions.parser = 'typescript';
-
   // Remove all comments, so that Prettier is able to collapse all lines as
   // much as possible.
   outputCode = outputCode.replace(BLOCK_COMMENTS, '');
   outputCode = outputCode.replace(LINE_COMMENTS, '');
 
+  const prettierOptions: PrettierOptions = {
+    printWidth: Infinity,
+    wrapObjects: true,
+  };
+
   // This forked version of Prettier has an option to *always* wrap objects
   // into multiple lines (even then they would fit into one line)
   originalCode = prettier.format(
-    originalCode.toString(),
+    originalCode,
     getPrettierConfig({
       parser: 'babel',
-      printWidth: Infinity,
-      wrapObjects: true,
+      ...prettierOptions,
     }),
   );
 
-  outputCode = prettier.format(
-    outputCode,
-    getPrettierConfig({
-      parser: 'typescript',
-      printWidth: Infinity,
-      wrapObjects: true,
-    }),
-  );
+  outputCode = prettier.format(outputCode, getPrettierConfig(prettierOptions));
 
-  outputCode = syncBlankLinesAndComments(originalCode, outputCode);
-  outputCode = prettier.format(outputCode, prettierOptions);
+  outputCode = syncBlankLinesAndComments(originalCode, outputCode, pluginOptions);
+  outputCode = prettier.format(outputCode, getPrettierConfig());
 
   return outputCode;
 }
