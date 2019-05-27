@@ -13,7 +13,6 @@ class C1 {
   }
 }
 
-//
 class ClassWithConstructorReturnType {
   constructor() {
     return new Date();

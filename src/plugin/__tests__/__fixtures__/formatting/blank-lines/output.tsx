@@ -1,68 +1,81 @@
-import React, { ReactNode } from 'react';
-import styled from 'styled-components';
-import Icon from 'lib.components.icon';
-import Text from 'lib.components.text';
-import spacing from 'lib.utils.style.spacing';
-import config from 'lib.config.style';
+import {
+  INCREMENT,
+  ADD_CHILD,
+  REMOVE_CHILD,
+  CREATE_NODE,
+  DELETE_NODE,
+} from '../actions';
 
-type Props = {
-  label: string;
-  icon: string;
-  /**
-   * - circle background color as css color string
-   * - default: `config.colors.silent`
-   */
-  circleColor?: string;
-};
+const childIds = (state, action) => {
+  switch (action.type) {
+    case ADD_CHILD:
+      return [...state, action.childId];
 
-const { colors } = config;
+    case REMOVE_CHILD:
+      return state.filter(id => id !== action.childId);
 
-const Circle = styled.span`
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  flex-shrink: 0;
-  width: 2.5rem;
-  height: 2.5rem;
-  margin-right: ${spacing(3)};
-  border-radius: 50%;
-  transition: background 150ms ease-in;
-
-  ${({ circleColor }: Props) =>
-    circleColor &&
-    `
-    background-color: ${circleColor};
-  `}
-`;
-
-const FlexWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  text-align: left;
-
-  /* fake-darken Circle color on hover */
-  &:hover ${Circle} {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.15));
+    default:
+      return state;
   }
-`;
-
-const ShareButton = (props: Props): ReactNode => {
-  const { icon, circleColor = colors.silent, label, ...rest } = props;
-
-  // eslint-disable-next-line
-  return (
-    <button type="button" {...rest}>
-      <FlexWrapper>
-        <Circle circleColor={circleColor}>
-          <Icon fill={colors.inverseText} symbol={icon} size="1.5rem" />
-        </Circle>
-
-        <Text size="lg" tagName="div">
-          {label}
-        </Text>
-      </FlexWrapper>
-    </button>
-  );
 };
 
-export default ShareButton;
+const node = (state, action) => {
+  switch (action.type) {
+    case CREATE_NODE:
+      return {
+        id: action.nodeId,
+        counter: 0,
+        childIds: [],
+      };
+
+    case INCREMENT:
+      return {
+        ...state,
+        counter: state.counter + 1,
+      };
+
+    case ADD_CHILD:
+    case REMOVE_CHILD:
+      return {
+        ...state,
+        childIds: childIds(state.childIds, action),
+      };
+
+    default:
+      return state;
+  }
+};
+
+const getAllDescendantIds = (state, nodeId) =>
+  state[nodeId].childIds.reduce(
+    (acc, childId) => [...acc, childId, ...getAllDescendantIds(state, childId)],
+    [],
+  );
+
+const deleteMany = (state, ids) => {
+  state = {
+    ...state,
+  };
+  ids.forEach(id => delete state[id]);
+
+  return state;
+};
+
+export default (state = {}, action) => {
+  const { nodeId } = action;
+
+  if (typeof nodeId === 'undefined') {
+    return state;
+  }
+
+  if (action.type === DELETE_NODE) {
+    const descendantIds = getAllDescendantIds(state, nodeId);
+
+    return deleteMany(state, [nodeId, ...descendantIds]);
+  }
+
+  return {
+    ...state,
+    [nodeId]: node(state[nodeId], action),
+  };
+};

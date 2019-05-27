@@ -10,7 +10,10 @@ const inputCode = `
   // I'm a comment
   console.log(foo);
 
-  //
+  /*
+  block
+  comment
+  */
 
   function bar(x: boolean): ?Date {
     return x ? new Date() : null;
@@ -22,7 +25,7 @@ const inputCode = `
 `;
 
 test('splitFixtureLines() with default arguments', () => {
-  const output = splitFixtureLines(inputCode);
+  const output = splitFixtureLines(inputCode, 'flow');
 
   const expectedLines = [
     'const foo = 3;',
@@ -37,8 +40,8 @@ test('splitFixtureLines() with default arguments', () => {
   expectedLines.forEach((expectedLine, i) => expect(output[i]).toEqual(expectedLine));
 });
 
-test('splitFixtureLines() without filter', () => {
-  const output = splitFixtureLines(inputCode, false);
+test('splitFixtureLines() with format', () => {
+  const output = splitFixtureLines(inputCode, 'flow', false);
 
   const expectedLines = [
     '// @flow',
@@ -50,7 +53,10 @@ test('splitFixtureLines() without filter', () => {
     `// I'm a comment`,
     'console.log(foo);',
     '',
-    '//',
+    '/*',
+    'block',
+    'comment',
+    '*/',
     '',
     'function bar(x: boolean): ?Date {',
     'return x ? new Date() : null;',

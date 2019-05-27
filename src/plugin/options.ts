@@ -1,4 +1,5 @@
-import { TransformOptions, ParserOptions } from '@babel/core';
+import { TransformOptions } from '@babel/core';
+import { ParserPlugin } from '@babel/parser';
 
 import reflowPlugin, { ReflowOptions } from '.';
 
@@ -14,6 +15,7 @@ export function getTransformOptions(
   const defaultOptions: TransformOptions = {
     babelrc: false,
     configFile: false,
+    comments: false,
     plugins: [[reflowPlugin, args.pluginOptions]],
   };
 
@@ -23,16 +25,16 @@ export function getTransformOptions(
 /**
  * Add Babel syntax plugins for commonly used features and technologies
  */
-export function setParserOptions(parserOpts: ParserOptions): void {
-  const plugins = parserOpts.plugins || [];
-
-  plugins.push('classProperties', 'dynamicImport', 'flow', 'jsx');
-  plugins.push([
-    'decorators',
-    {
-      decoratorsBeforeExport: true,
-    },
-  ]);
-
-  parserOpts.plugins = plugins;
+export function getParserPlugins(): ParserPlugin[] {
+  return [
+    'classProperties',
+    'dynamicImport',
+    'jsx',
+    [
+      'decorators',
+      {
+        decoratorsBeforeExport: true,
+      },
+    ],
+  ];
 }

@@ -1,23 +1,81 @@
+import { traverse } from '@babel/core';
+import { parse } from '@babel/parser';
+import { File, Comment, Decorator } from '@babel/types';
 import prettier, { Options as PrettierOptions } from 'prettier-ts';
 
 import { ReflowOptions } from '..';
+import { getParserPlugins } from '../options';
 
 export const BLANK_LINE = /^[ \t]*$/;
 export const LINE_BREAK = /\r?\n/;
 
-export const BLOCK_COMMENTS = /\s*\/\*([\S\s]*?)\*\//gm;
-export const LINE_COMMENTS = /(?<!\S)\s*(?<![:|}])\/\/.*$/gm;
+const BLOCK_COMMENT_AT_BEGINNING_OF_LINE = /^\s*\/\*/;
+const LINE_COMMENT_AT_BEGINNING_OF_LINE = /^\s*\/\/.*$/;
 
-const BLOCK_COMMENT_AT_END_OF_LINE = /(?<!^|[^\S])[ \t]*\/\*.*\*\/$/;
-const BLOCK_COMMENT_START = /^\s*\/\*/;
-const BLOCK_COMMENT_END = /\s*\*\//;
-
-const LINE_COMMENT_AT_BEGINNING_OF_LINE = /^[ \t]*\/\/.*$/;
-const LINE_COMMENT_AT_END_OF_LINE = /(?<!^|[^\S]|:|})[ \t]*\/\/.*$/;
-
-const DECORATOR = /^[ \t]*@.+$/;
+// const DECORATOR = /^[ \t]*@.+$/;
 
 const FLOW_DIRECTIVE = /(@flow(\s+(strict(-local)?|weak))?|@noflow)/;
+
+function parseAst(code: string): File {
+  return parse(code, {
+    plugins: [...getParserPlugins(), 'flow'],
+    sourceType: 'module',
+  });
+}
+
+function getDecorators(flowAst: File): Decorator[] {
+  const decorators: Decorator[] = [];
+
+  traverse(flowAst, {
+    enter(path) {
+      if (path.isClassDeclaration() && path.node.decorators) {
+        decorators.push(...path.node.decorators);
+      }
+    },
+  });
+
+  return decorators;
+}
+
+function copyComments(
+  tsLines: string[],
+  flowLines: string[],
+  flowAst: File,
+  lineNumber: number,
+): string[] {
+  const outputLine = tsLines[lineNumber];
+
+  const comment = (flowAst.comments as Comment[]).find(
+    comment => comment.loc.start.line - 1 === lineNumber, // lineNumber is zero-based
+  );
+
+  if (comment) {
+    if (comment.type === 'CommentBlock') {
+      if (BLOCK_COMMENT_AT_BEGINNING_OF_LINE.test(flowLines[lineNumber])) {
+        `/*${comment.value}*/`
+          .split('\n')
+          .reverse()
+          .forEach(commentLine => {
+            tsLines.splice(lineNumber, 0, commentLine);
+          });
+      } else {
+        tsLines[lineNumber] = `${outputLine} /*${comment.value}*/`;
+      }
+    }
+
+    if (comment.type === 'CommentLine') {
+      const lineComment = `//${comment.value}`;
+
+      if (LINE_COMMENT_AT_BEGINNING_OF_LINE.test(flowLines[lineNumber])) {
+        tsLines.splice(lineNumber, 0, lineComment);
+      } else {
+        tsLines[lineNumber] = `${outputLine} ${lineComment}`;
+      }
+    }
+  }
+
+  return tsLines;
+}
 
 function getPrettierConfig(overrides?: PrettierOptions): PrettierOptions {
   const defaults: PrettierOptions = {
@@ -31,17 +89,11 @@ function getPrettierConfig(overrides?: PrettierOptions): PrettierOptions {
   return Object.assign({}, defaults, overrides);
 }
 
-function getMatch(line: string, regexp: RegExp): string | null {
-  const matches = line.match(regexp);
-
-  return matches && matches.length === 1 ? matches[0] : null;
-}
-
 /**
  * Since Babel uses an *abstract* synax tree, all information about whitespace
  * is lost after parsing. Also Babel's `retainLines` option is not working as
- * expected and will produce broken syntax in some cases. Neither does Prettier
- * help here, because it won't add additional blank lines:
+ * expected and will produce broken syntax in some cases. Neither will Prettier
+ * help concerning blank lines, because it won't add additional blank lines:
  *
  * https://prettier.io/docs/en/rationale.html#empty-lines
  *
@@ -55,107 +107,83 @@ function getMatch(line: string, regexp: RegExp): string | null {
  * seems to work reasonably well in practice.
  */
 export function syncBlankLinesAndComments(
-  originalCode: Buffer | string,
-  outputCode: string,
+  tsCode: string,
+  flowCode: Buffer | string,
   pluginOptions: ReflowOptions,
 ): string {
-  const originalLines = String(originalCode)
+  // Filter out the Flow directive (@flow)
+  const flowLines = String(flowCode)
     .split(LINE_BREAK)
     .filter(line => !FLOW_DIRECTIVE.test(line));
 
-  const outputLines = outputCode.split(LINE_BREAK).filter(line => !BLANK_LINE.test(line));
+  let tsLines = tsCode.split(LINE_BREAK).filter(line => !BLANK_LINE.test(line));
 
-  let copyLine = false;
+  const flowAst = parseAst(flowLines.join('\n'));
+  const decoratorList = getDecorators(flowAst);
 
-  originalLines.forEach((originalLine, lineNumber) => {
-    const outputLine = outputLines[lineNumber];
-
-    if (outputLine === undefined || originalLine === outputLine) {
+  flowLines.forEach((flowLine, lineNumber) => {
+    if (tsLines[lineNumber] === undefined || flowLine === tsLines[lineNumber]) {
       return;
     }
 
     // Insert an extra blank line if it's present in original file but not in output
-    if (BLANK_LINE.test(originalLine)) {
-      outputLines.splice(lineNumber, 0, '');
+    if (BLANK_LINE.test(flowLine)) {
+      tsLines.splice(lineNumber, 0, '');
     }
 
-    // Beginning of block comment: start copying lines
-    if (BLOCK_COMMENT_START.test(originalLine)) {
-      copyLine = true;
-    }
+    // Copy comments from original code to TypeScript output
+    tsLines = copyComments(tsLines, flowLines, flowAst, lineNumber);
 
-    // Inside of a block comment - continue copying
-    if (copyLine) {
-      outputLines.splice(lineNumber, 0, originalLine);
-    }
+    // Insert blank lines where decorators have been to keep line count
+    // consistent for further loop iterations.Each decorator occupies exactly
+    // one line after Prettier has been executed with the options used below
+    if (pluginOptions.replaceDecorators) {
+      const decorator = decoratorList.find(decorator =>
+        decorator.loc ? decorator.loc.start.line - 1 === lineNumber : false,
+      );
 
-    // End of block comment - stop copying
-    if (BLOCK_COMMENT_END.test(originalLine)) {
-      copyLine = false;
-    }
-
-    // Append block comments appearing at the end of a line
-    const blockCommentAtEndOfLine = getMatch(originalLine, BLOCK_COMMENT_AT_END_OF_LINE);
-    if (blockCommentAtEndOfLine) {
-      outputLines[lineNumber] = outputLine + blockCommentAtEndOfLine;
-    }
-
-    // Copy line comments that occupy an entire line
-    if (LINE_COMMENT_AT_BEGINNING_OF_LINE.test(originalLine)) {
-      outputLines.splice(lineNumber, 0, originalLine);
-    }
-
-    // Append line comments appearing at the end of a line
-    const lineCommentAtEndOfLine = getMatch(originalLine, LINE_COMMENT_AT_END_OF_LINE);
-    if (lineCommentAtEndOfLine) {
-      outputLines[lineNumber] = outputLine + lineCommentAtEndOfLine;
-    }
-
-    // Replace each decorator with blank lines to keep line count consistent
-    // while formatting.
-    if (pluginOptions.replaceDecorators && DECORATOR.test(originalLine)) {
-      outputLines.splice(lineNumber, 0, '');
+      if (decorator) {
+        tsLines.splice(lineNumber, 0, '');
+      }
     }
   });
 
-  return outputLines.join('\n');
+  return tsLines.join('\n');
 }
 
 /**
  * Format the code generated by Babel to make it visually as similar as
- * possible to the original code. This is done by executing a forked version of
- * Prettier, inserting blank lines and copying comments from the original
- * source to the output.
+ * possible to the original code. This is done by executing Prettier multiple
+ * times, inserting blank lines and copying comments from the original source
+ * to the output.
  */
 export function formatOutputCode(
-  outputCode: string,
-  originalCode: string,
+  tsCode: string,
+  flowCode: string,
   pluginOptions: ReflowOptions,
 ): string {
-  // Remove all comments, so that Prettier is able to collapse all lines as
-  // much as possible.
-  outputCode = outputCode.replace(BLOCK_COMMENTS, '');
-  outputCode = outputCode.replace(LINE_COMMENTS, '');
-
+  // The aim of the first Prettier run is to format the original and the output
+  // code as similar as possible by forcing consistent line wraps. To do so an
+  // infinite printWidth is used and object literals will always be wrapped
+  // into multiple lines (even when they would fit in one line).
   const prettierOptions: PrettierOptions = {
     printWidth: Infinity,
     wrapObjects: true,
   };
 
-  // This forked version of Prettier has an option to *always* wrap objects
-  // into multiple lines (even then they would fit into one line)
-  originalCode = prettier.format(
-    originalCode,
+  flowCode = prettier.format(
+    flowCode,
     getPrettierConfig({
       parser: 'babel',
       ...prettierOptions,
     }),
   );
 
-  outputCode = prettier.format(outputCode, getPrettierConfig(prettierOptions));
+  tsCode = prettier.format(tsCode, getPrettierConfig(prettierOptions));
+  tsCode = syncBlankLinesAndComments(tsCode, flowCode, pluginOptions);
 
-  outputCode = syncBlankLinesAndComments(originalCode, outputCode, pluginOptions);
-  outputCode = prettier.format(outputCode, getPrettierConfig());
+  // Run Prettier one more time to iron out any remaining bad formatting.
+  tsCode = prettier.format(tsCode, getPrettierConfig());
 
-  return outputCode;
+  return tsCode;
 }

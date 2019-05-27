@@ -62,11 +62,8 @@ export function transpileFiles(args: CommandLineArgs): string[] {
         const fileExtension = Metrics.fileTypes.get(inputFile) || '.ts';
         const tsFile = inputFile.replace(extname(inputFile), fileExtension);
 
-        const formattedOutput = formatOutputCode(
-          out.code,
-          String(readFileSync(inputFile)),
-          pluginOptions,
-        );
+        const flowCode = String(readFileSync(inputFile));
+        const formattedOutput = formatOutputCode(out.code, flowCode, pluginOptions);
 
         if (dryRun) {
           console.log(formattedOutput);

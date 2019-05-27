@@ -32,7 +32,9 @@ const StyledComponent = styled.div`
   }
 `;
 
-const doubleSlashString = 'http://www.w3.org/2000/svg'; /* block comment */
+const doubleSlashString1 = 'http://www.w3.org/2000/svg'; /* block comment */
+const doubleSlashString2 = '//domain/a, //domain/b'; // line comment
+
 
 // Muliple
 // line comments

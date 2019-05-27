@@ -1,6 +1,6 @@
 import { ParserOptions, PluginObj, TransformOptions } from '@babel/core';
 
-import { setParserOptions } from './options';
+import { getParserPlugins } from './options';
 import { PluginPass, VisitorNodes } from './types';
 
 import { baseVisitor } from './visitors/base';
@@ -27,7 +27,7 @@ function buildPlugin(): PluginObj<PluginPass<VisitorNodes>> {
       JSX: jsxVisitor,
     },
     manipulateOptions(opts: TransformOptions, parserOpts: ParserOptions) {
-      setParserOptions(parserOpts);
+      parserOpts.plugins = [...getParserPlugins(), 'flow'];
     },
   };
 }

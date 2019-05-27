@@ -42,7 +42,12 @@ export function runFixtureTests(
 
       if (inputFile && outputFile) {
         const babelOutput = transformFileSync(inputFile, babelOptions);
-        const expectedLines = splitFixtureLines(readFileSync(outputFile), !testFormatting);
+
+        const expectedLines = splitFixtureLines(
+          String(readFileSync(outputFile)),
+          'typescript',
+          !testFormatting,
+        );
 
         describe(chalk.underline(testName), () => {
           if (!babelOutput) {
@@ -54,7 +59,7 @@ export function runFixtureTests(
               ? formatOutputCode(babelOutput.code, String(readFileSync(inputFile)), pluginOptions)
               : babelOutput.code;
 
-            splitFixtureLines(outputCode, !testFormatting).forEach((line, i) => {
+            splitFixtureLines(outputCode, 'typescript', !testFormatting).forEach((line, i) => {
               const padLength = Math.min(String(expectedLines.length).length, 2);
               const testNumber = String(i + 1).padStart(padLength, '0');
 

@@ -1,4 +1,5 @@
 // @flow
+// NOTE: The decorators will be collapsed by Prettier in the formatting routine.
 @d1(
   p1,
   p2,
@@ -24,11 +25,12 @@ class C1 {
     // A line comment
 
     return {
-      value: this.field,
+      value: this.field, // eslint-disable
     };
   }
 }
 
+/* Block comment */
 class C2 {}
 
 export default C1;
