@@ -12,9 +12,19 @@ export const LINE_BREAK = /\r?\n/;
 const BLOCK_COMMENT_AT_BEGINNING_OF_LINE = /^\s*\/\*/;
 const LINE_COMMENT_AT_BEGINNING_OF_LINE = /^\s*\/\/.*$/;
 
-// const DECORATOR = /^[ \t]*@.+$/;
-
 const FLOW_DIRECTIVE = /(@flow(\s+(strict(-local)?|weak))?|@noflow)/;
+
+function getPrettierConfig(overrides?: PrettierOptions): PrettierOptions {
+  const defaults: PrettierOptions = {
+    parser: 'typescript',
+    semi: true,
+    singleQuote: true,
+    tabWidth: 2,
+    trailingComma: 'all',
+  };
+
+  return Object.assign({}, defaults, overrides);
+}
 
 function parseAst(code: string): File {
   return parse(code, {
@@ -38,55 +48,43 @@ function getDecorators(flowAst: File): Decorator[] {
 }
 
 function copyComments(
-  tsLines: string[],
-  flowLines: string[],
-  flowAst: File,
+  outputLines: string[],
+  originalLines: string[],
+  originalAst: File,
   lineNumber: number,
 ): string[] {
-  const outputLine = tsLines[lineNumber];
+  const outputLine = outputLines[lineNumber];
 
-  const comment = (flowAst.comments as Comment[]).find(
+  const comment = (originalAst.comments as Comment[]).find(
     comment => comment.loc.start.line - 1 === lineNumber, // lineNumber is zero-based
   );
 
   if (comment) {
     if (comment.type === 'CommentBlock') {
-      if (BLOCK_COMMENT_AT_BEGINNING_OF_LINE.test(flowLines[lineNumber])) {
+      if (BLOCK_COMMENT_AT_BEGINNING_OF_LINE.test(originalLines[lineNumber])) {
         `/*${comment.value}*/`
           .split('\n')
           .reverse()
           .forEach(commentLine => {
-            tsLines.splice(lineNumber, 0, commentLine);
+            outputLines.splice(lineNumber, 0, commentLine);
           });
       } else {
-        tsLines[lineNumber] = `${outputLine} /*${comment.value}*/`;
+        outputLines[lineNumber] = `${outputLine} /*${comment.value}*/`;
       }
     }
 
     if (comment.type === 'CommentLine') {
       const lineComment = `//${comment.value}`;
 
-      if (LINE_COMMENT_AT_BEGINNING_OF_LINE.test(flowLines[lineNumber])) {
-        tsLines.splice(lineNumber, 0, lineComment);
+      if (LINE_COMMENT_AT_BEGINNING_OF_LINE.test(originalLines[lineNumber])) {
+        outputLines.splice(lineNumber, 0, lineComment);
       } else {
-        tsLines[lineNumber] = `${outputLine} ${lineComment}`;
+        outputLines[lineNumber] = `${outputLine} ${lineComment}`;
       }
     }
   }
 
-  return tsLines;
-}
-
-function getPrettierConfig(overrides?: PrettierOptions): PrettierOptions {
-  const defaults: PrettierOptions = {
-    parser: 'typescript',
-    semi: true,
-    singleQuote: true,
-    tabWidth: 2,
-    trailingComma: 'all',
-  };
-
-  return Object.assign({}, defaults, overrides);
+  return outputLines;
 }
 
 /**
@@ -107,32 +105,32 @@ function getPrettierConfig(overrides?: PrettierOptions): PrettierOptions {
  * seems to work reasonably well in practice.
  */
 export function syncBlankLinesAndComments(
-  tsCode: string,
-  flowCode: Buffer | string,
+  outputCode: string,
+  originalCode: Buffer | string,
   pluginOptions: ReflowOptions,
 ): string {
   // Filter out the Flow directive (@flow)
-  const flowLines = String(flowCode)
+  const originalLines = String(originalCode)
     .split(LINE_BREAK)
     .filter(line => !FLOW_DIRECTIVE.test(line));
 
-  let tsLines = tsCode.split(LINE_BREAK).filter(line => !BLANK_LINE.test(line));
+  let outputLines = outputCode.split(LINE_BREAK).filter(line => !BLANK_LINE.test(line));
 
-  const flowAst = parseAst(flowLines.join('\n'));
+  const flowAst = parseAst(originalLines.join('\n'));
   const decoratorList = getDecorators(flowAst);
 
-  flowLines.forEach((flowLine, lineNumber) => {
-    if (tsLines[lineNumber] === undefined || flowLine === tsLines[lineNumber]) {
+  originalLines.forEach((flowLine, lineNumber) => {
+    if (outputLines[lineNumber] === undefined || flowLine === outputLines[lineNumber]) {
       return;
     }
 
     // Insert an extra blank line if it's present in original file but not in output
     if (BLANK_LINE.test(flowLine)) {
-      tsLines.splice(lineNumber, 0, '');
+      outputLines.splice(lineNumber, 0, '');
     }
 
     // Copy comments from original code to TypeScript output
-    tsLines = copyComments(tsLines, flowLines, flowAst, lineNumber);
+    outputLines = copyComments(outputLines, originalLines, flowAst, lineNumber);
 
     // Insert blank lines where decorators have been to keep line count
     // consistent for further loop iterations.Each decorator occupies exactly
@@ -143,12 +141,12 @@ export function syncBlankLinesAndComments(
       );
 
       if (decorator) {
-        tsLines.splice(lineNumber, 0, '');
+        outputLines.splice(lineNumber, 0, '');
       }
     }
   });
 
-  return tsLines.join('\n');
+  return outputLines.join('\n');
 }
 
 /**
@@ -158,8 +156,8 @@ export function syncBlankLinesAndComments(
  * to the output.
  */
 export function formatOutputCode(
-  tsCode: string,
-  flowCode: string,
+  outputCode: string,
+  originalCode: string,
   pluginOptions: ReflowOptions,
 ): string {
   // The aim of the first Prettier run is to format the original and the output
@@ -168,22 +166,22 @@ export function formatOutputCode(
   // into multiple lines (even when they would fit in one line).
   const prettierOptions: PrettierOptions = {
     printWidth: Infinity,
-    wrapObjects: true,
+    reflow: true,
   };
 
-  flowCode = prettier.format(
-    flowCode,
+  originalCode = prettier.format(
+    originalCode,
     getPrettierConfig({
       parser: 'babel',
       ...prettierOptions,
     }),
   );
 
-  tsCode = prettier.format(tsCode, getPrettierConfig(prettierOptions));
-  tsCode = syncBlankLinesAndComments(tsCode, flowCode, pluginOptions);
+  outputCode = prettier.format(outputCode, getPrettierConfig(prettierOptions));
+  outputCode = syncBlankLinesAndComments(outputCode, originalCode, pluginOptions);
 
   // Run Prettier one more time to iron out any remaining bad formatting.
-  tsCode = prettier.format(tsCode, getPrettierConfig());
+  outputCode = prettier.format(outputCode, getPrettierConfig());
 
-  return tsCode;
+  return outputCode;
 }

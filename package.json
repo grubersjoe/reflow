@@ -52,7 +52,7 @@
     "glob": "^7.1.4",
     "lodash": "^4.17.11",
     "prettier": "1.17.1",
-    "prettier-ts": "1.17.1"
+    "prettier-ts": "1.17.1-2"
   },
   "scripts": {
     "build": "node --max_old_space_size=4096 ./node_modules/.bin/webpack --mode=production --progress",

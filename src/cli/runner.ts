@@ -59,22 +59,23 @@ export function transpileFiles(args: CommandLineArgs): string[] {
       if (out === null || !out.code) {
         logError(`Unable to transpile ${inputFile}`, 4);
       } else {
-        const fileExtension = Metrics.fileTypes.get(inputFile) || '.ts';
-        const tsFile = inputFile.replace(extname(inputFile), fileExtension);
+        const outputFile = process.env.DEBUG
+          ? inputFile
+          : inputFile.replace(extname(inputFile), Metrics.fileTypes.get(inputFile) || '.ts');
 
-        const flowCode = String(readFileSync(inputFile));
-        const formattedOutput = formatOutputCode(out.code, flowCode, pluginOptions);
+        const inputCode = String(readFileSync(inputFile));
+        const formattedOutput = formatOutputCode(out.code, inputCode, pluginOptions);
 
         if (dryRun) {
           console.log(formattedOutput);
           printRuler();
         } else {
           if (replace) {
-            renameSync(inputFile, tsFile);
+            renameSync(inputFile, outputFile);
           }
 
-          writeFileSync(tsFile, formattedOutput);
-          writtenFiles.push(tsFile);
+          writeFileSync(outputFile, formattedOutput);
+          writtenFiles.push(outputFile);
         }
       }
     });
