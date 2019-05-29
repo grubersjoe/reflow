@@ -10,24 +10,25 @@ import {
   tsTypeParameterInstantiation,
 } from '@babel/types';
 
+import { ConverterState } from '../types';
+import { WARNINGS, logWarning } from '../util/warnings';
 import { convertFlowType } from './flow-type';
-import { PluginWarnings, WARNINGS } from '../util/warning';
 
-export function convertTypeParameter(node: TypeParameter): TSTypeParameter {
+export function convertTypeParameter(node: TypeParameter, state: ConverterState): TSTypeParameter {
   const typeParameter = tsTypeParameter();
 
   typeParameter.name = node.name;
 
   if (node.bound) {
-    typeParameter.constraint = convertFlowType(node.bound.typeAnnotation);
+    typeParameter.constraint = convertFlowType(node.bound.typeAnnotation, state);
   }
 
   if (node.default) {
-    typeParameter.default = convertFlowType(node.default);
+    typeParameter.default = convertFlowType(node.default, state);
   }
 
   if (node.variance) {
-    PluginWarnings.enable(WARNINGS.genericTypeAnnotation.variance);
+    logWarning(WARNINGS.genericTypeAnnotation.variance, state.file.code, node.loc);
   }
 
   return typeParameter;
@@ -35,20 +36,22 @@ export function convertTypeParameter(node: TypeParameter): TSTypeParameter {
 
 export function convertTypeParameterDeclaration(
   node: TypeParameterDeclaration | null,
+  state: ConverterState,
 ): TSTypeParameterDeclaration | null {
   if (node === null) {
     return null;
   }
 
-  return tsTypeParameterDeclaration(node.params.map(convertTypeParameter));
+  return tsTypeParameterDeclaration(node.params.map(node => convertTypeParameter(node, state)));
 }
 
 export function convertTypeParameterInstantiation(
   node: TypeParameterInstantiation | null,
+  state: ConverterState,
 ): TSTypeParameterInstantiation | null {
   if (node === null) {
     return null;
   }
 
-  return tsTypeParameterInstantiation(node.params.map(param => convertFlowType(param)));
+  return tsTypeParameterInstantiation(node.params.map(param => convertFlowType(param, state)));
 }

@@ -7,14 +7,16 @@ import {
   InterfaceTypeAnnotation,
   TSExpressionWithTypeArguments,
   TSInterfaceDeclaration,
+  TSTypeLiteral,
   TypeParameterDeclaration,
   tsExpressionWithTypeArguments,
   tsInterfaceBody,
   tsInterfaceDeclaration,
 } from '@babel/types';
 
-import { convertObjectTypeAnnotation } from './object';
+import { ConverterState } from '../types';
 import { convertIdentifier } from './identifier';
+import { convertObjectTypeAnnotation } from './object';
 import {
   convertTypeParameterDeclaration,
   convertTypeParameterInstantiation,
@@ -27,37 +29,51 @@ export interface TypeAliasForInterfaceType extends BaseNode {
   right: InterfaceTypeAnnotation;
 }
 
-export function convertInterfaceExtends(node: InterfaceExtends): TSExpressionWithTypeArguments {
+export function convertInterfaceExtends(
+  node: InterfaceExtends,
+  state: ConverterState,
+): TSExpressionWithTypeArguments {
   const id = convertIdentifier(node.id);
-  const typeParameters = convertTypeParameterInstantiation(node.typeParameters);
+  const typeParameters = convertTypeParameterInstantiation(node.typeParameters, state);
 
   return tsExpressionWithTypeArguments(id, typeParameters);
 }
 
 export function convertInterfaceDeclaration(
   node: InterfaceDeclaration | DeclareInterface,
+  state: ConverterState,
 ): TSInterfaceDeclaration {
-  const typeParameters = convertTypeParameterDeclaration(node.typeParameters);
-  const body = tsInterfaceBody(convertObjectTypeAnnotation(node.body).members);
+  const typeParameters = convertTypeParameterDeclaration(node.typeParameters, state);
+  const body = tsInterfaceBody(convertObjectTypeAnnotation(node.body, state).members);
 
   const _extends =
     node.extends && node.extends.length
-      ? node.extends.map(interfaceExtends => convertInterfaceExtends(interfaceExtends))
+      ? node.extends.map(interfaceExtends => convertInterfaceExtends(interfaceExtends, state))
       : null;
 
   return tsInterfaceDeclaration(node.id, typeParameters, _extends, body);
 }
 
-export function convertInterfaceTypeAlias(node: TypeAliasForInterfaceType): TSInterfaceDeclaration {
+export function convertInterfaceTypeAlias(
+  node: TypeAliasForInterfaceType,
+  state: ConverterState,
+): TSInterfaceDeclaration {
   const { right: _interface } = node;
 
-  const typeParameters = convertTypeParameterDeclaration(node.typeParameters);
-  const body = tsInterfaceBody(convertObjectTypeAnnotation(_interface.body).members);
+  const typeParameters = convertTypeParameterDeclaration(node.typeParameters, state);
+  const body = tsInterfaceBody(convertObjectTypeAnnotation(_interface.body, state).members);
 
   const _extends =
     _interface.extends && _interface.extends.length
-      ? _interface.extends.map(_extends => convertInterfaceExtends(_extends))
+      ? _interface.extends.map(_extends => convertInterfaceExtends(_extends, state))
       : null;
 
   return tsInterfaceDeclaration(node.id, typeParameters, _extends, body);
+}
+
+export function convertInterfaceTypeAnnotation(
+  node: InterfaceTypeAnnotation,
+  state: ConverterState,
+): TSTypeLiteral {
+  return convertObjectTypeAnnotation(node.body, state);
 }

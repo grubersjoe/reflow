@@ -2,7 +2,7 @@ import { resolve } from 'path';
 
 import { ReflowOptions } from '../../..';
 import { getTransformOptions } from '../../../options';
-import { runFixtureTests } from '../..';
+import { runFixtureTests } from '../../../util/test-runner';
 
 const pluginOptions: ReflowOptions = {
   replaceDecorators: true,

@@ -1,7 +1,7 @@
 import { resolve } from 'path';
 
 import { getTransformOptions } from '../../../options';
-import { runFixtureTests } from '../..';
+import { runFixtureTests } from '../../../util/test-runner';
 
 describe('React', () => {
   runFixtureTests(

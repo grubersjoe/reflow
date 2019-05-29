@@ -1,24 +1,33 @@
-export interface PluginWarning {
+import chalk from 'chalk';
+
+import { SourceLocation, codeFrameColumns } from '@babel/code-frame';
+import { UnexpectedError } from '../../util/error';
+
+interface PluginWarning {
   message: string;
   see?: string;
 }
 
-interface WarningsLogger {
-  getWarnings: () => Set<PluginWarning>;
-  enable: (warning: PluginWarning) => void;
-}
+export function logWarning(
+  warning: PluginWarning,
+  code: string,
+  location: SourceLocation | null,
+): void {
+  if (!location) {
+    throw new UnexpectedError(`No source location given for warning ${warning.message}`);
+  }
 
-function createWarningsLogger(): WarningsLogger {
-  const warnings: Set<PluginWarning> = new Set();
+  // Surpress the tirade of ^^^s in output
+  location.start.column = undefined;
 
-  return {
-    getWarnings() {
-      return warnings;
-    },
-    enable(warning) {
-      warnings.add(warning);
-    },
-  };
+  const frame = codeFrameColumns(code, location, {
+    highlightCode: true,
+    message: `${chalk.bold.yellowBright('Warning')}: ${warning.message}\n   See: ${warning.see}\n`,
+    linesAbove: 2,
+    linesBelow: 2,
+  });
+
+  console.log(`\n${frame}\n`);
 }
 
 export const WARNINGS = {
@@ -46,7 +55,8 @@ export const WARNINGS = {
   },
   objectTypeProperty: {
     variance: {
-      message: `TypeScript doesn't support contravariance (-T). All properties will be changed to ordinary ones.`,
+      message: `TypeScript doesn't support contravariance (-T). All properties will be changed to
+      ordinary ones.`,
       see: `https://github.com/Microsoft/TypeScript/issues/10717`,
     },
   },
@@ -55,5 +65,3 @@ export const WARNINGS = {
     see: `https://github.com/Microsoft/TypeScript/issues/202`,
   },
 };
-
-export const PluginWarnings = createWarningsLogger();

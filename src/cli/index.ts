@@ -56,9 +56,8 @@ const help: {
   dryRun: 'perform a trial run printing to stdout instead of writing a file',
   excludeDirs: 'list of recursively excluded directories',
   includePattern: 'set the glob pattern for input files',
-  replaceDecorators: 'replace class @decorators with ordinary function calls',
+  replaceDecorators: 'replace class @decorators with wrapped function calls to avoid TypeScript errors',
   replace: 'process files in-place. A new TS file will be created next to the original file otherwise.',
-  verbose: 'increase verbosity',
 };
 
 // Define the CLI interface
@@ -70,8 +69,7 @@ program
   .option('-e, --exclude-dirs <dirs ...>', help.excludeDirs, toArray, DEFAULT_EXCLUDE_DIRECTORIES)
   .option('-i, --include-pattern <pattern>', help.includePattern, DEFAULT_INCLUDE_PATTERN)
   .option('-r, --replace', help.replace)
-  .option('-D, --replace-decorators', help.replaceDecorators, false)
-  .option('-v, --verbose', help.verbose, false);
+  .option('-D, --replace-decorators', help.replaceDecorators, false);
 
 program.on('--help', () => {
   console.log('\nExamples:');

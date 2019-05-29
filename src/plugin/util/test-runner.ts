@@ -1,16 +1,50 @@
 import { TransformOptions, transformFileSync } from '@babel/core';
+import { parse } from '@babel/parser';
+import { Comment } from '@babel/types';
 import chalk from 'chalk';
+import { readdirSync, readFileSync, statSync } from 'fs';
 import glob from 'glob';
 import startCase from 'lodash/startCase';
-import { readdirSync, readFileSync, statSync } from 'fs';
 
 import { ReflowOptions } from '..';
-import { TestError } from '../../util/error';
-import { relativePath as relPath, splitFixtureLines } from '../util/file';
-import { formatOutputCode } from '../util/format';
+import { relativePath as relPath } from './file';
+import { BLANK_LINE, LINE_BREAK, formatOutputCode } from './format';
+import { getParserPlugins } from '../options';
 
 const INPUT_FIXTURE_GLOB = 'input.js';
 const OUTPUT_FIXTURE_GLOB = 'output.{ts,tsx}';
+
+class TestError extends Error {}
+
+export function splitFixtureLines(
+  code: string,
+  type: 'flow' | 'typescript',
+  ignoreFormat = true,
+): string[] {
+  const ast = parse(code, {
+    plugins: [...getParserPlugins(), type],
+    sourceType: 'module',
+  });
+
+  if (ignoreFormat) {
+    // Delete comments
+    (ast.comments as Comment[]).forEach(comment => {
+      if (comment.type === 'CommentBlock') {
+        code = code.replace(`/*${comment.value}*/`, '');
+      }
+
+      if (comment.type === 'CommentLine') {
+        code = code.replace(`//${comment.value}`, '');
+      }
+    });
+  }
+
+  return code
+    .trim()
+    .split(LINE_BREAK)
+    .filter(line => !(ignoreFormat && BLANK_LINE.test(line)))
+    .map(line => line.trim());
+}
 
 export function runFixtureTests(
   rootDir: string,

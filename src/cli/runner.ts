@@ -1,13 +1,11 @@
 import { transformFileSync } from '@babel/core';
-import chalk from 'chalk';
 import { renameSync, statSync, writeFileSync, readFileSync } from 'fs';
 import glob, { IOptions as GlobOptions } from 'glob';
 import { extname, resolve } from 'path';
 
-import { logError, logPluginWarning, printRuler } from '../util/log';
+import { FileTypes } from '../plugin/util/file';
+import { logError, printRuler } from '../util/log';
 import { formatOutputCode } from '../plugin/util/format';
-import { Metrics, sortNumberMap } from '../plugin/util/metric';
-import { PluginWarnings } from '../plugin/util/warning';
 import { getTransformOptions } from '../plugin/options';
 
 import { ReflowOptions } from '../plugin/';
@@ -35,12 +33,12 @@ function getGlobOptions(options: GlobOptions, excludeDirs: string[]): GlobOption
 }
 
 export function transpileFiles(args: CommandLineArgs): string[] {
-  const { dryRun, replace, replaceDecorators, sources, verbose } = args;
+  const { dryRun, replace, replaceDecorators, sources } = args;
 
   const excludeDirs = args.excludeDirs || DEFAULT_EXCLUDE_DIRECTORIES;
   const includePattern = args.includePattern || DEFAULT_INCLUDE_PATTERN;
 
-  const pluginOptions: ReflowOptions = { replaceDecorators, verbose };
+  const pluginOptions: ReflowOptions = { replaceDecorators };
   const babelOptions = getTransformOptions({ pluginOptions });
 
   const writtenFiles: string[] = [];
@@ -53,7 +51,7 @@ export function transpileFiles(args: CommandLineArgs): string[] {
     const inputFiles = isDir ? glob.sync(includePattern, globOptions) : [resolve(source)];
 
     inputFiles.forEach(inputFile => {
-      console.log(chalk.magenta(`Transpiling ${inputFile}...`));
+      console.log(`Transpiling ${inputFile}...`);
       const out = transformFileSync(inputFile, babelOptions);
 
       if (out === null || !out.code) {
@@ -61,7 +59,7 @@ export function transpileFiles(args: CommandLineArgs): string[] {
       } else {
         const outputFile = process.env.DEBUG
           ? inputFile
-          : inputFile.replace(extname(inputFile), Metrics.fileTypes.get(inputFile) || '.ts');
+          : inputFile.replace(extname(inputFile), FileTypes.get(inputFile) || '.ts');
 
         const inputCode = String(readFileSync(inputFile));
         const formattedOutput = formatOutputCode(out.code, inputCode, pluginOptions);
@@ -79,12 +77,6 @@ export function transpileFiles(args: CommandLineArgs): string[] {
         }
       }
     });
-
-    PluginWarnings.getWarnings().forEach(logPluginWarning);
-
-    if (verbose && Metrics.typeCounter.getCounter().size) {
-      console.log(sortNumberMap(Metrics.typeCounter.getCounter()));
-    }
   });
 
   return writtenFiles;

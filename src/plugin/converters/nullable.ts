@@ -8,10 +8,15 @@ import {
   tsUndefinedKeyword,
   tsUnionType,
 } from '@babel/types';
+
+import { ConverterState } from '../types';
 import { convertFlowType } from './flow-type';
 
-export function convertNullableTypeAnnotation(node: NullableTypeAnnotation): TSUnionType {
-  const tsType = convertFlowType(node.typeAnnotation);
+export function convertNullableTypeAnnotation(
+  node: NullableTypeAnnotation,
+  state: ConverterState,
+): TSUnionType {
+  const tsType = convertFlowType(node.typeAnnotation, state);
 
   return tsUnionType([
     // "?null" -> "null | undefined" not "null | null | undefined"

@@ -4,11 +4,10 @@ import { getParserPlugins } from './options';
 import { PluginPass, VisitorNodes } from './types';
 
 import { baseVisitor } from './visitors/base';
-import { jsxVisitor } from './visitors/jsx';
 import { flowVisitor } from './visitors/flow';
+import { jsxVisitor } from './visitors/jsx';
 
 export interface ReflowOptions {
-  verbose?: boolean;
   replaceDecorators?: boolean;
 }
 

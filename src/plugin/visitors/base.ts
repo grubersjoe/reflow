@@ -12,7 +12,7 @@ import { convertClassDeclaration } from '../converters/class';
 import { convertImportDeclaration, convertImportSpecifier } from '../converters/module';
 import { convertOptionalFunctionParameters } from '../converters/function';
 
-export type BaseVisitorNodes =
+export type BaseNode =
   | ArrowFunctionExpression
   | ClassDeclaration
   | FunctionExpression
@@ -21,20 +21,20 @@ export type BaseVisitorNodes =
   | ImportDeclaration
   | ImportSpecifier;
 
-export const baseVisitor: VisitorFunction<BaseVisitorNodes> = (path, state): void => {
+export const baseVisitor: VisitorFunction<BaseNode> = (path, state): void => {
   if (path.isClassDeclaration()) {
     path.replaceWith(convertClassDeclaration(path, state));
   }
 
   if (
+    path.isArrowFunctionExpression() ||
     path.isFunctionDeclaration() ||
-    path.isFunctionExpression() ||
-    path.isArrowFunctionExpression()
+    path.isFunctionExpression()
   ) {
     path.replaceWith(convertOptionalFunctionParameters(path.node));
   }
 
-  if (path.isImportDeclaration() && path.isImportDeclaration()) {
+  if (path.isImportDeclaration()) {
     path.replaceWith(convertImportDeclaration(path));
   }
 

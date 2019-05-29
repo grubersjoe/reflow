@@ -1,6 +1,5 @@
 import {
   BaseNode,
-  Flow,
   FlowType,
   GenericTypeAnnotation,
   TSTypeAnnotation,
@@ -12,28 +11,33 @@ import {
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
-import { convertIdentifier } from './identifier';
-import { convertFlowType } from './flow-type';
-import { convertTypeParameterInstantiation } from './type-parameter';
+import { ConverterState } from '../types';
 import { convertClassUtility, convertReadOnlyArray } from './utility';
 import { replaceNonPrimitiveType } from '../optimizers/non-primitive-types';
+import { convertFlowType } from './flow-type';
+import { convertIdentifier } from './identifier';
+import { convertTypeParameterInstantiation } from './type-parameter';
 
 interface TypeAnnotationWithFlowType extends BaseNode {
   typeAnnotation: FlowType;
 }
 
-export function convertTypeAnnotation(node: TypeAnnotationWithFlowType): TSTypeAnnotation {
-  return tsTypeAnnotation(convertFlowType(node.typeAnnotation));
+export function convertTypeAnnotation(
+  node: TypeAnnotationWithFlowType,
+  state: ConverterState,
+): TSTypeAnnotation {
+  return tsTypeAnnotation(convertFlowType(node.typeAnnotation, state));
 }
 
 export function convertGenericTypeAnnotation(
   node: GenericTypeAnnotation,
-  path?: NodePath<Flow>,
+  state: ConverterState,
+  path?: NodePath<GenericTypeAnnotation>,
 ): TSTypeReference | TSTypeQuery {
   const id = convertIdentifier(node.id);
 
   const typeParameters = node.typeParameters
-    ? convertTypeParameterInstantiation(node.typeParameters)
+    ? convertTypeParameterInstantiation(node.typeParameters, state)
     : null;
 
   if (isIdentifier(id)) {

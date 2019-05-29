@@ -1,8 +1,6 @@
 import {
   Identifier,
   ObjectTypeAnnotation,
-  ObjectTypeCallProperty,
-  ObjectTypeIndexer,
   ObjectTypeProperty,
   ObjectTypeSpreadProperty,
   StringLiteral,
@@ -33,9 +31,10 @@ import {
 import { convertFlowType } from './flow-type';
 
 import { UnexpectedError } from '../../util/error';
-import { PluginWarnings, WARNINGS } from '../util/warning';
-import { convertTypeParameterDeclaration } from './type-parameter';
+import { ConverterState } from '../types';
+import { WARNINGS, logWarning } from '../util/warnings';
 import { functionTypeParametersToIdentifiers, convertFunctionTypeAnnotation } from './function';
+import { convertTypeParameterDeclaration } from './type-parameter';
 
 type SignatureKey = Identifier | StringLiteral;
 
@@ -69,14 +68,14 @@ function replaceProperty(
   return signatures.map(prop => (signatureKeysAreEqual(prop, key) ? updatedProp : prop));
 }
 
-function createMethodSignature(prop: ObjectTypeProperty): TSMethodSignature {
+function createMethodSignature(prop: ObjectTypeProperty, state: ConverterState): TSMethodSignature {
   const { key, optional, value } = prop;
 
   if (!isFunctionTypeAnnotation(value)) {
     throw new UnexpectedError(`prop.value must be a FunctionTypeAnnotation.`);
   }
 
-  const functionType = convertFunctionTypeAnnotation(value);
+  const functionType = convertFunctionTypeAnnotation(value, state);
   const methodSignature = tsMethodSignature(
     key,
     functionType.typeParameters,
@@ -89,9 +88,16 @@ function createMethodSignature(prop: ObjectTypeProperty): TSMethodSignature {
   return methodSignature;
 }
 
-function createPropertySignature(prop: ObjectTypeProperty): TSPropertySignature {
+function createPropertySignature(
+  prop: ObjectTypeProperty,
+  node: ObjectTypeAnnotation,
+  state: ConverterState,
+): TSPropertySignature {
   const { key, optional, variance } = prop;
-  const propSignature = tsPropertySignature(key, tsTypeAnnotation(convertFlowType(prop.value)));
+  const propSignature = tsPropertySignature(
+    key,
+    tsTypeAnnotation(convertFlowType(prop.value, state)),
+  );
 
   propSignature.optional = optional;
   propSignature.readonly = variance && variance.kind === 'plus';
@@ -99,7 +105,7 @@ function createPropertySignature(prop: ObjectTypeProperty): TSPropertySignature 
   // TypeScript doesn't suppport write-only properties. So Flow's
   // variance.kind === 'minus' must be ignored.
   if (variance && variance.kind === 'minus') {
-    PluginWarnings.enable(WARNINGS.objectTypeProperty.variance);
+    logWarning(WARNINGS.objectTypeProperty.variance, state.file.code, node.loc);
   }
 
   return propSignature;
@@ -109,8 +115,9 @@ function convertObjectTypeSpreadProperty(
   node: ObjectTypeAnnotation,
   signatures: TSTypeElement[],
   prop: ObjectTypeSpreadProperty,
+  state: ConverterState,
 ): TSTypeElement[] {
-  const type = convertFlowType(prop.argument);
+  const type = convertFlowType(prop.argument, state);
 
   if (isTSTypeLiteral(type)) {
     type.members.forEach(innerProp => {
@@ -160,66 +167,84 @@ function convertObjectTypeSpreadProperty(
   return signatures;
 }
 
-function convertObjectTypeCallProperty(
+function convertObjectTypeCallProperties(
   signatures: TSTypeElement[],
-  callProp: ObjectTypeCallProperty,
+  node: ObjectTypeAnnotation,
+  state: ConverterState,
 ): TSTypeElement[] {
-  if (!isFunctionTypeAnnotation(callProp.value)) {
-    return signatures;
+  const { callProperties } = node;
+
+  if (callProperties) {
+    callProperties.forEach(callProp => {
+      if (!isFunctionTypeAnnotation(callProp.value)) {
+        return;
+      }
+
+      const { value } = callProp;
+
+      const typeParameters = convertTypeParameterDeclaration(value.typeParameters, state);
+      const params = functionTypeParametersToIdentifiers(value.params, state) || [];
+      const typeAnnotation = tsTypeAnnotation(convertFlowType(value.returnType, state));
+
+      signatures.push(tsCallSignatureDeclaration(typeParameters, params, typeAnnotation));
+    });
   }
-
-  const { value } = callProp;
-
-  const typeParameters = convertTypeParameterDeclaration(value.typeParameters);
-  const params = functionTypeParametersToIdentifiers(value.params) || [];
-  const typeAnnotation = tsTypeAnnotation(convertFlowType(value.returnType));
-
-  signatures.push(tsCallSignatureDeclaration(typeParameters, params, typeAnnotation));
 
   return signatures;
 }
 
-function convertObjectTypeIndexer(
+function convertObjectTypeIndexers(
   signatures: TSTypeElement[],
-  indexer: ObjectTypeIndexer,
+  node: ObjectTypeAnnotation,
+  state: ConverterState,
 ): TSTypeElement[] {
-  const { id, key } = indexer;
-  const typeAnnotation = tsTypeAnnotation(convertFlowType(indexer.value));
+  const { indexers } = node;
 
-  // TypeScript only allows number or string as key type. Add both index
-  // signatures if another type is used in Flow.
-  const isValidKeyType = isNumberTypeAnnotation(key) || isStringTypeAnnotation(key);
+  if (indexers) {
+    indexers.forEach(indexer => {
+      const { id, key } = indexer;
+      const typeAnnotation = tsTypeAnnotation(convertFlowType(indexer.value, state));
 
-  if (isValidKeyType) {
-    const tsKey = identifier(id ? id.name : 'key');
-    tsKey.typeAnnotation = tsTypeAnnotation(convertFlowType(key));
-    signatures.push(tsIndexSignature([tsKey], typeAnnotation));
-  } else {
-    signatures.push(
-      ...[tsNumberKeyword(), tsStringKeyword()].map(type => {
+      // TypeScript only allows number or string as key type. Add both index
+      // signatures if another type is used in Flow.
+      const isValidKeyType = isNumberTypeAnnotation(key) || isStringTypeAnnotation(key);
+
+      if (isValidKeyType) {
         const tsKey = identifier(id ? id.name : 'key');
-        tsKey.typeAnnotation = tsTypeAnnotation(type);
+        tsKey.typeAnnotation = tsTypeAnnotation(convertFlowType(key, state));
+        signatures.push(tsIndexSignature([tsKey], typeAnnotation));
+      } else {
+        signatures.push(
+          ...[tsNumberKeyword(), tsStringKeyword()].map(type => {
+            const tsKey = identifier(id ? id.name : 'key');
+            tsKey.typeAnnotation = tsTypeAnnotation(type);
 
-        return tsIndexSignature([tsKey], typeAnnotation);
-      }),
-    );
+            return tsIndexSignature([tsKey], typeAnnotation);
+          }),
+        );
 
-    PluginWarnings.enable(WARNINGS.indexSignatures.invalidKey);
+        logWarning(WARNINGS.indexSignatures.invalidKey, state.file.code, node.loc);
+      }
+    });
   }
 
   return signatures;
 }
 
-export function convertObjectTypeAnnotation(node: ObjectTypeAnnotation): TSTypeLiteral {
-  const { callProperties, indexers, properties } = node;
+export function convertObjectTypeAnnotation(
+  node: ObjectTypeAnnotation,
+  state: ConverterState,
+): TSTypeLiteral {
+  const { properties } = node;
+
   let signatures: TSTypeElement[] = [];
 
   properties.forEach(prop => {
     if (isObjectTypeProperty(prop)) {
       if (isFunctionTypeAnnotation(prop.value) && prop.method) {
-        signatures.push(createMethodSignature(prop));
+        signatures.push(createMethodSignature(prop, state));
       } else {
-        signatures.push(createPropertySignature(prop));
+        signatures.push(createPropertySignature(prop, node, state));
       }
     }
   });
@@ -228,21 +253,12 @@ export function convertObjectTypeAnnotation(node: ObjectTypeAnnotation): TSTypeL
   // and can be accessed when merging spread properties with them.
   properties.forEach(prop => {
     if (isObjectTypeSpreadProperty(prop)) {
-      signatures = convertObjectTypeSpreadProperty(node, signatures, prop);
+      signatures = convertObjectTypeSpreadProperty(node, signatures, prop, state);
     }
   });
 
-  if (callProperties) {
-    callProperties.forEach(callProp => {
-      signatures = convertObjectTypeCallProperty(signatures, callProp);
-    });
-  }
-
-  if (indexers) {
-    indexers.forEach(indexer => {
-      signatures = convertObjectTypeIndexer(signatures, indexer);
-    });
-  }
+  signatures = convertObjectTypeCallProperties(signatures, node, state);
+  signatures = convertObjectTypeIndexers(signatures, node, state);
 
   return tsTypeLiteral(signatures);
 }

@@ -1,5 +1,4 @@
 import {
-  Flow,
   isDeclareClass,
   isDeclareFunction,
   isDeclareInterface,
@@ -12,10 +11,12 @@ import {
   isTypeCastExpression,
   isTypeParameterDeclaration,
   isDeclareModule,
+  Flow,
 } from '@babel/types';
 
 import { VisitorFunction } from '../types';
-import { PluginWarnings, WARNINGS } from '../util/warning';
+import { FileTypes } from '../util/file';
+import { WARNINGS, logWarning } from '../util/warnings';
 
 import {
   convertDeclareClass,
@@ -30,60 +31,57 @@ import { convertTypeAlias } from '../converters/type-alias';
 import { convertTypeAnnotation } from '../converters/type-annotation';
 import { convertTypeCastExpression } from '../converters/type-cast';
 import { convertTypeParameterDeclaration } from '../converters/type-parameter';
-import { Metrics } from '../util/metric';
 
 export const flowVisitor: VisitorFunction<Flow> = (path, state): void => {
   const { node } = path;
 
-  // TODO: Go through all remaining Flow type nodes and verify which ones need to be handled!
-
   if (isDeclareClass(node)) {
-    path.replaceWith(convertDeclareClass(node));
+    path.replaceWith(convertDeclareClass(node, state));
   }
 
   if (isDeclareFunction(node)) {
-    path.replaceWith(convertDeclareFunction(node));
+    path.replaceWith(convertDeclareFunction(node, state));
   }
 
   if (isDeclareInterface(node)) {
-    path.replaceWith(convertDeclareInterface(node));
+    path.replaceWith(convertDeclareInterface(node, state));
   }
 
   if (isDeclareModule(node)) {
-    path.replaceWith(convertDeclareModule(node));
+    path.replaceWith(convertDeclareModule(node, state));
   }
 
   if (isDeclareTypeAlias(node)) {
-    path.replaceWith(convertDeclareTypeAlias(node));
+    path.replaceWith(convertDeclareTypeAlias(node, state));
   }
 
   if (isDeclareOpaqueType(node)) {
-    path.replaceWith(convertDeclareOpaqueType(node));
+    path.replaceWith(convertDeclareOpaqueType(node, state));
   }
 
   if (isInterfaceDeclaration(node)) {
-    path.replaceWith(convertInterfaceDeclaration(node));
+    path.replaceWith(convertInterfaceDeclaration(node, state));
   }
 
   if (isOpaqueType(node)) {
-    PluginWarnings.enable(WARNINGS.opaqueType);
-    path.replaceWith(convertOpaqueType(node));
+    logWarning(WARNINGS.opaqueType, state.file.code, node.loc);
+    path.replaceWith(convertOpaqueType(node, state));
   }
 
   if (isTypeAlias(node) && path.isFlow()) {
-    path.replaceWith(convertTypeAlias(node, path));
+    path.replaceWith(convertTypeAlias(node, path, state));
   }
 
   if (isTypeAnnotation(node)) {
-    path.replaceWith(convertTypeAnnotation(node));
+    path.replaceWith(convertTypeAnnotation(node, state));
   }
 
   if (isTypeCastExpression(node)) {
-    path.replaceWith(convertTypeCastExpression(node));
+    path.replaceWith(convertTypeCastExpression(node, state));
   }
 
   if (isTypeParameterDeclaration(node)) {
-    path.replaceWith(convertTypeParameterDeclaration(node) || path);
+    path.replaceWith(convertTypeParameterDeclaration(node, state) || path);
   }
 
   // Declaration files need to get the ".d.ts" file extension
@@ -95,7 +93,7 @@ export const flowVisitor: VisitorFunction<Flow> = (path, state): void => {
       case 'DeclareModule':
       case 'DeclareTypeAlias':
       case 'DeclareVariable':
-        Metrics.fileTypes.set(state.filename, '.d.ts');
+        FileTypes.set(state.filename, '.d.ts');
     }
   }
 };

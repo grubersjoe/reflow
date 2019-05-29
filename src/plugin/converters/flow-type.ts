@@ -1,6 +1,7 @@
 import {
   Flow,
   FlowType,
+  GenericTypeAnnotation,
   TSType,
   booleanLiteral,
   numericLiteral,
@@ -21,26 +22,29 @@ import {
 import { NodePath } from '@babel/traverse';
 
 import { NotImplementedError } from '../../util/error';
-import { Metrics } from '../util/metric';
-import { PluginWarnings, WARNINGS } from '../util/warning';
+import { WARNINGS, logWarning } from '../util/warnings';
 
+import { ConverterState } from '../types';
 import { convertFunctionTypeAnnotation } from './function';
+import { convertInterfaceTypeAnnotation } from './interface';
 import { convertIntersectionTypeAnnotation } from './intersection';
 import { convertNullableTypeAnnotation } from './nullable';
 import { convertObjectTypeAnnotation } from './object';
-import { convertGenericTypeAnnotation } from './type-annotation';
 import { convertTypeofTypeAnnotation } from './typeof';
+import { convertGenericTypeAnnotation } from './type-annotation';
 import { convertUnionTypeAnnotation } from './union';
 
-export function convertFlowType(node: FlowType, path?: NodePath<Flow>): TSType {
-  Metrics.typeCounter.incrementFor(node.type);
-
+export function convertFlowType(
+  node: FlowType,
+  state: ConverterState,
+  path?: NodePath<Flow>,
+): TSType {
   switch (node.type) {
     case 'AnyTypeAnnotation':
       return tsAnyKeyword();
 
     case 'ArrayTypeAnnotation':
-      return tsArrayType(convertFlowType(node.elementType));
+      return tsArrayType(convertFlowType(node.elementType, state));
 
     case 'BooleanLiteralTypeAnnotation':
       return tsLiteralType(booleanLiteral(node.value));
@@ -52,20 +56,20 @@ export function convertFlowType(node: FlowType, path?: NodePath<Flow>): TSType {
       return tsNeverKeyword();
 
     case 'ExistsTypeAnnotation':
-      PluginWarnings.enable(WARNINGS.existsTypeAnnotation);
+      logWarning(WARNINGS.existsTypeAnnotation, state.file.code, node.loc);
       return tsAnyKeyword();
 
     case 'FunctionTypeAnnotation':
-      return convertFunctionTypeAnnotation(node);
+      return convertFunctionTypeAnnotation(node, state);
 
     case 'GenericTypeAnnotation':
-      return convertGenericTypeAnnotation(node, path);
+      return convertGenericTypeAnnotation(node, state, path as NodePath<GenericTypeAnnotation>);
 
     case 'InterfaceTypeAnnotation':
-      return convertObjectTypeAnnotation(node.body);
+      return convertInterfaceTypeAnnotation(node, state);
 
     case 'IntersectionTypeAnnotation':
-      return convertIntersectionTypeAnnotation(node);
+      return convertIntersectionTypeAnnotation(node, state);
 
     case 'MixedTypeAnnotation':
       return tsUnknownKeyword();
@@ -74,7 +78,7 @@ export function convertFlowType(node: FlowType, path?: NodePath<Flow>): TSType {
       return tsNullKeyword();
 
     case 'NullableTypeAnnotation':
-      return convertNullableTypeAnnotation(node);
+      return convertNullableTypeAnnotation(node, state);
 
     case 'NumberLiteralTypeAnnotation':
       return tsLiteralType(numericLiteral(node.value));
@@ -83,7 +87,7 @@ export function convertFlowType(node: FlowType, path?: NodePath<Flow>): TSType {
       return tsNumberKeyword();
 
     case 'ObjectTypeAnnotation':
-      return convertObjectTypeAnnotation(node);
+      return convertObjectTypeAnnotation(node, state);
 
     case 'StringLiteralTypeAnnotation':
       return tsLiteralType(stringLiteral(node.value));
@@ -95,13 +99,13 @@ export function convertFlowType(node: FlowType, path?: NodePath<Flow>): TSType {
       return tsThisType();
 
     case 'TupleTypeAnnotation':
-      return tsTupleType(node.types.map(type => convertFlowType(type)));
+      return tsTupleType(node.types.map(type => convertFlowType(type, state)));
 
     case 'TypeofTypeAnnotation':
       return convertTypeofTypeAnnotation(node);
 
     case 'UnionTypeAnnotation':
-      return convertUnionTypeAnnotation(node);
+      return convertUnionTypeAnnotation(node, state);
 
     case 'VoidTypeAnnotation':
       return tsVoidKeyword();
