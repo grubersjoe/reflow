@@ -191,16 +191,16 @@ function convertObjectTypeIndexer(
   const isValidKeyType = isNumberTypeAnnotation(key) || isStringTypeAnnotation(key);
 
   if (isValidKeyType) {
-    const tsKey = id || identifier('key');
+    const tsKey = identifier(id ? id.name : 'key');
     tsKey.typeAnnotation = tsTypeAnnotation(convertFlowType(key));
     signatures.push(tsIndexSignature([tsKey], typeAnnotation));
   } else {
     signatures.push(
       ...[tsNumberKeyword(), tsStringKeyword()].map(type => {
-        const key = id || identifier('key');
-        key.typeAnnotation = tsTypeAnnotation(type);
+        const tsKey = identifier(id ? id.name : 'key');
+        tsKey.typeAnnotation = tsTypeAnnotation(type);
 
-        return tsIndexSignature([key], typeAnnotation);
+        return tsIndexSignature([tsKey], typeAnnotation);
       }),
     );
 

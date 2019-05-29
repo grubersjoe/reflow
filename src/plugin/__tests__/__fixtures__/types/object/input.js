@@ -121,6 +121,10 @@ type ObjectIndexerPropertyWithUnsupportedKeyType = {
   [Date]: boolean,
 };
 
+type ObjectIndexerPropertyWithNamedUnsupportedKeyType = {
+  [k: Set<number>]: boolean,
+};
+
 type ObjectNamedIndexerProperty = {
   [id: number]: {},
 };

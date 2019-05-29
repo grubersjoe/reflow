@@ -1,9 +1,8 @@
-
 type EmptyObject = {};
 type EmptyExactObject = {};
 
 type SealedObject = {
-  p1: "string";
+  p1: 'string';
   p2: 1;
   p3: null;
 };
@@ -41,9 +40,9 @@ type ExactObjectTypeWithOptionalProp = {
 };
 
 type ObjectWithStringLiteralKey = {
-  "p19": number;
+  p19: number;
   p20: null;
-  "p 21": boolean;
+  'p 21': boolean;
 };
 
 export type ComplexObject = {
@@ -58,49 +57,43 @@ type ObjectWithSpread = {
   b: boolean;
   c: null;
 };
-
 type ObjectWithSpreadInBetween = {
   a: string;
+
   d: null;
   e: number;
   b: boolean;
   c: null;
 };
-
 type ObjectWithSpreadOverwrite = {
   a: string | number;
   c: false | true;
-  b: "literal";
+  b: 'literal';
 };
-
 type ObjectWithSpreadOverwriteInBetween = {
   a: string | number;
   c: true | false;
-  b: "literal";
+  b: 'literal';
 };
-
 type ObjectWithSpreadOverwriteAndStringLiteralKey = {
-  "a": "foo" | "bar";
-  "b": string | number;
+  a: 'foo' | 'bar';
+  b: string | number;
+
   c: number | null;
 };
-
 type ExactObjectWithSpread = {
   a: number;
   c: string;
   d: boolean;
-  b: "literal";
+  b: 'literal';
 };
-
 type ObjectIndexerProperty = {
   [key: string]: number;
 };
-
 type ObjectIndexerPropertyWithUnsupportedKeyType = {
   [key: number]: boolean;
   [key: string]: boolean;
 };
-
 type ObjectIndexerPropertyWithNamedUnsupportedKeyType = {
   [k: number]: boolean;
   [k: string]: boolean;
@@ -109,14 +102,12 @@ type ObjectIndexerPropertyWithNamedUnsupportedKeyType = {
 type ObjectNamedIndexerProperty = {
   [id: number]: {};
 };
-
 type ReadOnlyObject = {
   readonly prop: unknown;
 };
-
 type WriteOnlyObject = {
   prop: () => void;
 };
-
 function functionWithObjectParameter(obj: {}): void {}
+
 function functionWithObjectInitializer(p: any, obj = {}): void {}
