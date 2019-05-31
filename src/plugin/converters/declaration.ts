@@ -64,6 +64,7 @@ function createClassBody(node: ObjectTypeAnnotation, state: ConverterState): Cla
   return classBody(
     node.properties.map(prop => {
       if (isObjectTypeProperty(prop)) {
+        // @ts-ignore prop.method: boolean exists
         if (prop.method && isFunctionTypeAnnotation(prop.value)) {
           const { value, key } = prop;
 

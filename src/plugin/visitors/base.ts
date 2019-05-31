@@ -7,38 +7,27 @@ import {
   ImportSpecifier,
 } from '@babel/types';
 
-import { VisitorFunction } from '../types';
+import { VisitorFunction, ConverterState } from '../types';
 import { convertClassDeclaration } from '../converters/class';
 import { convertImportDeclaration, convertImportSpecifier } from '../converters/module';
 import { convertOptionalFunctionParameters } from '../converters/function';
 
-export type BaseNode =
-  | ArrowFunctionExpression
-  | ClassDeclaration
-  | FunctionExpression
-  | FunctionDeclaration
-  | ArrowFunctionExpression
-  | ImportDeclaration
-  | ImportSpecifier;
+export type BaseVisitorNode = ClassDeclaration & FunctionLike & ImportDeclaration & ImportSpecifier;
 
-export const baseVisitor: VisitorFunction<BaseNode> = (path, state): void => {
-  if (path.isClassDeclaration()) {
-    path.replaceWith(convertClassDeclaration(path, state));
-  }
+type FunctionLike = ArrowFunctionExpression | FunctionDeclaration | FunctionExpression;
 
-  if (
-    path.isArrowFunctionExpression() ||
-    path.isFunctionDeclaration() ||
-    path.isFunctionExpression()
-  ) {
-    path.replaceWith(convertOptionalFunctionParameters(path.node));
-  }
+export const classDeclarationVisitor: VisitorFunction<ClassDeclaration> = (path, state): void => {
+  path.replaceWith(convertClassDeclaration(path, state as ConverterState));
+};
 
-  if (path.isImportDeclaration()) {
-    path.replaceWith(convertImportDeclaration(path));
-  }
+export const functionVisitor: VisitorFunction<FunctionLike> = (path): void => {
+  path.replaceWith(convertOptionalFunctionParameters(path.node));
+};
 
-  if (path.isImportSpecifier() && path.isImportSpecifier()) {
-    path.replaceWith(convertImportSpecifier(path));
-  }
+export const importDeclarationVisitor: VisitorFunction<ImportDeclaration> = (path): void => {
+  path.replaceWith(convertImportDeclaration(path));
+};
+
+export const importSpecifierVisitor: VisitorFunction<ImportSpecifier> = (path): void => {
+  path.replaceWith(convertImportSpecifier(path));
 };

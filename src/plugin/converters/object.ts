@@ -241,6 +241,7 @@ export function convertObjectTypeAnnotation(
 
   properties.forEach(prop => {
     if (isObjectTypeProperty(prop)) {
+      // @ts-ignore prop.method: boolean exists
       if (isFunctionTypeAnnotation(prop.value) && prop.method) {
         signatures.push(createMethodSignature(prop, state));
       } else {

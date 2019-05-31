@@ -74,7 +74,7 @@ export function convertFunctionTypeAnnotation(
 
 // Flow allows *optional* parameters to be initialized - TypeScript does not.
 export function convertOptionalFunctionParameters<
-  Fn extends FunctionDeclaration | FunctionExpression | ArrowFunctionExpression
+  Fn extends ArrowFunctionExpression | FunctionDeclaration | FunctionExpression
 >(node: Fn): Fn {
   node.params = node.params.map(param => {
     if (isAssignmentPattern(param) && isIdentifier(param.left) && param.left.optional) {

@@ -6,10 +6,9 @@ import {
   isTypeParameterInstantiation,
 } from '@babel/types';
 
-import { PluginPass } from '../types';
+import { ConverterState } from '../types';
 import { replaceClassDecorators } from '../optimizers/decorators';
 import { WARNINGS, logWarning } from '../util/warnings';
-import { BaseNode } from '../visitors/base';
 import {
   convertTypeParameterInstantiation,
   convertTypeParameterDeclaration,
@@ -17,7 +16,7 @@ import {
 
 export function convertClassDeclaration(
   path: NodePath<ClassDeclaration>,
-  state: PluginPass<BaseNode>,
+  state: ConverterState,
 ): NodePath<ClassDeclaration> {
   const { node } = path;
   const { body, superTypeParameters, typeParameters } = node;

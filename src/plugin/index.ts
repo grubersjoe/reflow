@@ -3,7 +3,12 @@ import { ParserOptions, PluginObj, TransformOptions } from '@babel/core';
 import { getParserPlugins } from './options';
 import { PluginPass, VisitorNodes } from './types';
 
-import { baseVisitor } from './visitors/base';
+import {
+  classDeclarationVisitor,
+  importSpecifierVisitor,
+  importDeclarationVisitor,
+  functionVisitor,
+} from './visitors/base';
 import { flowVisitor } from './visitors/flow';
 import { jsxVisitor } from './visitors/jsx';
 
@@ -15,13 +20,12 @@ function buildPlugin(): PluginObj<PluginPass<VisitorNodes>> {
   return {
     name: 'reflow',
     visitor: {
-      ArrowFunctionExpression: baseVisitor,
-      ClassDeclaration: baseVisitor,
-      FunctionDeclaration: baseVisitor,
-      FunctionExpression: baseVisitor,
-      ImportDeclaration: baseVisitor,
-      ImportSpecifier: baseVisitor,
-      // @ts-ignore
+      ArrowFunctionExpression: functionVisitor,
+      ClassDeclaration: classDeclarationVisitor,
+      FunctionDeclaration: functionVisitor,
+      FunctionExpression: functionVisitor,
+      ImportDeclaration: importDeclarationVisitor,
+      ImportSpecifier: importSpecifierVisitor,
       Flow: flowVisitor,
       JSX: jsxVisitor,
     },
