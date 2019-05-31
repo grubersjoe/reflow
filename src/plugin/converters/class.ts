@@ -9,6 +9,7 @@ import {
 import { ConverterState } from '../types';
 import { replaceClassDecorators } from '../optimizers/decorators';
 import { WARNINGS, logWarning } from '../util/warnings';
+import { convertOptionalFunctionParameters } from './function';
 import {
   convertTypeParameterInstantiation,
   convertTypeParameterDeclaration,
@@ -29,12 +30,17 @@ export function convertClassDeclaration(
     node.typeParameters = convertTypeParameterDeclaration(typeParameters, state);
   }
 
-  // Flow allows to specify the return type of constructor functions. This is
-  // forbidden in TypeScript. So the the type annotation needs to be removed.
-  body.body.forEach(elem => {
-    if (isClassMethod(elem) && elem.kind === 'constructor' && elem.returnType) {
-      logWarning(WARNINGS.class.constructorReturnType, state.file.code, node.loc);
-      elem.returnType = null;
+  body.body.forEach(node => {
+    if (isClassMethod(node)) {
+      // Flow allows *optional* parameters to be initialized - TypeScript does not.
+      node = convertOptionalFunctionParameters(node);
+
+      // Flow allows to specify the return type of constructor functions. This is
+      // forbidden in TypeScript. So the the type annotation needs to be removed.
+      if (node.kind === 'constructor' && node.returnType) {
+        logWarning(WARNINGS.class.constructorReturnType, state.file.code, node.loc);
+        node.returnType = null;
+      }
     }
   });
 

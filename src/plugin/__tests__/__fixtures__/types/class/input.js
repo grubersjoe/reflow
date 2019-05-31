@@ -19,6 +19,14 @@ class ClassWithConstructorReturnType {
   }
 }
 
+class ClassWithOptionalParameterAndInitializer {
+  constructor(message?: string = 'default') {
+    console.log(message);
+  }
+
+  method(p1: any, p2?: string = 'default') {}
+}
+
 type ClassTypeAlias = Class<C1>;
 type ClassTypeAliasFromInstance = Class<typeof c1>;
 type InstanceTypeAlias = C1;
@@ -47,4 +55,4 @@ class ClassWithGenerics<T1, T2> {
 class Component<T1, T2> {}
 class ClassWithGenericExactObject extends Component<{||}, ?Date> {}
 
-const classWithGenericsInstance = new ClassWithGenerics<string, Date>('string', new Date());
+new ClassWithGenerics<string, Date>('string', new Date());

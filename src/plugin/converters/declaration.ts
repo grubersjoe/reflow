@@ -61,40 +61,40 @@ function isConstructor(key: Identifier | StringLiteral): boolean {
 }
 
 function createClassBody(node: ObjectTypeAnnotation, state: ConverterState): ClassBody {
-  return classBody(
-    node.properties.map(prop => {
-      if (isObjectTypeProperty(prop)) {
-        // @ts-ignore prop.method: boolean exists
-        if (prop.method && isFunctionTypeAnnotation(prop.value)) {
-          const { value, key } = prop;
+  const body = node.properties.map(prop => {
+    if (isObjectTypeProperty(prop)) {
+      // @ts-ignore prop.method: boolean exists
+      if (prop.method && isFunctionTypeAnnotation(prop.value)) {
+        const { value, key } = prop;
 
-          const typeParameters = convertTypeParameterDeclaration(value.typeParameters, state);
-          const params = functionTypeParametersToIdentifiers(value.params, state) || [];
+        const typeParameters = convertTypeParameterDeclaration(value.typeParameters, state);
+        const params = functionTypeParametersToIdentifiers(value.params, state) || [];
 
-          const returnType = isConstructor(key)
-            ? null
-            : tsTypeAnnotation(convertFlowType(value.returnType, state));
+        const returnType = isConstructor(key)
+          ? null
+          : tsTypeAnnotation(convertFlowType(value.returnType, state));
 
-          const method = tsDeclareMethod(null, key, typeParameters, params, returnType);
+        const method = tsDeclareMethod(null, key, typeParameters, params, returnType);
 
-          method.optional = prop.optional;
-          method.static = prop.static;
+        method.optional = prop.optional;
+        method.static = prop.static;
 
-          return method;
-        } else {
-          const classProp = classProperty(prop.key);
-
-          classProp.typeAnnotation = tsTypeAnnotation(convertFlowType(prop.value, state));
-          classProp.optional = prop.optional;
-          classProp.static = prop.static;
-
-          return classProp;
-        }
+        return method;
       } else {
-        throw new UnexpectedError(`Unexpected element in class declaration: ${prop.type}`);
+        const classProp = classProperty(prop.key);
+
+        classProp.typeAnnotation = tsTypeAnnotation(convertFlowType(prop.value, state));
+        classProp.optional = prop.optional;
+        classProp.static = prop.static;
+
+        return classProp;
       }
-    }),
-  );
+    } else {
+      throw new UnexpectedError(`Unexpected element in class declaration: ${prop.type}`);
+    }
+  });
+
+  return classBody(body);
 }
 
 export function convertDeclareClass(

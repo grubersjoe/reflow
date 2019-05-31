@@ -20,7 +20,7 @@ function functionSimpleWithReturn(p1: number, p2: number): boolean {
   return p1 === p2;
 }
 function functionWithInitializer(p1: string, p2: boolean = false) {}
-function functionWithFunctionrAsReturn() {
+function functionWithFunctionAsReturn() {
   return function (p: number = 5) {
     return p;
   };
