@@ -1,16 +1,16 @@
 # Reflow
 
-> Babel Plugin to migrate a [Flow JS](https://flow.org/) typed JavaScript code base to
-> [TypeScript](https://www.typescriptlang.org/).
+> [Babel](https://babeljs.io/) plugin to transpile [Flow](https://flow.org/) typed JavaScript code
+> to [TypeScript](https://www.typescriptlang.org/).
 
 [![CircleCI](https://circleci.com/gh/grubersjoe/reflow.svg?style=shield)](https://circleci.com/gh/grubersjoe/reflow)
 [![Coverage](https://coveralls.io/repos/github/grubersjoe/reflow/badge.svg?branch=master)](https://coveralls.io/github/grubersjoe/reflow?branch=master)
 
 **Careful! This is still in an early stage and may break anytime.**
 
-Reflow transforms your Flow JS type annotations to equivalent TypeScript code. While this should
-reduce the effort to migrate a large code base to TypeScript drastically, you will most likely still
-need to manually fix and refactor the resulting code. After the transformation new type errors will
+Reflow transforms your Flow type annotations to equivalent TypeScript code. While this should reduce
+the effort to migrate a large code base to TypeScript drastically, you will most likely still need
+to manually fix and refactor the resulting code. After the transformation new type errors will
 probably occur and existing type annotations _may_ prove to be inaccurate. This program helps you
 with the tedious task to migrate Flow syntax to TypeScript, but it can't magically fix
 semanticproblems obviously.
@@ -19,7 +19,7 @@ The type system of TypeScript and Flow share a lot of similarities but still the
 fundamental and many subtle differences. See this excellent repository for a detailed
 [comparison](https://github.com/niieani/typescript-vs-flowtype) and good overview. One major
 difference for example is the purely structural type system of TypeScript versus the partly nominal
-one used in Flow JS.
+one used in Flow.
 
 Reflow has built-in support for React, JSX and some proposed JavaScript features like class
 properties, dynamic imports and decorators.
