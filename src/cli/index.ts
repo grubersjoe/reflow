@@ -73,8 +73,9 @@ program
 
 program.on('--help', () => {
   console.log('\nExamples:');
-  console.log(`  $ reflow --write src/`);
-  console.log(`  $ reflow -exclude-patterns '**/__tests__/**/*','mocks/*.js' src/lib/`);
+  console.log(`  $ reflow --replace src/`);
+  console.log(`  $ reflow -d -i '**/__tests__/**/*.{js,jsx} src/`);
+  console.log(`  $ reflow -exclude-patterns '**/__tests__/**/*','fixtures/*.js' src/lib/`);
 });
 
 export default () => {
