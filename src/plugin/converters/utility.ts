@@ -1,5 +1,6 @@
 import {
   Flow,
+  TSIndexedAccessType,
   TSTypeOperator,
   TSTypeParameterInstantiation,
   TSTypeQuery,
@@ -7,10 +8,14 @@ import {
   identifier,
   isGenericTypeAnnotation,
   isIdentifier,
+  isStringLiteral,
+  isTSEntityName,
+  isTSLiteralType,
   isTSTypeLiteral,
   isTSTypeQuery,
   isTSTypeReference,
   isTypeAnnotation,
+  tsIndexedAccessType,
   tsTypeOperator,
   tsTypeQuery,
   tsTypeReference,
@@ -22,7 +27,7 @@ import { convertIdentifier } from './identifier';
 
 export function convertClassUtility(
   typeParameters: TSTypeParameterInstantiation,
-  path?: NodePath<Flow>,
+  path: NodePath<Flow>,
 ): TSTypeQuery {
   // Class<T> has exactly one type parameter
   const typeParam = typeParameters.params[0];
@@ -67,11 +72,32 @@ export function convertDiffUtility(
   if (isTSTypeLiteral(secondParam)) {
     const operator = tsTypeOperator(secondParam);
     operator.operator = 'keyof';
-
     typeParameters.params[1] = operator;
   }
 
   return tsTypeReference(identifier('Omit'), typeParameters);
+}
+
+export function convertElementTypeUtility(
+  typeParameters: TSTypeParameterInstantiation,
+): TSIndexedAccessType {
+  // $ElementType takes exactly two type parameters
+  const firstParam = typeParameters.params[0];
+  const secondParam = typeParameters.params[1];
+
+  if (!isTSLiteralType(secondParam) || !isStringLiteral(secondParam.literal)) {
+    throw new UnexpectedError('Second type parameter of $ElementType is not a string literal.');
+  }
+
+  if (isTSTypeReference(firstParam) && isTSEntityName(firstParam.typeName)) {
+    return tsIndexedAccessType(tsTypeReference(firstParam.typeName), secondParam);
+  }
+
+  if (isTSTypeLiteral(firstParam)) {
+    return tsIndexedAccessType(firstParam, secondParam);
+  }
+
+  throw new UnexpectedError('wat');
 }
 
 export function convertReadOnlyArray(

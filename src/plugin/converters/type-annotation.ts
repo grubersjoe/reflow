@@ -2,6 +2,7 @@ import {
   BaseNode,
   FlowType,
   GenericTypeAnnotation,
+  TSIndexedAccessType,
   TSTypeAnnotation,
   TSTypeOperator,
   TSTypeQuery,
@@ -13,11 +14,18 @@ import {
 import { NodePath } from '@babel/traverse';
 
 import { ConverterState } from '../types';
-import { convertClassUtility, convertReadOnlyArray, convertDiffUtility } from './utility';
+import {
+  convertClassUtility,
+  convertDiffUtility,
+  convertElementTypeUtility,
+  convertReadOnlyArray,
+} from './utility';
 import { replaceNonPrimitiveType } from '../optimizers/non-primitive-types';
 import { convertFlowType } from './flow-type';
 import { convertIdentifier } from './identifier';
 import { convertTypeParameterInstantiation } from './type-parameter';
+
+type TSGenericTypeAnnotation = TSIndexedAccessType | TSTypeOperator | TSTypeQuery | TSTypeReference;
 
 interface TypeAnnotationWithFlowType extends BaseNode {
   typeAnnotation: FlowType;
@@ -33,8 +41,8 @@ export function convertTypeAnnotation(
 export function convertGenericTypeAnnotation(
   node: GenericTypeAnnotation,
   state: ConverterState,
-  path?: NodePath<GenericTypeAnnotation>,
-): TSTypeOperator | TSTypeQuery | TSTypeReference {
+  path: NodePath<GenericTypeAnnotation>,
+): TSGenericTypeAnnotation {
   const id = convertIdentifier(node.id);
 
   const typeParameters = node.typeParameters
@@ -43,13 +51,15 @@ export function convertGenericTypeAnnotation(
 
   if (isIdentifier(id)) {
     if (typeParameters) {
-      // Utility types
       switch (id.name) {
         case 'Class':
           return convertClassUtility(typeParameters, path);
 
         case '$Diff':
           return convertDiffUtility(typeParameters);
+
+        case '$ElementType':
+          return convertElementTypeUtility(typeParameters);
 
         case '$ReadOnlyArray':
           return convertReadOnlyArray(typeParameters);
