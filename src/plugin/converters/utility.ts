@@ -1,6 +1,7 @@
 import {
   Flow,
   TSIndexedAccessType,
+  TSTypeLiteral,
   TSTypeOperator,
   TSTypeParameterInstantiation,
   TSTypeQuery,
@@ -97,7 +98,19 @@ export function convertElementTypeUtility(
     return tsIndexedAccessType(firstParam, secondParam);
   }
 
-  throw new UnexpectedError('wat');
+  throw new UnexpectedError(`Unexpected type parameter for $ElementType<T, K>: ${firstParam.type}`);
+}
+
+export function convertExactUtility(
+  typeParameters: TSTypeParameterInstantiation,
+): TSTypeReference | TSTypeLiteral {
+  const param = typeParameters.params[0];
+
+  if (isTSTypeReference(param) || isTSTypeLiteral(param)) {
+    return param;
+  }
+
+  throw new UnexpectedError(`Unexpected type parameter for $Exact<T>: ${param.type}`);
 }
 
 export function convertReadOnlyArray(

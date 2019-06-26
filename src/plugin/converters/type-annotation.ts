@@ -4,6 +4,7 @@ import {
   GenericTypeAnnotation,
   TSIndexedAccessType,
   TSTypeAnnotation,
+  TSTypeLiteral,
   TSTypeOperator,
   TSTypeQuery,
   TSTypeReference,
@@ -18,6 +19,7 @@ import {
   convertClassUtility,
   convertDiffUtility,
   convertElementTypeUtility,
+  convertExactUtility,
   convertReadOnlyArray,
 } from './utility';
 import { replaceNonPrimitiveType } from '../optimizers/non-primitive-types';
@@ -25,7 +27,12 @@ import { convertFlowType } from './flow-type';
 import { convertIdentifier } from './identifier';
 import { convertTypeParameterInstantiation } from './type-parameter';
 
-type TSGenericTypeAnnotation = TSIndexedAccessType | TSTypeOperator | TSTypeQuery | TSTypeReference;
+type TSGenericTypeAnnotation =
+  | TSIndexedAccessType
+  | TSTypeLiteral
+  | TSTypeOperator
+  | TSTypeQuery
+  | TSTypeReference;
 
 interface TypeAnnotationWithFlowType extends BaseNode {
   typeAnnotation: FlowType;
@@ -60,6 +67,9 @@ export function convertGenericTypeAnnotation(
 
         case '$ElementType':
           return convertElementTypeUtility(typeParameters);
+
+        case '$Exact':
+          return convertExactUtility(typeParameters);
 
         case '$ReadOnlyArray':
           return convertReadOnlyArray(typeParameters);
