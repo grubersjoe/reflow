@@ -26,7 +26,7 @@
       "request": "launch",
       "name": "Babel Plugin",
       "args": [
-        "src/plugin/__tests__/__fixtures__/react/imports/node/simple/input.js"
+        "src/plugin/__tests__/__fixtures__/types/utility/difference/input.js"
       ],
       "cwd": "${workspaceRoot}",
       "env": {

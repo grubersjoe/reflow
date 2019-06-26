@@ -3,6 +3,7 @@ import {
   FlowType,
   GenericTypeAnnotation,
   TSTypeAnnotation,
+  TSTypeOperator,
   TSTypeQuery,
   TSTypeReference,
   isIdentifier,
@@ -12,7 +13,7 @@ import {
 import { NodePath } from '@babel/traverse';
 
 import { ConverterState } from '../types';
-import { convertClassUtility, convertReadOnlyArray } from './utility';
+import { convertClassUtility, convertReadOnlyArray, convertDiffUtility } from './utility';
 import { replaceNonPrimitiveType } from '../optimizers/non-primitive-types';
 import { convertFlowType } from './flow-type';
 import { convertIdentifier } from './identifier';
@@ -33,7 +34,7 @@ export function convertGenericTypeAnnotation(
   node: GenericTypeAnnotation,
   state: ConverterState,
   path?: NodePath<GenericTypeAnnotation>,
-): TSTypeReference | TSTypeQuery {
+): TSTypeOperator | TSTypeQuery | TSTypeReference {
   const id = convertIdentifier(node.id);
 
   const typeParameters = node.typeParameters
@@ -46,6 +47,9 @@ export function convertGenericTypeAnnotation(
       switch (id.name) {
         case 'Class':
           return convertClassUtility(typeParameters, path);
+
+        case '$Diff':
+          return convertDiffUtility(typeParameters);
 
         case '$ReadOnlyArray':
           return convertReadOnlyArray(typeParameters);

@@ -1,14 +1,17 @@
 import {
   Flow,
+  TSTypeOperator,
   TSTypeParameterInstantiation,
   TSTypeQuery,
   TSTypeReference,
   identifier,
   isGenericTypeAnnotation,
   isIdentifier,
+  isTSTypeLiteral,
   isTSTypeQuery,
   isTSTypeReference,
   isTypeAnnotation,
+  tsTypeOperator,
   tsTypeQuery,
   tsTypeReference,
 } from '@babel/types';
@@ -48,6 +51,27 @@ export function convertClassUtility(
   }
 
   throw new UnexpectedError(`Unknown type parameter for Class<T> utility: ${typeParam.type}.`);
+}
+
+export function convertDiffUtility(
+  typeParameters: TSTypeParameterInstantiation,
+): TSTypeReference | TSTypeOperator {
+  // $Diff takes exactly two type parameters
+  const secondParam = typeParameters.params[1];
+
+  if (isTSTypeReference(secondParam) && isIdentifier(secondParam.typeName)) {
+    secondParam.typeName.name = `keyof ${secondParam.typeName.name}`;
+  }
+
+  // Literals need to be wrapped in a TypeOperator
+  if (isTSTypeLiteral(secondParam)) {
+    const operator = tsTypeOperator(secondParam);
+    operator.operator = 'keyof';
+
+    typeParameters.params[1] = operator;
+  }
+
+  return tsTypeReference(identifier('Omit'), typeParameters);
 }
 
 export function convertReadOnlyArray(

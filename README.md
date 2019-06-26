@@ -88,73 +88,74 @@ need to be handled while transpiling the types. A few types are not equivalently
 TypeScript and will result in a small loss of type information. See the list of unsupported Flow
 features in TypeScript below.
 
-| Type                     | Flow                                  | TypeScript                                    |
-| ------------------------ | ------------------------------------- | --------------------------------------------- |
-| Array type               | `Array<number>`                       | `Array<number>`                               |
-| Boolean literal type     | `true`                                | `true`                                        |
-| Boolean type             | `boolean`                             | `boolean`                                     |
-| Empty type               | `empty`                               | `never`                                       |
-| Exact object type        | `{\| p: number \|}`                   | `{ p: number }`                               |
-| Function type            | `(string, boolean) => number`         | `(p1: string, p2: boolean) => number`         |
-| Generic type annotation  | `let v: <FlowType>`                   | `let v: <TSType>`                             |
-| Generics                 | `type Generic<T: SuperClass> = T`     | `type Generic<T extends SuperClass> = T`      |
-| Interface type           | `interface { +p1: number, p2: null }` | `interface { readonly p1: number, p2: null }` |
-| Intersection type        | `type Intersection = T1 & T2`         | `type Intersection = T1 & T2`                 |
-| Mixed type               | `mixed`                               | `unknown`                                     |
-| Null literal type        | `null`                                | `null`                                        |
-| Nullable type (Maybe)    | `?number`                             | `number \| null \| undefined`                 |
-| Number literal type      | `42`                                  | `42`                                          |
-| Number type              | `number`                              | `number`                                      |
-| Module exports / imports | `import type T from './types'`        | `import T from './types`                      |
-| Object type              | `{ [string]: number }`                | `{ [key: string]: number }`                   |
-| Opaque type              | `opaque type Opaque = number`         | `type Opaque = number`                        |
-| String literal type      | `'literal'`                           | `'literal'`                                   |
-| String type              | `string`                              | `string`                                      |
-| This type                | `this`                                | `this`                                        |
-| Tuple type               | `[Date, number]`                      | `[Date, number]`                              |
-| Type alias               | `type Type = <FlowType>`              | `type Type = <TSType>`                        |
-| Type casting             | `(t: T)`                              | `(t as T)`                                    |
-| Typeof type              | `typeof undefined`                    | `undefined`                                   |
-| Union type               | `number \| null`                      | `number \| null`                              |
-| Void type                | `void`                                | `void`                                        |
+| Type                    | Flow                           | TypeScript                          |
+| ----------------------- | ------------------------------ | ----------------------------------- |
+| Array type              | `Array<number>`                | `Array<number>`                     |
+| Boolean literal type    | `true`                         | `true`                              |
+| Boolean type            | `boolean`                      | `boolean`                           |
+| Empty type              | `empty`                        | `never`                             |
+| Exact object type       | `{\| p: number \|}`            | `{ p: number }`                     |
+| Function type           | `(string, {}) => number`       | `(p1: string, p2: {}) => number`    |
+| Generic type annotation | `let v: <FlowType>`            | `let v: <TSType>`                   |
+| Generics                | `type Generic<T: Super> = T`   | `type Generic<T extends Super> = T` |
+| Interface type          | `interface { +p: number }`     | `interface { readonly p: number }`  |
+| Intersection type       | `type Intersection = T1 & T2`  | `type Intersection = T1 & T2`       |
+| Mixed type              | `mixed`                        | `unknown`                           |
+| Null literal type       | `null`                         | `null`                              |
+| Nullable type (Maybe)   | `?number`                      | `number \| null \| undefined`       |
+| Number literal type     | `42`                           | `42`                                |
+| Number type             | `number`                       | `number`                            |
+| Object type             | `{ [string]: number }`         | `{ [key: string]: number }`         |
+| Opaque type             | `opaque type Opaque = number`  | `type Opaque = number`              |
+| String literal type     | `'literal'`                    | `'literal'`                         |
+| String type             | `string`                       | `string`                            |
+| This type               | `this`                         | `this`                              |
+| Tuple type              | `[Date, number]`               | `[Date, number]`                    |
+| Type alias              | `type Type = <FlowType>`       | `type Type = <TSType>`              |
+| Type casting            | `(t: T)`                       | `(t as T)`                          |
+| Type exports / imports  | `import type T from './types'` | `import T from './types`            |
+| Typeof type             | `typeof undefined`             | `undefined`                         |
+| Union type              | `number \| null`               | `number \| null`                    |
+| Void type               | `void`                         | `void`                              |
 
 ### Utility types
 
-| Utility Type        | Flow                  | TypeScript                           |
-| ------------------- | --------------------- | ------------------------------------ |
-| Call                | `$Call<F, T...>`      | TODO                                 |
-| Class               | `Class<T>`            | `typeof T`                           |
-| Difference          | `$Diff<S, T>`         | `Pick<S, Exclude<keyof S, keyof T>>` |
-| Element type        | `$ElementType<T, K>`  | `T[k]`                               |
-| Exact               | `$Exact<T>`           | `T`                                  |
-| Existential type    | `*`                   | `any`                                |
-| Keys                | `$Keys<T>`            | `keyof T`                            |
-| None maybe type     | `$NonMaybeType<T>`    | `NonNullable<T>`                     |
-| Object map          | `$ObjMap<T, F>`       | TODO                                 |
-| Object map with key | `$ObjMapi<T, F>`      | TODO                                 |
-| Property type       | `$PropertyType<T, k>` | `T[k]`                               |
-| Tuple map           | `$TupleMap<T, F>`     | TODO                                 |
-| ReadOnly            | `$ReadOnly<T>`        | `Readonly<T>`                        |
-| Rest                | `$Rest<S, T>`         | `Exclude<S, T>`                      |
-| Return type         | `$Call<F>`            | `ReturnType<F>`                      |
-| Shape               | `$Shape<T>`           | `Partial<T>`                         |
-| Values              | `$Values<T>`          | `T[keyof T]`                         |
-| <s>Subtype</s>      | _deprecated_          |                                      |
-| <s>Supertype</s>    | _deprecated_          |                                      |
+| Utility Type        | Flow                  | TypeScript         |
+| ------------------- | --------------------- | ------------------ |
+| Call                | `$Call<F, T...>`      | TODO               |
+| Class               | `Class<T>`            | `typeof T`         |
+| Difference          | `$Diff<A, B>`         | `Omit<A, keyof B>` |
+| Element type        | `$ElementType<T, K>`  | `T[k]`             |
+| Exact               | `$Exact<T>`           | `T`                |
+| Existential type    | `*`                   | `any`              |
+| Keys                | `$Keys<T>`            | `keyof T`          |
+| None maybe type     | `$NonMaybeType<T>`    | `NonNullable<T>`   |
+| Object map          | `$ObjMap<T, F>`       | TODO               |
+| Object map with key | `$ObjMapi<T, F>`      | TODO               |
+| Property type       | `$PropertyType<T, k>` | `T[k]`             |
+| ReadOnly            | `$ReadOnly<T>`        | `Readonly<T>`      |
+| Rest                | `$Rest<A, B>`         | `Exclude<A, B>`    |
+| Return type         | `$Call<F>`            | `ReturnType<F>`    |
+| Shape               | `$Shape<T>`           | `Partial<T>`       |
+| Tuple map           | `$TupleMap<T, F>`     | TODO               |
+| Values              | `$Values<T>`          | `T[keyof T]`       |
+| <s>Subtype</s>      | _deprecated_          |                    |
+| <s>Supertype</s>    | _deprecated_          |                    |
 
 ### Declarations
 
-| Declaration                    | Flow                                         | TypeScript                                               |
-| ------------------------------ | -------------------------------------------- | -------------------------------------------------------- |
-| Declare class                  | `declare class C {}`                         | `declare class C {}`                                     |
-| Declare function               | `declare function f(number): any`            | `declare function f(p: number): any`                     |
-| Declare interface              | `declare interface I {}`                     | `declare interface I {}`                                 |
-| Declare module                 | `declare module 'esmodule' {}`               | `declare module 'esmodule' {}`                           |
-| Declare module statement       | `declare var varInModuleDeclaration: string` | `var varInModuleDeclaration: string`                     |
-| Declare ES module export       | `declare export default () => string`        | `const _default: () => string; export default _default;` |
-| Declare CommonJS module export | `TODO`                                       | TODO                                                     |
-| Declare type alias             | `declare type T: number`                     | `declare type T = number`                                |
-| Declare variable               | `declare var v: any`                         | `declare var v: any`                                     |
+| Declaration              | Flow                                  | TypeScript                                               |
+| ------------------------ | ------------------------------------- | -------------------------------------------------------- |
+| Declare ES module export | `declare export default () => string` | `const _default: () => string; export default _default;` |
+| Declare class            | `declare class C {}`                  | `declare class C {}`                                     |
+| Declare function         | `declare function f(number): any`     | `declare function f(p: number): any`                     |
+| Declare interface        | `declare interface I {}`              | `declare interface I {}`                                 |
+| Declare module           | `declare module 'esmodule' {}`        | `declare module 'esmodule' {}`                           |
+| Declare module statement | `declare var v: string`               | `var v: string`                                          |
+| Declare type alias       | `declare type T: number`              | `declare type T = number`                                |
+| Declare variable         | `declare var v: any`                  | `declare var v: any`                                     |
+
+Unsupported: CommonJS export declarations.
 
 ---
 
