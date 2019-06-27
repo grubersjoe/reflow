@@ -136,10 +136,10 @@ features in TypeScript below.
 | ReadOnly            | `$ReadOnly<T>`        | `Readonly<T>`      |
 | Rest                | `$Rest<A, B>`         | –                  |
 | Shape               | `$Shape<T>`           | `Partial<T>`       |
-| Tuple map           | `$TupleMap<T, F>`     | TODO               |
+| Tuple map           | `$TupleMap<T, F>`     | –                  |
 | Values              | `$Values<T>`          | `T[keyof T]`       |
-| <s>Subtype</s>      | _deprecated_          |                    |
-| <s>Supertype</s>    | _deprecated_          |                    |
+| <s>Subtype</s>      | _deprecated_          | –                  |
+| <s>Supertype</s>    | _deprecated_          | –                  |
 
 <small><sup>\*</sup> </small>
 
@@ -235,9 +235,9 @@ differently:
 
 - **\$Call<F, T...>**
 
-  The `$Call<F, T...>` utility type is transformed to TypeScript's `ReturnType<F>`. Because this
-  type only takes the function type and not also the function argument types, it is impossible to
-  infer the return type of polymorphic functions. TypeScript assumes an `unknown` type then.
+  The `$Call<F, T...>` utility type is transformed to TypeScript's `ReturnType<F>`. Since this type
+  only accepts the function type and not the function argument types, it is impossible to infer the
+  return type of polymorphic functions. TypeScript will assume an `unknown` type then.
 
 ## Supported syntax
 
