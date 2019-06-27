@@ -1,12 +1,12 @@
 
-type O = {
+type TElementType = {
   p: string | null;
 };
 
-type ElementType = O["p"];
+type ElementType = TElementType["p"];
 type ElementTypeLiteral = {
   p: null;
 }["p"];
 
 // @ts-ignore
-type ElementTypeUseless = O["q"];
+type ElementTypeUseless = TElementType["q"];

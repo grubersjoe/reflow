@@ -1,9 +1,9 @@
 // @flow
-type T = {
+type TExact = {
   p: ?number,
 };
 
-type ExactType = $Exact<T>;
+type ExactType = $Exact<TExact>;
 type ExactTypeLiteral = $Exact<{
   name: string,
 }>;

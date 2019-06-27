@@ -1,9 +1,9 @@
 
-type T = {
+type TExact = {
   p: number | null | undefined;
 };
 
-type ExactType = T;
+type ExactType = TExact;
 type ExactTypeLiteral = {
   name: string;
 };
