@@ -21,6 +21,7 @@ import {
   convertElementTypeUtility,
   convertExactUtility,
   convertKeysUtility,
+  convertNonMaybeType,
   convertReadOnlyArray,
 } from './utility';
 import { replaceNonPrimitiveType } from '../optimizers/non-primitive-types';
@@ -74,6 +75,9 @@ export function convertGenericTypeAnnotation(
 
         case '$Keys':
           return convertKeysUtility(typeParameters);
+
+        case '$NonMaybeType':
+          return convertNonMaybeType(typeParameters);
 
         case '$ReadOnlyArray':
           return convertReadOnlyArray(typeParameters);

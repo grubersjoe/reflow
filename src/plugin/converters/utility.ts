@@ -116,5 +116,8 @@ export const convertKeysUtility: UtilConvertor<TSTypeOperator> = typeParameters 
   return typeOperator;
 };
 
+export const convertNonMaybeType: UtilConvertor<TSTypeReference> = typeParameters =>
+  tsTypeReference(identifier('NonNullable'), typeParameters);
+
 export const convertReadOnlyArray: UtilConvertor<TSTypeReference> = typeParameters =>
   tsTypeReference(identifier('ReadonlyArray'), typeParameters);
