@@ -122,7 +122,7 @@ features in TypeScript below.
 
 | Utility Type        | Flow                  | TypeScript         |
 | ------------------- | --------------------- | ------------------ |
-| Call                | `$Call<F, T...>`      | TODO               |
+| Call                | `$Call<F, T...>`      | `ReturnType<F>`    |
 | Class               | `Class<T>`            | `typeof T`         |
 | Difference          | `$Diff<A, B>`         | `Omit<A, keyof B>` |
 | Element type        | `$ElementType<T, K>`  | `T[k]`             |
@@ -130,17 +130,18 @@ features in TypeScript below.
 | Existential type    | `*`                   | `any`              |
 | Keys                | `$Keys<T>`            | `keyof T`          |
 | None maybe type     | `$NonMaybeType<T>`    | `NonNullable<T>`   |
-| Object map          | `$ObjMap<T, F>`       | TODO               |
-| Object map with key | `$ObjMapi<T, F>`      | TODO               |
+| Object map          | `$ObjMap<T, F>`       | –                  |
+| Object map with key | `$ObjMapi<T, F>`      | –                  |
 | Property type       | `$PropertyType<T, k>` | `T[k]`             |
 | ReadOnly            | `$ReadOnly<T>`        | `Readonly<T>`      |
-| Rest                | `$Rest<A, B>`         | `Exclude<A, B>`    |
-| Return type         | `$Call<F>`            | `ReturnType<F>`    |
+| Rest                | `$Rest<A, B>`         | –                  |
 | Shape               | `$Shape<T>`           | `Partial<T>`       |
 | Tuple map           | `$TupleMap<T, F>`     | TODO               |
 | Values              | `$Values<T>`          | `T[keyof T]`       |
 | <s>Subtype</s>      | _deprecated_          |                    |
 | <s>Supertype</s>    | _deprecated_          |                    |
+
+<small><sup>\*</sup> </small>
 
 ### Declarations
 
@@ -161,7 +162,8 @@ Unsupported: CommonJS export declarations.
 
 ### Unsupported Flow features / syntax
 
-The following Flow features are not equivalently expressible or need to be adapted in TypeScript:
+The following Flow features are not equivalently expressible in TypeScript and need to be handled
+differently:
 
 - **[Constructor return types](https://github.com/Microsoft/TypeScript/issues/11588)**
 
@@ -230,6 +232,12 @@ The following Flow features are not equivalently expressible or need to be adapt
     contravariant: any;
   }
   ```
+
+- **\$Call<F, T...>**
+
+  The `$Call<F, T...>` utility type is transformed to TypeScript's `ReturnType<F>`. Because this
+  type only takes the function type and not also the function argument types, it is impossible to
+  infer the return type of polymorphic functions. TypeScript assumes an `unknown` type then.
 
 ## Supported syntax
 

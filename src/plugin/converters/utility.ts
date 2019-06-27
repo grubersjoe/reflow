@@ -25,6 +25,9 @@ import { convertIdentifier } from './identifier';
 
 type UtilConvertor<R> = (typeParameters: TSTypeParameterInstantiation) => R;
 
+export const convertCallUtility: UtilConvertor<TSTypeReference> = typeParameters =>
+  tsTypeReference(identifier('ReturnType'), typeParameters);
+
 export function convertClassUtil(
   typeParameters: TSTypeParameterInstantiation,
   path: NodePath<Flow>,

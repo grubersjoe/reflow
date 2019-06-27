@@ -16,6 +16,7 @@ import { NodePath } from '@babel/traverse';
 
 import { ConverterState } from '../types';
 import {
+  convertCallUtility,
   convertClassUtil,
   convertDiffUtil,
   convertElementTypeUtil,
@@ -62,8 +63,8 @@ export function convertGenericTypeAnnotation(
   if (isIdentifier(id)) {
     if (typeParameters) {
       switch (id.name) {
-        case 'Class':
-          return convertClassUtil(typeParameters, path);
+        case '$Call':
+          return convertCallUtility(typeParameters);
 
         case '$Diff':
           return convertDiffUtil(typeParameters);
@@ -85,6 +86,9 @@ export function convertGenericTypeAnnotation(
 
         case '$ReadOnlyArray':
           return convertReadOnlyArrayUtil(typeParameters);
+
+        case 'Class':
+          return convertClassUtil(typeParameters, path);
       }
     }
 
