@@ -16,13 +16,14 @@ import { NodePath } from '@babel/traverse';
 
 import { ConverterState } from '../types';
 import {
-  convertClassUtility,
-  convertDiffUtility,
-  convertElementTypeUtility,
-  convertExactUtility,
-  convertKeysUtility,
-  convertNonMaybeType,
-  convertReadOnlyArray,
+  convertClassUtil,
+  convertDiffUtil,
+  convertElementTypeUtil,
+  convertExactUtil,
+  convertKeysUtil,
+  convertNonMaybeTypeUtil,
+  convertPropertyTypeUtil,
+  convertReadOnlyArrayUtil,
 } from './utility';
 import { replaceNonPrimitiveType } from '../optimizers/non-primitive-types';
 import { convertFlowType } from './flow-type';
@@ -62,25 +63,28 @@ export function convertGenericTypeAnnotation(
     if (typeParameters) {
       switch (id.name) {
         case 'Class':
-          return convertClassUtility(typeParameters, path);
+          return convertClassUtil(typeParameters, path);
 
         case '$Diff':
-          return convertDiffUtility(typeParameters);
+          return convertDiffUtil(typeParameters);
 
         case '$ElementType':
-          return convertElementTypeUtility(typeParameters);
+          return convertElementTypeUtil(typeParameters);
 
         case '$Exact':
-          return convertExactUtility(typeParameters);
+          return convertExactUtil(typeParameters);
 
         case '$Keys':
-          return convertKeysUtility(typeParameters);
+          return convertKeysUtil(typeParameters);
 
         case '$NonMaybeType':
-          return convertNonMaybeType(typeParameters);
+          return convertNonMaybeTypeUtil(typeParameters);
+
+        case '$PropertyType':
+          return convertPropertyTypeUtil(typeParameters);
 
         case '$ReadOnlyArray':
-          return convertReadOnlyArray(typeParameters);
+          return convertReadOnlyArrayUtil(typeParameters);
       }
     }
 

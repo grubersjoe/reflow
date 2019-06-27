@@ -2,15 +2,13 @@ import {
   Flow,
   TSIndexedAccessType,
   TSTypeLiteral,
+  TSTypeOperator,
   TSTypeParameterInstantiation,
   TSTypeQuery,
   TSTypeReference,
   identifier,
   isGenericTypeAnnotation,
   isIdentifier,
-  isStringLiteral,
-  isTSEntityName,
-  isTSLiteralType,
   isTSTypeLiteral,
   isTSTypeQuery,
   isTSTypeReference,
@@ -19,7 +17,6 @@ import {
   tsTypeOperator,
   tsTypeQuery,
   tsTypeReference,
-  TSTypeOperator,
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
@@ -28,7 +25,7 @@ import { convertIdentifier } from './identifier';
 
 type UtilConvertor<R> = (typeParameters: TSTypeParameterInstantiation) => R;
 
-export function convertClassUtility(
+export function convertClassUtil(
   typeParameters: TSTypeParameterInstantiation,
   path: NodePath<Flow>,
 ): TSTypeQuery {
@@ -57,7 +54,7 @@ export function convertClassUtility(
   throw new UnexpectedError(`Unknown type parameter for Class<T> utility: ${typeParam.type}.`);
 }
 
-export const convertDiffUtility: UtilConvertor<TSTypeReference> = typeParameters => {
+export const convertDiffUtil: UtilConvertor<TSTypeReference> = typeParameters => {
   // $Diff takes exactly two type parameters
   const secondParam = typeParameters.params[1];
 
@@ -75,31 +72,10 @@ export const convertDiffUtility: UtilConvertor<TSTypeReference> = typeParameters
   return tsTypeReference(identifier('Omit'), typeParameters);
 };
 
-export const convertElementTypeUtility: UtilConvertor<TSIndexedAccessType> = typeParameters => {
-  // $ElementType takes exactly two type parameters
-  const firstParam = typeParameters.params[0];
-  const secondParam = typeParameters.params[1];
+export const convertElementTypeUtil: UtilConvertor<TSIndexedAccessType> = typeParameters =>
+  tsIndexedAccessType(typeParameters.params[0], typeParameters.params[1]);
 
-  if (!isTSLiteralType(secondParam) || !isStringLiteral(secondParam.literal)) {
-    throw new UnexpectedError(
-      `Second type parameter ${secondParam.type} of $ElementType is not a string literal.`,
-    );
-  }
-
-  if (isTSTypeReference(firstParam) && isTSEntityName(firstParam.typeName)) {
-    return tsIndexedAccessType(tsTypeReference(firstParam.typeName), secondParam);
-  }
-
-  if (isTSTypeLiteral(firstParam)) {
-    return tsIndexedAccessType(firstParam, secondParam);
-  }
-
-  throw new UnexpectedError(`Unexpected type parameter for $ElementType<T, K>: ${firstParam.type}`);
-};
-
-export const convertExactUtility: UtilConvertor<
-  TSTypeReference | TSTypeLiteral
-> = typeParameters => {
+export const convertExactUtil: UtilConvertor<TSTypeReference | TSTypeLiteral> = typeParameters => {
   const typeParam = typeParameters.params[0];
 
   if (isTSTypeReference(typeParam) || isTSTypeLiteral(typeParam)) {
@@ -109,15 +85,18 @@ export const convertExactUtility: UtilConvertor<
   throw new UnexpectedError(`Unexpected type parameter for $Exact<T>: ${typeParam.type}`);
 };
 
-export const convertKeysUtility: UtilConvertor<TSTypeOperator> = typeParameters => {
+export const convertKeysUtil: UtilConvertor<TSTypeOperator> = typeParameters => {
   const typeOperator = tsTypeOperator(typeParameters.params[0]);
   typeOperator.operator = 'keyof';
 
   return typeOperator;
 };
 
-export const convertNonMaybeType: UtilConvertor<TSTypeReference> = typeParameters =>
+export const convertNonMaybeTypeUtil: UtilConvertor<TSTypeReference> = typeParameters =>
   tsTypeReference(identifier('NonNullable'), typeParameters);
 
-export const convertReadOnlyArray: UtilConvertor<TSTypeReference> = typeParameters =>
+export const convertPropertyTypeUtil: UtilConvertor<TSIndexedAccessType> = typeParameters =>
+  tsIndexedAccessType(typeParameters.params[0], typeParameters.params[1]);
+
+export const convertReadOnlyArrayUtil: UtilConvertor<TSTypeReference> = typeParameters =>
   tsTypeReference(identifier('ReadonlyArray'), typeParameters);
