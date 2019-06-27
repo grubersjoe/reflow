@@ -103,3 +103,6 @@ export const convertPropertyTypeUtil: UtilConvertor<TSIndexedAccessType> = typeP
 
 export const convertReadOnlyArrayUtil: UtilConvertor<TSTypeReference> = typeParameters =>
   tsTypeReference(identifier('ReadonlyArray'), typeParameters);
+
+export const convertShapeUtil: UtilConvertor<TSTypeReference> = typeParameters =>
+  tsTypeReference(identifier('Partial'), typeParameters);

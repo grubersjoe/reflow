@@ -25,6 +25,7 @@ import {
   convertNonMaybeTypeUtil,
   convertPropertyTypeUtil,
   convertReadOnlyArrayUtil,
+  convertShapeUtil,
 } from './utility';
 import { replaceNonPrimitiveType } from '../optimizers/non-primitive-types';
 import { convertFlowType } from './flow-type';
@@ -86,6 +87,9 @@ export function convertGenericTypeAnnotation(
 
         case '$ReadOnlyArray':
           return convertReadOnlyArrayUtil(typeParameters);
+
+        case '$Shape':
+          return convertShapeUtil(typeParameters);
 
         case 'Class':
           return convertClassUtil(typeParameters, path);
