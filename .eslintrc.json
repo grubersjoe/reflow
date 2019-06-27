@@ -20,7 +20,8 @@
     "@typescript-eslint/explicit-function-return-type": [
       1,
       {
-        "allowExpressions": true
+        "allowExpressions": true,
+        "allowTypedFunctionExpressions": true
       }
     ],
     "@typescript-eslint/indent": 0,
