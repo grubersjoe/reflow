@@ -76,7 +76,7 @@
   },
   "scripts": {
     "build": "node --max_old_space_size=4096 ./node_modules/.bin/webpack --mode=production --progress",
-    "clean": "rm -r build/*",
+    "clean": "rm -f build/*",
     "dev": "webpack -w",
     "format": "prettier --write 'src/**/*' './*.{js,json,md}'",
     "lint": "eslint --max-warnings=0 'src/**/*.ts'",
