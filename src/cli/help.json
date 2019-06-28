@@ -1,0 +1,7 @@
+{
+  "dryRun": "Perform a trial run printing to stdout instead of writing a file",
+  "excludeDirs": "List of recursively excluded directories",
+  "includePattern": "Set the glob pattern for input files",
+  "replaceDecorators": "Replace class @decorators with wrapped function calls to avoid TypeScript errors",
+  "replace": "Process files in-place instead of creating new TS files next to the original JS files."
+}

@@ -4,11 +4,11 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "CLI",
+      "name": "Debug",
       "args": [
         "--dry-run",
         "--replace-decorators",
-        "src/plugin/__tests__/__fixtures__/formatting/decorators/input.js"
+        "src/plugin/__tests__/__fixtures__/types/utility/element-type/input.js"
       ],
       "cwd": "${workspaceRoot}",
       "env": {
@@ -18,24 +18,6 @@
         "${workspaceFolder}/build/**/*.js",
       ],
       "program": "${workspaceRoot}/src/cli/index.ts",
-      "sourceMaps": true,
-      "stopOnEntry": false
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Babel Plugin",
-      "args": [
-        "src/plugin/__tests__/__fixtures__/types/utility/difference/input.js"
-      ],
-      "cwd": "${workspaceRoot}",
-      "env": {
-        "NODE_ENV": "development"
-      },
-      "outFiles": [
-        "${workspaceFolder}/build/**/*.js",
-      ],
-      "program": "${workspaceRoot}/src/index.ts",
       "sourceMaps": true,
       "stopOnEntry": false
     }

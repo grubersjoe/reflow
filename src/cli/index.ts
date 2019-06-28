@@ -3,6 +3,8 @@ import program, { Command } from 'commander';
 import { extname } from 'path';
 
 import pkg from '../../package.json';
+import help from './help.json';
+
 import { logError } from '../util/log';
 import { transpileFiles, CommandLineArgs } from './runner';
 
@@ -49,17 +51,6 @@ function collectArgs(program: Command): CommandLineArgs {
   }) as CommandLineArgs;
 }
 
-// prettier-ignore
-const help: {
-  [arg in Exclude<keyof (CommandLineArgs), 'sources'>]: string;
-} = {
-  dryRun: 'perform a trial run printing to stdout instead of writing a file',
-  excludeDirs: 'list of recursively excluded directories',
-  includePattern: 'set the glob pattern for input files',
-  replaceDecorators: 'replace class @decorators with wrapped function calls to avoid TypeScript errors',
-  replace: 'process files in-place. A new TS file will be created next to the original file otherwise.',
-};
-
 // Define the CLI interface
 program
   .version(pkg.version)
@@ -75,10 +66,10 @@ program.on('--help', () => {
   console.log('\nExamples:');
   console.log(`  $ reflow --replace src/`);
   console.log(`  $ reflow -d -i '**/__tests__/**/*.{js,jsx} src/`);
-  console.log(`  $ reflow -exclude-patterns '**/__tests__/**/*','fixtures/*.js' src/lib/`);
+  console.log(`  $ reflow -exclude-patterns '**/__tests__/**/*','fixtures/*.js' src/`);
 });
 
-export default () => {
+if (process.env.NODE_ENV !== 'test') {
   program.parse(process.argv);
   validateArgs(program.args) ? transpileFiles(collectArgs(program)) : program.help();
-};
+}

@@ -5,7 +5,7 @@ import { existsSync, unlinkSync } from 'fs';
 
 const baseDir = resolve('src/cli/__tests__/__fixtures__/filetypes/');
 
-describe('Reflow', () => {
+describe('Reflow runner', () => {
   it('should generate `.d.ts` files for Flow declaration files', () => {
     const writtenFiles = transpileFiles({
       sources: [`${baseDir}/declaration.js`],

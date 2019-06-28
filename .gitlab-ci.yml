@@ -15,7 +15,7 @@ before_script:
 test:
   stage: test
   script:
-    - yarn typecheck
+    - yarn tsc
     - yarn lint
     - yarn test
 

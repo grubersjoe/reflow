@@ -1,12 +1,15 @@
 const path = require('path');
-const webpack = require('webpack');
+const BannerPlugin = require('webpack').BannerPlugin;
 
 module.exports = (env, argv) => {
   const mode = argv.mode || 'development';
 
   return {
     devtool: mode === 'development' ? 'sourcemap' : undefined,
-    entry: './src/index.ts',
+    entry: {
+      reflow: './src/cli/index.ts',
+      plugin: './src/plugin/index.ts',
+    },
     mode: mode,
     module: {
       rules: [
@@ -23,13 +26,14 @@ module.exports = (env, argv) => {
       devtoolFallbackModuleFilenameTemplate: '[absolute-resource-path]?[hash]',
       devtoolModuleFilenameTemplate: '[absolute-resource-path]',
 
-      filename: 'reflow.js',
+      filename: '[name].js',
       path: path.resolve(__dirname, 'build'),
     },
     plugins: [
-      new webpack.BannerPlugin({
+      new BannerPlugin({
         banner: '#!/usr/bin/env node',
         entryOnly: true,
+        test: 'reflow.js',
         raw: true,
       }),
     ],

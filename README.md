@@ -1,7 +1,7 @@
 # Reflow
 
-> [Babel](https://babeljs.io/) plugin to transpile [Flow](https://flow.org/) typed JavaScript code
-> to [TypeScript](https://www.typescriptlang.org/).
+> [Babel](https://babeljs.io/) plugin to transpile a [Flow](https://flow.org/) typed codebase to
+> [TypeScript](https://www.typescriptlang.org/).
 
 [![CircleCI](https://circleci.com/gh/grubersjoe/reflow.svg?style=shield)](https://circleci.com/gh/grubersjoe/reflow)
 [![Coverage](https://coveralls.io/repos/github/grubersjoe/reflow/badge.svg?branch=master)](https://coveralls.io/github/grubersjoe/reflow?branch=master)
@@ -34,40 +34,43 @@ of the differences and similarities of Flow and Typescript.
 ## Installation
 
 ```
-yarn add --dev TBA
+yarn add --dev babel-plugin-reflow
 ```
 
 ## Usage
 
 ### CLI
 
-Install the package as project dependency and run `npx reflow` afterwards. Alternatively you might
-want to install Reflow globally so you can simply type `reflow`:
+This package includes a small CLI wrapper for the Babel plugin to recursively transpile a whole
+project directory. Install the package as project dependency and run `npx reflow` afterwards.
+Alternatively you might want to install Reflow globally so you can simply type `reflow`:
 
 ```shell
-yarn global add TBA
+yarn global add babel-plugin-reflow
 ```
 
 Usage is as follows:
 
 ```shell
+$ npx reflow --help
+
 Usage: reflow [OPTION]... <FILES OR DIRECTORIES ...>
 
 Reflow
 
 Options:
   -V, --version                    output the version number
-  -d, --dry-run                    perform a trial run printing to stdout instead of writing a file
-  -e, --exclude-dirs <dirs ...>    list of recursively excluded directories (default: ["node_modules"])
-  -i, --include-pattern <pattern>  set the glob pattern for input files (default: "**/*.{js,jsx}")
-  -r, --replace                    process files in-place. A new TS file will be created next to the original file otherwise.
-  -D, --replace-decorators         replace class @decorators with wrapped function calls to avoid TypeScript errors
+  -d, --dry-run                    Perform a trial run printing to stdout instead of writing a file
+  -e, --exclude-dirs <dirs ...>    List of recursively excluded directories (default: ["node_modules"])
+  -i, --include-pattern <pattern>  Set the glob pattern for input files (default: "**/*.{js,jsx}")
+  -r, --replace                    Process files in-place instead of creating new TS files next to the original JS files.
+  -D, --replace-decorators         Replace class @decorators with wrapped function calls to avoid TypeScript errors
   -h, --help                       output usage information
 
 Examples:
   $ reflow --replace src/
   $ reflow -d -i '**/__tests__/**/*.{js,jsx} src/
-  $ reflow -exclude-patterns '**/__tests__/**/*','fixtures/*.js' src/lib/
+  $ reflow -exclude-patterns '**/__tests__/**/*','fixtures/*.js' src/
 ```
 
 ### Programmatically
@@ -261,10 +264,10 @@ There are various npm scripts for different tasks:
 
 ```
 yarn build          # Create a production build
-yarn format         # Format the code with Prettier
 yarn dev            # Build in development mode and watch for changes
+yarn format         # Format the code with Prettier
 yarn lint           # Run ESLint
 yarn test           # Run fixture tests
 yarn test:coverage  # Run the tests with coverage report
-yarn typecheck      # Check the types (via TypeScript)
+yarn tsc            # Check the types (via TypeScript)
 ```

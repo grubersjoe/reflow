@@ -1,16 +1,35 @@
 {
-  "name": "babel-reflow",
-  "version": "0.0.1",
-  "description": "Babel plugin to transpile Flow typed JavaScript code to TypeScript",
+  "name": "babel-plugin-reflow",
+  "version": "0.1.0",
+  "description": "Babel plugin to transpile Flow code to TypeScript",
   "author": "Jonathan Gruber <gruberjonathan@gmail.com>",
   "license": "MIT",
-  "private": true,
+  "main": "build/plugin.js",
   "bin": {
-    "reflow": "./build/reflow.js"
+    "reflow": "build/reflow.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grubersjoe/reflow.git"
+  },
+  "bugs": "https://github.com/grubersjoe/reflow/issues",
+  "files": [
+    "./*",
+    "build/*",
+    "src/*"
+  ],
   "engines": {
     "node": ">=8.0.0"
   },
+  "keywords": [
+    "babel-plugin",
+    "flow",
+    "typescript",
+    "babel-plugin-flow",
+    "babel-plugin-typescript",
+    "babel-plugin-flow-to-typescript",
+    "babel-plugin-flow-to-ts"
+  ],
   "devDependencies": {
     "@babel/core": "^7.4.5",
     "@babel/plugin-proposal-decorators": "^7.4.4",
@@ -24,10 +43,10 @@
     "@typescript-eslint/parser": "^1.11.0",
     "babel-loader": "^8.0.6",
     "coveralls": "^3.0.4",
-    "eslint": "^6.0.1",
+    "eslint": "^5.0.0",
     "eslint-plugin-node": "^9.1.0",
     "flow-bin": "^0.102.0",
-    "husky": "^2.5.0",
+    "husky": "^2.7.0",
     "jest": "^24.8.0",
     "react": "^16.8.6",
     "ts-jest": "^24.0.2",
@@ -46,26 +65,27 @@
     "@types/babel__code-frame": "^7.0.1",
     "@types/diff": "^4.0.1",
     "@types/glob": "^7.1.1",
-    "@types/lodash": "^4.14.134",
+    "@types/lodash": "^4.14.135",
     "@types/prettier": "^1.16.4",
     "chalk": "^2.4.2",
     "commander": "^2.20.0",
     "diff": "^4.0.1",
     "glob": "^7.1.4",
     "lodash": "^4.17.11",
-    "prettier": "1.18.2",
     "prettier-reflow": "^1.18.2-1"
   },
   "scripts": {
     "build": "node --max_old_space_size=4096 ./node_modules/.bin/webpack --mode=production --progress",
-    "clean": "rm -rv build/*",
+    "clean": "rm -r build/*",
     "dev": "webpack -w",
     "format": "prettier --write 'src/**/*' './*.{js,json,md}'",
     "lint": "eslint --max-warnings=0 'src/**/*.ts'",
+    "postbuild": "chmod +x build/reflow.js",
+    "prebuild": "yarn clean",
+    "prepublishOnly": "yarn tsc && yarn lint && yarn test",
     "test": "jest -i --silent",
     "test:ci": "yarn test --ci",
-    "test:coverage": "yarn test --coverage && xdg-open .coverage/lcov-report/index.html",
-    "typecheck": "tsc"
+    "test:coverage": "yarn test --coverage && xdg-open .coverage/lcov-report/index.html"
   },
   "husky": {
     "hooks": {
