@@ -6,6 +6,10 @@ import { runFixtureTests } from '../../../util/test-runner';
 describe('React', () => {
   runFixtureTests(
     resolve('src/plugin/__tests__/__fixtures__/react/'),
-    getTransformOptions(),
+    getTransformOptions({
+      transformOptions: {
+        compact: false,
+      }
+    }),
   );
 });

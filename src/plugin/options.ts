@@ -7,19 +7,20 @@ import reflowPlugin, { ReflowOptions } from '.';
  * Create the Babel configuration for runners using the plugin
  */
 export function getTransformOptions(
-  args: {
+  overwrites: {
     pluginOptions?: ReflowOptions;
     transformOptions?: TransformOptions;
   } = {},
 ): TransformOptions {
   const defaultOptions: TransformOptions = {
     babelrc: false,
-    configFile: false,
     comments: false,
-    plugins: [[reflowPlugin, args.pluginOptions]],
+    compact: true,
+    configFile: false,
+    plugins: [[reflowPlugin, overwrites.pluginOptions]],
   };
 
-  return Object.assign({}, defaultOptions, args.transformOptions);
+  return Object.assign({}, defaultOptions, overwrites.transformOptions);
 }
 
 /**

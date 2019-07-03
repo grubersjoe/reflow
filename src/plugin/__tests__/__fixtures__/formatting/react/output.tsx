@@ -1,3 +1,4 @@
+
 import React, { Component, Children, ReactNode } from 'react';
 import { TransitionMotion } from 'react-motion';
 import {
@@ -62,7 +63,7 @@ type Props = {
   };
 };
 
-class Foo extends Component<Props> {
+class RealWorld extends Component<Props> {
   get transitions(): Array<TransitionStyle> {
     const { children, enterStyle } = this.props;
 

@@ -91,7 +91,7 @@ function copyComments(
  * Since Babel uses an *abstract* synax tree, all information about whitespace
  * is lost after parsing. Also Babel's `retainLines` option is not working as
  * expected and will produce broken syntax in some cases. Neither will Prettier
- * help concerning blank lines, because it won't add additional blank lines:
+ * help here, because it does not add additional blank lines:
  *
  * https://prettier.io/docs/en/rationale.html#empty-lines
  *
@@ -101,7 +101,7 @@ function copyComments(
  * the source to the output. Comments are also handled here, because Babel does
  * not reliably retain their position in the generated code. This approach
  * naively assumes that all code transformations will result in (roughly) the
- * same amount of lines. It's not perfect, but the best I came up with and it
+ * same amount of lines. It iss not perfect, but the best I came up with and it
  * seems to work reasonably well in practice.
  */
 export function syncBlankLinesAndComments(
@@ -114,10 +114,10 @@ export function syncBlankLinesAndComments(
     .split(LINE_BREAK)
     .filter(line => !FLOW_DIRECTIVE.test(line));
 
-  let outputLines = outputCode.split(LINE_BREAK).filter(line => !BLANK_LINE.test(line));
-
   const flowAst = parseAst(originalLines.join('\n'));
   const decoratorList = getDecorators(flowAst);
+
+  let outputLines = outputCode.split(LINE_BREAK);
 
   originalLines.forEach((flowLine, lineNumber) => {
     if (outputLines[lineNumber] === undefined || flowLine === outputLines[lineNumber]) {
@@ -177,7 +177,14 @@ export function formatOutputCode(
     }),
   );
 
-  outputCode = prettier.format(outputCode, getPrettierConfig(prettierOptions));
+  outputCode = prettier.format(
+    outputCode,
+    getPrettierConfig({
+      parser: 'typescript',
+      ...prettierOptions,
+    }),
+  );
+
   outputCode = syncBlankLinesAndComments(outputCode, originalCode, pluginOptions);
 
   // Run Prettier one more time to iron out any remaining bad formatting.

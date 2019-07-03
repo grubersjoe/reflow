@@ -6,6 +6,10 @@ import { runFixtureTests } from '../../../util/test-runner';
 describe('Types', () => {
   runFixtureTests(
     resolve('src/plugin/__tests__/__fixtures__/types/'),
-    getTransformOptions(),
+    getTransformOptions({
+      transformOptions: {
+        compact: false,
+      }
+    }),
   );
 });

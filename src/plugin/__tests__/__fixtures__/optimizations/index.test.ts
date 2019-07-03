@@ -11,7 +11,12 @@ const pluginOptions: ReflowOptions = {
 describe('Optimizations', () => {
   runFixtureTests(
     resolve('src/plugin/__tests__/__fixtures__/optimizations/'),
-    getTransformOptions({ pluginOptions }),
+    getTransformOptions({
+      transformOptions: {
+        compact: false,
+      },
+      pluginOptions,
+    }),
     pluginOptions,
   );
 });
