@@ -63,7 +63,7 @@ function isConstructor(key: Identifier | StringLiteral): boolean {
 function createClassBody(node: ObjectTypeAnnotation, state: ConverterState): ClassBody {
   const body = node.properties.map(prop => {
     if (isObjectTypeProperty(prop)) {
-      // @ts-ignore prop.method: boolean exists
+      // @ts-ignore prop.method exists
       if (prop.method && isFunctionTypeAnnotation(prop.value)) {
         const { value, key } = prop;
 

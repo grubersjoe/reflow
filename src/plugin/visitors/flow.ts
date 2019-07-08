@@ -32,8 +32,12 @@ import { convertTypeAnnotation } from '../converters/type-annotation';
 import { convertTypeCastExpression } from '../converters/type-cast';
 import { convertTypeParameterDeclaration } from '../converters/type-parameter';
 
-export const flowVisitor: VisitorFunction<Flow> = (path, state): void => {
+export const flowVisitor: VisitorFunction<Flow> = (path, state) => {
   const { node } = path;
+
+  if (!path.isFlow()) {
+    return;
+  }
 
   if (isDeclareClass(node)) {
     path.replaceWith(convertDeclareClass(node, state));
@@ -68,7 +72,7 @@ export const flowVisitor: VisitorFunction<Flow> = (path, state): void => {
     path.replaceWith(convertOpaqueType(node, state));
   }
 
-  if (isTypeAlias(node) && path.isFlow()) {
+  if (isTypeAlias(node)) {
     path.replaceWith(convertTypeAlias(node, path, state));
   }
 

@@ -16,18 +16,18 @@ export type BaseVisitorNode = ClassDeclaration & FunctionLike & ImportDeclaratio
 
 type FunctionLike = ArrowFunctionExpression | FunctionDeclaration | FunctionExpression;
 
-export const classDeclarationVisitor: VisitorFunction<ClassDeclaration> = (path, state): void => {
+export const classDeclarationVisitor: VisitorFunction<ClassDeclaration> = (path, state) => {
   path.replaceWith(convertClassDeclaration(path, state as ConverterState));
 };
 
-export const functionVisitor: VisitorFunction<FunctionLike> = (path): void => {
+export const functionVisitor: VisitorFunction<FunctionLike> = path => {
   path.replaceWith(convertOptionalFunctionParameters(path.node));
 };
 
-export const importDeclarationVisitor: VisitorFunction<ImportDeclaration> = (path): void => {
+export const importDeclarationVisitor: VisitorFunction<ImportDeclaration> = path => {
   path.replaceWith(convertImportDeclaration(path));
 };
 
-export const importSpecifierVisitor: VisitorFunction<ImportSpecifier> = (path): void => {
+export const importSpecifierVisitor: VisitorFunction<ImportSpecifier> = path => {
   path.replaceWith(convertImportSpecifier(path));
 };

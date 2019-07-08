@@ -1,5 +1,3 @@
-declare module '@babel/helper-plugin-utils';
-
 declare module 'prettier-reflow' {
   import prettier from 'prettier';
 
