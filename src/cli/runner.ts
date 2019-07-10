@@ -9,15 +9,8 @@ import { formatOutputCode } from '../plugin/util/format';
 import { getTransformOptions } from '../plugin/options';
 
 import { ReflowOptions } from '../plugin/';
-import { DEFAULT_EXCLUDE_DIRECTORIES, DEFAULT_INCLUDE_PATTERN } from '.';
-
-export interface CommandLineArgs extends ReflowOptions {
-  dryRun?: boolean;
-  excludeDirs?: string[];
-  includePattern?: string;
-  replace?: boolean;
-  sources: string[];
-}
+import { isValidSource } from './util';
+import { CommandLineArgs, DEFAULT_EXCLUDE_DIRECTORIES, DEFAULT_INCLUDE_PATTERN } from '.';
 
 function getGlobOptions(options: GlobOptions, excludeDirs: string[]): GlobOptions {
   const defaults = {
@@ -51,6 +44,11 @@ export function transpileFiles(args: CommandLineArgs): string[] {
     const inputFiles = isDir ? glob.sync(includePattern, globOptions) : [resolve(source)];
 
     inputFiles.forEach(inputFile => {
+      // Skip all invalid sources (files that match the include glob pattern, but are not JS)
+      if (!isValidSource(inputFile)) {
+        return;
+      }
+
       console.log(`Transpiling ${inputFile}...`);
       const out = transformFileSync(inputFile, babelOptions);
 

@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-reflow",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Babel plugin to transpile Flow code to TypeScript",
   "author": "Jonathan Gruber <gruberjonathan@gmail.com>",
   "license": "MIT",

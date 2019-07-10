@@ -3,10 +3,10 @@ import { resolve } from 'path';
 import { transpileFiles } from '../runner';
 import { existsSync, unlinkSync } from 'fs';
 
-const baseDir = resolve('src/cli/__tests__/__fixtures__/filetypes/');
+const baseDir = resolve('src/cli/__tests__/__fixtures__/');
 
-describe('Reflow runner', () => {
-  it('should generate `.d.ts` files for Flow declaration files', () => {
+describe('Runner', () => {
+  test('should generate `.d.ts` files for Flow declaration files', () => {
     const writtenFiles = transpileFiles({
       sources: [`${baseDir}/declaration.js`],
     });
@@ -17,7 +17,7 @@ describe('Reflow runner', () => {
     writtenFiles.forEach(unlinkSync);
   });
 
-  it('should generate `.tsx` files for JSX files', () => {
+  test('should generate `.tsx` files for JSX files', () => {
     const writtenFiles = transpileFiles({
       sources: [`${baseDir}/jsx.js`],
     });
@@ -28,7 +28,7 @@ describe('Reflow runner', () => {
     writtenFiles.forEach(unlinkSync);
   });
 
-  it('should generate `.ts` files for modules and scripts', () => {
+  test('should generate `.ts` files for modules and scripts', () => {
     const writtenFiles = transpileFiles({
       sources: [`${baseDir}/module.js`, `${baseDir}/script.js`],
     });
