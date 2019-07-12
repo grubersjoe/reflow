@@ -50,29 +50,34 @@ export function transpileFiles(args: CommandLineArgs): string[] {
       }
 
       console.log(`Transpiling ${inputFile}...`);
-      const out = transformFileSync(inputFile, babelOptions);
 
-      if (out === null || !out.code) {
-        logError(`Unable to transpile ${inputFile}`, 4);
-      } else {
-        const outputFile = process.env.DEBUG
-          ? inputFile
-          : inputFile.replace(extname(inputFile), FileTypes.get(inputFile) || '.ts');
+      try {
+        const out = transformFileSync(inputFile, babelOptions);
 
-        const inputCode = String(readFileSync(inputFile));
-        const formattedOutput = formatOutputCode(out.code, inputCode, pluginOptions);
-
-        if (dryRun) {
-          console.log(formattedOutput);
-          printRuler();
+        if (out === null || !out.code) {
+          logError(`Unable to transpile ${inputFile}`, 4);
         } else {
-          if (replace) {
-            renameSync(inputFile, outputFile);
-          }
+          const outputFile = process.env.DEBUG
+            ? inputFile
+            : inputFile.replace(extname(inputFile), FileTypes.get(inputFile) || '.ts');
 
-          writeFileSync(outputFile, formattedOutput);
-          writtenFiles.push(outputFile);
+          const inputCode = String(readFileSync(inputFile));
+          const formattedOutput = formatOutputCode(out.code, inputCode, pluginOptions);
+
+          if (dryRun) {
+            console.log(formattedOutput);
+            printRuler();
+          } else {
+            if (replace) {
+              renameSync(inputFile, outputFile);
+            }
+
+            writeFileSync(outputFile, formattedOutput);
+            writtenFiles.push(outputFile);
+          }
         }
+      } catch (error) {
+        logError(`${inputFile} error not be transpiled: ${error.message}. Skipping.`, 4);
       }
     });
   });
