@@ -1,4 +1,5 @@
 // @flow
+import React from 'react';
 // $FlowFixMe
 import styled from 'styled';
 
@@ -35,7 +36,13 @@ const StyledComponent = styled.div`
 const doubleSlashString1 = 'http://www.w3.org/2000/svg'; /* block comment */
 const doubleSlashString2 = '//domain/a, //domain/b'; // line comment
 
-
 // Muliple
 // line comments
 type P2 = number | null;
+
+const ReactComponent = props => (
+  <div>
+    Hello, World!
+    {/* JSX comment */}
+  </div>
+);

@@ -10,6 +10,7 @@ export const BLANK_LINE = /^[ \t]*$/;
 export const LINE_BREAK = /\r?\n/;
 
 const BLOCK_COMMENT_AT_BEGINNING_OF_LINE = /^\s*\/\*/;
+const JSX_COMMENT = /\{\s*\/\*.*\*\/\s*\}/;
 const LINE_COMMENT_AT_BEGINNING_OF_LINE = /^\s*\/\/.*$/;
 
 const FLOW_DIRECTIVE = /(@flow(\s+(strict(-local)?|weak))?|@noflow)/;
@@ -60,14 +61,18 @@ function copyComments(
   );
 
   if (comment) {
+    const originalLine = originalLines[lineNumber];
+
     if (comment.type === 'CommentBlock') {
-      if (BLOCK_COMMENT_AT_BEGINNING_OF_LINE.test(originalLines[lineNumber])) {
+      if (BLOCK_COMMENT_AT_BEGINNING_OF_LINE.test(originalLine)) {
         `/*${comment.value}*/`
           .split('\n')
           .reverse()
           .forEach(commentLine => {
             outputLines.splice(lineNumber, 0, commentLine);
           });
+      } else if (JSX_COMMENT.test(originalLine)) {
+        outputLines[lineNumber] = `{/*${comment.value}*/}`;
       } else {
         outputLines[lineNumber] = `${outputLine} /*${comment.value}*/`;
       }

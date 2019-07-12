@@ -1,4 +1,5 @@
 
+import React from 'react';
 // $FlowFixMe
 import styled from 'styled';
 
@@ -38,3 +39,10 @@ const doubleSlashString2 = '//domain/a, //domain/b'; // line comment
 // Muliple
 // line comments
 type P2 = number | null;
+
+const ReactComponent = props => (
+  <div>
+    Hello, World!
+    {/* JSX comment */}
+  </div>
+);
