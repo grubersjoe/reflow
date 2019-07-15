@@ -1,6 +1,6 @@
 # Reflow
 
-> [Babel](https://babeljs.io/) plugin to transpile a [Flow](https://flow.org/) typed codebase to
+> Babel plugin to transpile a [Flow](https://flow.org/) typed codebase to
 > [TypeScript](https://www.typescriptlang.org/).
 
 [![CircleCI](https://circleci.com/gh/grubersjoe/reflow.svg?style=shield)](https://circleci.com/gh/grubersjoe/reflow)
@@ -9,12 +9,12 @@
 **This is still in an early stage and may break anytime!**
 
 Reflow enables you to migrate a whole Flow based project to TypeScript by transpiling the Flow type
-annotations to equivalent TypeScript code. While this should reduce the effort to move a large code
-base to TypeScript drastically, it is still likely that you will need to _manually_ fix new type
-errors afterwards. This program helps you with the tedious task to convert Flow syntax to
-TypeScript, but it can not magically fix type errors which occur after the migration.
+annotations to equivalent TypeScript code. While this reduces the effort to move a large code base
+to TypeScript drastically, it is still likely that you will need to _manually_ fix new type errors
+afterwards. This program helps you with the tedious task to convert Flow syntax to TypeScript, but
+it can not magically fix type errors which occur after the migration.
 
-There are many possible reasons why you will probably face new type errors after executing this
+<!-- There are many possible reasons why you will probably face new type errors after executing this
 tool:
 
 - TypeScript is in certain aspects per se stricter than Flow (e. g. TS handles all objects as _exact
@@ -26,7 +26,7 @@ tool:
 - We have experienced that TypeScript seems to be able to infer more types, when using certain
   libraries and their external type definitions (e. g. React components in combination with
   [Styled Components](https://www.styled-components.com/))
-- The previously used Flow types _may_ prove to be inaccurate
+- The previously used Flow types _may_ prove to be inaccurate -->
 
 See this [repository](https://github.com/niieani/typescript-vs-flowtype) for an excellent overview
 of the differences and similarities of Flow and Typescript.
