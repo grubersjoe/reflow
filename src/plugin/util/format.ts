@@ -4,7 +4,7 @@ import { File, Comment, Decorator } from '@babel/types';
 import prettier, { Options as PrettierOptions } from 'prettier-reflow';
 
 import { ReflowOptions } from '..';
-import { getParserPlugins } from '../options';
+import { getParserPlugins } from './options';
 
 export const BLANK_LINE = /^[ \t]*$/;
 export const LINE_BREAK = /\r?\n/;

@@ -7,9 +7,9 @@ import glob from 'glob';
 import startCase from 'lodash/startCase';
 
 import { ReflowOptions } from '..';
-import { relativePath as relPath } from './file';
-import { BLANK_LINE, LINE_BREAK, formatOutputCode } from './format';
-import { getParserPlugins } from '../options';
+import { relativePath as relPath } from '../util/file';
+import { BLANK_LINE, LINE_BREAK, formatOutputCode } from '../util/format';
+import { getParserPlugins } from '../util/options';
 
 const INPUT_FIXTURE_GLOB = 'input.js';
 const OUTPUT_FIXTURE_GLOB = 'output.{ts,tsx}';

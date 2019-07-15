@@ -1,6 +1,6 @@
 import { ParserOptions, PluginObj, TransformOptions } from '@babel/core';
 
-import { getParserPlugins } from './options';
+import { getParserPlugins } from './util/options';
 import { PluginPass, VisitorNodes } from './types';
 
 import {

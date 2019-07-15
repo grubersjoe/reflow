@@ -1,7 +1,7 @@
 import { TransformOptions } from '@babel/core';
 import { ParserPlugin } from '@babel/parser';
 
-import reflowPlugin, { ReflowOptions } from '.';
+import reflowPlugin, { ReflowOptions } from '..';
 
 /**
  * Create the Babel configuration for runners using the plugin

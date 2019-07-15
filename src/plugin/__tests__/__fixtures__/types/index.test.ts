@@ -1,7 +1,7 @@
 import { resolve } from 'path';
 
-import { getTransformOptions } from '../../../options';
-import { runFixtureTests } from '../../../util/test-runner';
+import { getTransformOptions } from '../../../util/options';
+import { runFixtureTests } from '../../runner';
 
 describe('Types', () => {
   runFixtureTests(

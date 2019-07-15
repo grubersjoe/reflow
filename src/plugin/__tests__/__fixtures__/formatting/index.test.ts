@@ -1,8 +1,8 @@
 import { resolve } from 'path';
 
 import { ReflowOptions } from '../../..';
-import { getTransformOptions } from '../../../options';
-import { runFixtureTests } from '../../../util/test-runner';
+import { getTransformOptions } from '../../../util/options';
+import { runFixtureTests } from '../../runner';
 
 const pluginOptions: ReflowOptions = {
   replaceDecorators: true,

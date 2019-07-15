@@ -1,12 +1,12 @@
 import { transformFileSync } from '@babel/core';
-import { renameSync, statSync, writeFileSync, readFileSync } from 'fs';
+import { readFileSync, statSync, unlinkSync, writeFileSync } from 'fs';
 import glob, { IOptions as GlobOptions } from 'glob';
 import { extname, resolve } from 'path';
 
 import { FileTypes } from '../plugin/util/file';
 import { logError, printRuler } from '../util/log';
 import { formatOutputCode } from '../plugin/util/format';
-import { getTransformOptions } from '../plugin/options';
+import { getTransformOptions } from '../plugin/util/options';
 
 import { ReflowOptions } from '../plugin/';
 import { isValidSource } from './util';
@@ -61,15 +61,15 @@ export function transpileFiles(args: CommandLineArgs): string[] {
             ? inputFile
             : inputFile.replace(extname(inputFile), FileTypes.get(inputFile) || '.ts');
 
-          const inputCode = String(readFileSync(inputFile));
-          const formattedOutput = formatOutputCode(out.code, inputCode, pluginOptions);
+          const originalCode = String(readFileSync(inputFile));
+          const formattedOutput = formatOutputCode(out.code, originalCode, pluginOptions);
 
           if (dryRun) {
             console.log(formattedOutput);
             printRuler();
           } else {
             if (replace) {
-              renameSync(inputFile, outputFile);
+              unlinkSync(inputFile);
             }
 
             writeFileSync(outputFile, formattedOutput);

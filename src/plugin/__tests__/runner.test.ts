@@ -1,4 +1,4 @@
-import { splitFixtureLines } from '../test-runner';
+import { splitFixtureLines } from './runner';
 
 const inputCode = `
   // @flow
