@@ -30,7 +30,7 @@ function buildPlugin(): PluginObj<PluginPass<VisitorNodes>> {
       JSX: jsxVisitor,
     },
     manipulateOptions(opts: TransformOptions, parserOpts: ParserOptions) {
-      parserOpts.plugins = [...getParserPlugins(), 'flow'];
+      parserOpts.plugins = getParserPlugins('flow');
     },
   };
 }

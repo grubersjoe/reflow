@@ -18,11 +18,11 @@ class TestError extends Error {}
 
 export function splitFixtureLines(
   code: string,
-  type: 'flow' | 'typescript',
+  typeSystem: 'flow' | 'typescript',
   ignoreFormat = true,
 ): string[] {
   const ast = parse(code, {
-    plugins: [...getParserPlugins(), type],
+    plugins: getParserPlugins(typeSystem),
     sourceType: 'module',
   });
 
@@ -92,6 +92,10 @@ export function runFixtureTests(
             const outputCode = testFormatting
               ? formatOutputCode(babelOutput.code, String(readFileSync(inputFile)), pluginOptions)
               : babelOutput.code;
+
+            if (!outputCode) {
+              throw new Error('Code generation or formatting failed.');
+            }
 
             splitFixtureLines(outputCode, 'typescript', !testFormatting).forEach((line, i) => {
               const padLength = Math.min(String(expectedLines.length).length, 2);

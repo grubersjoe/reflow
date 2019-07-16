@@ -35,10 +35,6 @@ import { convertTypeParameterDeclaration } from '../converters/type-parameter';
 export const flowVisitor: VisitorFunction<Flow> = (path, state) => {
   const { node } = path;
 
-  if (!path.isFlow()) {
-    return;
-  }
-
   if (isDeclareClass(node)) {
     path.replaceWith(convertDeclareClass(node, state));
   }

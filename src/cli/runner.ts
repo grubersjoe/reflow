@@ -64,6 +64,10 @@ export function transpileFiles(args: CommandLineArgs): string[] {
           const originalCode = String(readFileSync(inputFile));
           const formattedOutput = formatOutputCode(out.code, originalCode, pluginOptions);
 
+          if (!formattedOutput) {
+            return;
+          }
+
           if (dryRun) {
             console.log(formattedOutput);
             printRuler();
@@ -77,7 +81,8 @@ export function transpileFiles(args: CommandLineArgs): string[] {
           }
         }
       } catch (error) {
-        logError(`${inputFile} error not be transpiled: ${error.message}. Skipping.`, 4);
+        logError(`${inputFile} could not be transpiled. Skipping.`, 4);
+        logError(error.message, 4);
       }
     });
   });

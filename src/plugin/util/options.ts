@@ -26,8 +26,16 @@ export function getTransformOptions(
 /**
  * Add Babel syntax plugins for commonly used features and technologies
  */
-export function getParserPlugins(): ParserPlugin[] {
+export function getParserPlugins(typeSystem: 'flow' | 'typescript'): ParserPlugin[] {
+  // The `all` option for Flow is imported to avoid parsing errors!
+  // See https://babeljs.io/docs/en/babel-parser#plugins-options
+  // prettier-ignore
+  const typePlugin: ParserPlugin = typeSystem === 'flow'
+    ? ['flow', { all: true }]
+    : 'typescript';
+
   return [
+    typePlugin,
     'classProperties',
     'dynamicImport',
     'jsx',

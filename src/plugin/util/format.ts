@@ -5,6 +5,7 @@ import prettier, { Options as PrettierOptions } from 'prettier-reflow';
 
 import { ReflowOptions } from '..';
 import { getParserPlugins } from './options';
+import { logError } from '../../util/log';
 
 export const BLANK_LINE = /^[ \t]*$/;
 export const LINE_BREAK = /\r?\n/;
@@ -29,7 +30,7 @@ function getPrettierConfig(overrides?: PrettierOptions): PrettierOptions {
 
 function parseAst(code: string): File {
   return parse(code, {
-    plugins: [...getParserPlugins(), 'flow'],
+    plugins: getParserPlugins('flow'),
     sourceType: 'module',
   });
 }
@@ -164,36 +165,43 @@ export function formatOutputCode(
   outputCode: string,
   originalCode: string,
   pluginOptions: ReflowOptions,
-): string {
-  // The aim of the first Prettier run is to format the original and the output
-  // code as similar as possible by forcing consistent line wraps. To do so an
-  // infinite printWidth is used and object literals will always be wrapped
-  // into multiple lines (even when they would fit in one line).
-  const prettierOptions: PrettierOptions = {
-    printWidth: Infinity,
-    reflow: true,
-  };
+): string | false {
+  try {
+    // The aim of the first Prettier run is to format the original and the output
+    // code as similar as possible by forcing consistent line wraps. To do so an
+    // infinite printWidth is used and object literals will always be wrapped
+    // into multiple lines (even when they would fit in one line).
+    const prettierOptions: PrettierOptions = {
+      printWidth: Infinity,
+      reflow: true,
+    };
 
-  originalCode = prettier.format(
-    originalCode,
-    getPrettierConfig({
-      parser: 'babel',
-      ...prettierOptions,
-    }),
-  );
+    originalCode = prettier.format(
+      originalCode,
+      getPrettierConfig({
+        parser: 'babel',
+        ...prettierOptions,
+      }),
+    );
 
-  outputCode = prettier.format(
-    outputCode,
-    getPrettierConfig({
-      parser: 'typescript',
-      ...prettierOptions,
-    }),
-  );
+    outputCode = prettier.format(
+      outputCode,
+      getPrettierConfig({
+        parser: 'typescript',
+        ...prettierOptions,
+      }),
+    );
 
-  outputCode = syncBlankLinesAndComments(outputCode, originalCode, pluginOptions);
+    outputCode = syncBlankLinesAndComments(outputCode, originalCode, pluginOptions);
 
-  // Run Prettier one more time to iron out any remaining bad formatting.
-  outputCode = prettier.format(outputCode, getPrettierConfig());
+    // Run Prettier one more time to iron out any remaining bad formatting.
+    outputCode = prettier.format(outputCode, getPrettierConfig());
 
-  return outputCode;
+    return outputCode;
+  } catch (error) {
+    logError('Exception while formatting generated code. Skipping.', 4);
+    logError(error.message, 4);
+
+    return false;
+  }
 }
