@@ -21,13 +21,16 @@ module.exports = (env, argv) => {
       ],
     },
     output: {
+      filename: '[name].js',
+      path: path.resolve(__dirname, 'build'),
+
+      // Set the correct target for Node (`var` per default)
+      libraryTarget: 'umd',
+
       // These options are necessary to make debugging in VS Code possible,
       // since VS Code won't understand the webpack:// "protocol"
       devtoolFallbackModuleFilenameTemplate: '[absolute-resource-path]?[hash]',
       devtoolModuleFilenameTemplate: '[absolute-resource-path]',
-
-      filename: '[name].js',
-      path: path.resolve(__dirname, 'build'),
     },
     plugins: [
       new BannerPlugin({
