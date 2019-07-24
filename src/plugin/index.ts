@@ -11,13 +11,14 @@ import {
 } from './visitors/base';
 import { flowVisitor } from './visitors/flow';
 import { jsxVisitor } from './visitors/jsx';
+import { programVisitor } from './visitors/program';
 
 export interface ReflowOptions {
   replaceDecorators?: boolean;
 }
 
-function buildPlugin(): PluginObj<PluginPass<VisitorNodes>> {
-  return {
+function buildPlugin(): () => PluginObj<PluginPass<VisitorNodes>> {
+  return () => ({
     name: 'reflow',
     visitor: {
       ArrowFunctionExpression: functionVisitor,
@@ -28,11 +29,12 @@ function buildPlugin(): PluginObj<PluginPass<VisitorNodes>> {
       ImportSpecifier: importSpecifierVisitor,
       Flow: flowVisitor,
       JSX: jsxVisitor,
+      Program: programVisitor,
     },
     manipulateOptions(opts: TransformOptions, parserOpts: ParserOptions) {
       parserOpts.plugins = getParserPlugins('flow');
     },
-  };
+  });
 }
 
 export default buildPlugin();

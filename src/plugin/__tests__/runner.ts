@@ -19,15 +19,15 @@ class TestError extends Error {}
 export function splitFixtureLines(
   code: string,
   typeSystem: 'flow' | 'typescript',
-  ignoreFormat = true,
+  removeComments = true,
+  trim = true,
 ): string[] {
   const ast = parse(code, {
     plugins: getParserPlugins(typeSystem),
     sourceType: 'module',
   });
 
-  if (ignoreFormat) {
-    // Delete comments
+  if (removeComments) {
     (ast.comments as Comment[]).forEach(comment => {
       if (comment.type === 'CommentBlock') {
         code = code.replace(`/*${comment.value}*/`, '');
@@ -42,8 +42,8 @@ export function splitFixtureLines(
   return code
     .trim()
     .split(LINE_BREAK)
-    .filter(line => !(ignoreFormat && BLANK_LINE.test(line)))
-    .map(line => line.trim());
+    .filter(line => !(removeComments && BLANK_LINE.test(line)))
+    .map(line => (trim ? line.trim() : line));
 }
 
 export function runFixtureTests(
@@ -77,11 +77,14 @@ export function runFixtureTests(
       if (inputFile && outputFile) {
         const babelOutput = transformFileSync(inputFile, babelOptions);
 
-        const expectedLines = splitFixtureLines(
+        const formattedExpectedLines = splitFixtureLines(
           String(readFileSync(outputFile)),
           'typescript',
           !testFormatting,
+          false,
         );
+
+        const expectedLines = formattedExpectedLines.map(line => line.trim());
 
         describe(chalk.underline(testName), () => {
           if (!babelOutput) {
@@ -98,10 +101,10 @@ export function runFixtureTests(
             }
 
             splitFixtureLines(outputCode, 'typescript', !testFormatting).forEach((line, i) => {
-              const padLength = Math.min(String(expectedLines.length).length, 2);
+              const padLength = Math.max(String(expectedLines.length).length, 2);
               const testNumber = String(i + 1).padStart(padLength, '0');
 
-              test(`${testName}:${testNumber} │ ${line} === ${expectedLines[i]}`, () => {
+              test(`${testName}:${testNumber}`.padEnd(30) + formattedExpectedLines[i], () => {
                 expect(line).toEqual(expectedLines[i]);
               });
             });
@@ -114,7 +117,7 @@ export function runFixtureTests(
       } else if (outputFile) {
         throw new TestError(`Fixture input file ${inputFile} does not exist.`);
       } else {
-        // Descend in next directory level
+        // Call recursively for next directory level
         runFixtureTests(dir, babelOptions, pluginOptions, testFormatting, [...parentDirs, testDir]);
       }
     }

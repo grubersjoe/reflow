@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-reflow",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Babel plugin to transpile Flow code to TypeScript",
   "author": "Jonathan Gruber <gruberjonathan@gmail.com>",
   "license": "MIT",
@@ -89,7 +89,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "prettier --check 'src/**/*' './*.{js,json,md}' && yarn lint"
+      "pre-commit": "prettier-reflow --check 'src/**/*' './*.{js,json,md}' && yarn lint"
     }
   }
 }
