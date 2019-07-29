@@ -3,8 +3,8 @@ import { parse } from '@babel/parser';
 import { File, Comment, Decorator } from '@babel/types';
 import prettier, { Options as PrettierOptions } from 'prettier-reflow';
 
-import { ReflowOptions } from '..';
-import { getParserPlugins } from './options';
+import { ReflowOptions } from '../../plugin';
+import { getParserPlugins } from '../../plugin/util/options';
 import { logError } from '../../util/log';
 
 export const BLANK_LINE = /^[ \t]*$/;

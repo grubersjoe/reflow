@@ -1,7 +1,7 @@
 import { existsSync, lstatSync } from 'fs';
 import { extname } from 'path';
 
-import { logError } from '../util/log';
+import { logError } from '../../util/log';
 
 const VALID_SOURCE_FILETYPES = ['.js', '.jsx'];
 

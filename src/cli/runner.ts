@@ -5,10 +5,10 @@ import { extname, resolve } from 'path';
 
 import { FileTypes } from '../plugin/util/file';
 import { logError, printRuler } from '../util/log';
-import { formatOutputCode } from '../plugin/util/format';
+import { formatOutputCode } from './util/format';
 import { getTransformOptions } from '../plugin/util/options';
 
-import { ReflowOptions } from '../plugin/';
+import { ReflowOptions } from '../plugin';
 import { isValidSource } from './util';
 import { CommandLineArgs, DEFAULT_EXCLUDE_DIRECTORIES, DEFAULT_INCLUDE_PATTERN } from '.';
 

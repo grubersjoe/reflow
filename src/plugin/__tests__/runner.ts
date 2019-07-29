@@ -8,7 +8,7 @@ import startCase from 'lodash/startCase';
 
 import { ReflowOptions } from '..';
 import { relativePath as relPath } from '../util/file';
-import { BLANK_LINE, LINE_BREAK, formatOutputCode } from '../util/format';
+import { BLANK_LINE, LINE_BREAK, formatOutputCode } from '../../cli/util/format';
 import { getParserPlugins } from '../util/options';
 
 const INPUT_FIXTURE_GLOB = 'input.js';

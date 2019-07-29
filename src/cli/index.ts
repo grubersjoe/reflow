@@ -1,7 +1,6 @@
 import program, { Command } from 'commander';
 
 import pkg from '../../package.json';
-import help from './help.json';
 
 import { ReflowOptions } from '../plugin';
 import { toArray, validateArgs } from './util';
@@ -24,6 +23,15 @@ function collectArgs(program: Command): CommandLineArgs {
     sources: program.args,
   }) as CommandLineArgs;
 }
+
+const help = {
+  dryRun: 'Perform a trial run printing to stdout instead of writing a file',
+  excludeDirs: 'List of recursively excluded directories',
+  includePattern: 'Set the glob pattern for input files',
+  replaceDecorators:
+    'Replace class @decorators with wrapped function calls to avoid TypeScript errors',
+  replace: 'Process files in-place instead of creating new TS files next to the original JS files.',
+};
 
 // Define the CLI interface
 program
