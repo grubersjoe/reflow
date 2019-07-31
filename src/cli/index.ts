@@ -25,21 +25,26 @@ function collectArgs(program: Command): CommandLineArgs {
 }
 
 const help = {
-  dryRun: 'Perform a trial run printing to stdout instead of writing a file',
-  excludeDirs: 'List of recursively excluded directories',
-  includePattern: 'Set the glob pattern for input files',
+  dryRun: 'perform a trial run printing to stdout instead of writing a file',
+  excludeDirs: 'comma-separated list of directories to recursively exclude',
+  includePattern: 'set the glob pattern for input files',
   replaceDecorators:
-    'Replace class @decorators with wrapped function calls to avoid TypeScript errors',
-  replace: 'Process files in-place instead of creating new TS files next to the original JS files.',
+    'replace class @decorators with wrapped function calls to avoid TypeScript errors',
+  replace: 'process files in-place instead of creating new TS files next to the original JS files',
 };
 
 // Define the CLI interface
 program
   .version(pkg.version)
-  .description('Reflow')
+  .description('REFLOW - Flow to TypeScript converter')
   .usage('[OPTION]... <FILES OR DIRECTORIES ...>')
   .option('-d, --dry-run', help.dryRun)
-  .option('-e, --exclude-dirs <dirs ...>', help.excludeDirs, toArray, DEFAULT_EXCLUDE_DIRECTORIES)
+  .option(
+    '-e, --exclude-dirs <pattern ...>',
+    help.excludeDirs,
+    toArray,
+    DEFAULT_EXCLUDE_DIRECTORIES,
+  )
   .option('-i, --include-pattern <pattern>', help.includePattern, DEFAULT_INCLUDE_PATTERN)
   .option('-r, --replace', help.replace)
   .option('-D, --replace-decorators', help.replaceDecorators, false);
