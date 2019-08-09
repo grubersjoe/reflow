@@ -5,7 +5,6 @@ import prettier, { Options as PrettierOptions } from 'prettier-reflow';
 
 import { ReflowOptions } from '../../plugin';
 import { getParserPlugins } from '../../plugin/util/options';
-import { logError } from '../../util/log';
 
 export const BLANK_LINE = /^[ \t]*$/;
 export const LINE_BREAK = /\r?\n/;
@@ -165,7 +164,7 @@ export function formatOutputCode(
   outputCode: string,
   originalCode: string,
   pluginOptions: ReflowOptions,
-): string | false {
+): string | Error {
   try {
     // The aim of the first Prettier run is to format the original and the output
     // code as similar as possible by forcing consistent line wraps. To do so an
@@ -199,9 +198,6 @@ export function formatOutputCode(
 
     return outputCode;
   } catch (error) {
-    logError('Exception while formatting generated code. Skipping.', 4);
-    logError(error.message, 4);
-
-    return false;
+    return error as Error;
   }
 }

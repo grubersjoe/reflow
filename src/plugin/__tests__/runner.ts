@@ -96,7 +96,7 @@ export function runFixtureTests(
               ? formatOutputCode(babelOutput.code, String(readFileSync(inputFile)), pluginOptions)
               : babelOutput.code;
 
-            if (!outputCode) {
+            if (outputCode instanceof Error) {
               throw new Error('Code generation or formatting failed.');
             }
 

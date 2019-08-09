@@ -64,7 +64,9 @@ export function transpileFiles(args: CommandLineArgs): string[] {
           const originalCode = String(readFileSync(inputFile));
           const formattedOutput = formatOutputCode(out.code, originalCode, pluginOptions);
 
-          if (!formattedOutput) {
+          if (formattedOutput instanceof Error) {
+            logError(`${inputFile} could not be formatted. Skipping.`, 4);
+            logError(formattedOutput.message, 4);
             return;
           }
 
