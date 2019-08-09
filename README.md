@@ -93,6 +93,7 @@ features in TypeScript below.
 
 | Type                    | Flow                           | TypeScript                          |
 | ----------------------- | ------------------------------ | ----------------------------------- |
+| Any type                | `any`                          | `any`                               |
 | Array type              | `Array<number>`                | `Array<number>`                     |
 | Boolean literal type    | `true`                         | `true`                              |
 | Boolean type            | `boolean`                      | `boolean`                           |
@@ -144,7 +145,7 @@ features in TypeScript below.
 | <s>Subtype</s>      | _deprecated_          | –                  |
 | <s>Supertype</s>    | _deprecated_          | –                  |
 
-<small><sup>\*</sup> </small>
+<small><sup>\*</sup></small>
 
 ### Declarations
 
