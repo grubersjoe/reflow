@@ -25,19 +25,20 @@ function collectArgs(program: Command): CommandLineArgs {
 }
 
 const help = {
-  dryRun: 'perform a trial run printing to stdout instead of writing a file',
-  excludeDirs: 'comma-separated list of directories to recursively exclude',
-  includePattern: 'set the glob pattern for input files',
+  dryRun: 'Perform a trial run printing to stdout instead of writing a file',
+  excludeDirs: 'Comma-separated list of directories to recursively exclude',
+  includePattern: 'Set the glob pattern for input files',
   replaceDecorators:
-    'replace class @decorators with wrapped function calls to avoid TypeScript errors',
-  replace: 'process files in-place instead of creating new TS files next to the original JS files',
+    'Replace class @decorators with wrapped function calls to avoid TypeScript errors',
+  replace: 'Process files in-place instead of creating new TS files next to the original JS files',
 };
 
 // Define the CLI interface
 program
-  .version(pkg.version)
+  .version(pkg.version, '-v', 'Output the version number')
   .description('REFLOW - Flow to TypeScript converter')
   .usage('[OPTION]... <FILES OR DIRECTORIES ...>')
+  .helpOption('-h, --help', 'Output ussage information')
   .option('-d, --dry-run', help.dryRun)
   .option(
     '-e, --exclude-dirs <pattern ...>',
