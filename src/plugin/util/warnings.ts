@@ -17,14 +17,17 @@ export function logWarning(
     throw new UnexpectedError(`No source location given for warning ${warning.message}`);
   }
 
-  // Surpress the tirade of ^^^s in output
-  location.start.column = undefined;
+  let message = `\n  ${chalk.bold.yellowBright('Warning')}: ${warning.message}`;
+
+  if (warning.see) {
+    message = message.concat(`\n    See: ${warning.see}`);
+  }
 
   const frame = codeFrameColumns(code, location, {
-    highlightCode: true,
-    message: `${chalk.bold.yellowBright('Warning')}: ${warning.message}\n   See: ${warning.see}\n`,
+    message,
     linesAbove: 2,
-    linesBelow: 2,
+    linesBelow: 0,
+    highlightCode: true,
   });
 
   console.log(`\n${frame}\n`);
@@ -63,5 +66,8 @@ export const WARNINGS = {
   opaqueType: {
     message: `Flow's Opaque type is not expressible in TypeScript and will be replaced with a type alias. Subtyping constraints will be lost!`,
     see: `https://github.com/Microsoft/TypeScript/issues/202`,
+  },
+  unsupportedUtility: {
+    message: `Flow's $ObjMap, $ObjMapi, $Rest, $TupleMap and the depcreated $Supertype and $Subtype are not supported by Reflow. These types will not be transpiled and need to be handled by hand.`,
   },
 };

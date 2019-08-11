@@ -15,6 +15,7 @@ import {
 import { NodePath } from '@babel/traverse';
 
 import { ConverterState } from '../types';
+import { logWarning } from '../util/warnings';
 import {
   convertCallUtility,
   convertClassUtil,
@@ -93,6 +94,22 @@ export function convertGenericTypeAnnotation(
 
         case 'Class':
           return convertClassUtil(typeParameters, path);
+
+        // Unsupported utility types
+        case '$ObjMap':
+        case '$ObjiMap':
+        case '$Rest':
+        case '$TupleMap':
+        case '$Subtype':
+        case '$Supertype': {
+          logWarning(
+            {
+              message: `The utility type ${id.name} is not supported by Reflow and will be retained in the output. Please fix this manually.`,
+            },
+            state.file.code,
+            node.loc,
+          );
+        }
       }
     }
 
