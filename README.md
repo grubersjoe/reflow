@@ -6,8 +6,6 @@
 [![CircleCI](https://circleci.com/gh/grubersjoe/reflow.svg?style=shield)](https://circleci.com/gh/grubersjoe/reflow)
 [![Coverage](https://coveralls.io/repos/github/grubersjoe/reflow/badge.svg?branch=master)](https://coveralls.io/github/grubersjoe/reflow?branch=master)
 
-**This is still in an early stage and may break anytime!**
-
 Reflow enables you to migrate a whole Flow based project to TypeScript by transpiling the Flow type
 annotations to equivalent TypeScript code. While this reduces the effort to move a large code base
 to TypeScript drastically, it is still likely that you will need to _manually_ fix new type errors
