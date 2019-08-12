@@ -147,16 +147,15 @@ features in TypeScript below.
 
 ### Declarations
 
-| Declaration              | Flow                                  | TypeScript                                               |
-| ------------------------ | ------------------------------------- | -------------------------------------------------------- |
-| Declare ES module export | `declare export default () => string` | `const _default: () => string; export default _default;` |
-| Declare class            | `declare class C {}`                  | `declare class C {}`                                     |
-| Declare function         | `declare function f(number): any`     | `declare function f(p: number): any`                     |
-| Declare interface        | `declare interface I {}`              | `declare interface I {}`                                 |
-| Declare module           | `declare module 'esmodule' {}`        | `declare module 'esmodule' {}`                           |
-| Declare module statement | `declare var v: string`               | `var v: string`                                          |
-| Declare type alias       | `declare type T: number`              | `declare type T = number`                                |
-| Declare variable         | `declare var v: any`                  | `declare var v: any`                                     |
+| Declaration | Flow                                  | TypeScript                                               |
+| ----------- | ------------------------------------- | -------------------------------------------------------- |
+| Class       | `declare class C {}`                  | `declare class C {}`                                     |
+| Export      | `declare export default () => string` | `const _default: () => string; export default _default;` |
+| Function    | `declare function f(number): any`     | `declare function f(p: number): any`                     |
+| Interface   | `declare interface I {}`              | `declare interface I {}`                                 |
+| Module      | `declare module 'esmodule' {}`        | `declare module 'esmodule' {}`                           |
+| Type alias  | `declare type T = number`             | `declare type T = number`                                |
+| Variable    | `declare var v: any`                  | `declare var v: any`                                     |
 
 Unsupported: CommonJS export declarations.
 
