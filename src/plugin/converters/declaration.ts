@@ -99,7 +99,7 @@ function createClassBody(node: ObjectTypeAnnotation, state: ConverterState): Cla
 export function convertDeclareClass(
   node: DeclareClass,
   state: ConverterState,
-  declare: boolean = true,
+  declare = true,
 ): ClassDeclaration {
   const classDec = classDeclaration(node.id, null, createClassBody(node.body, state));
 
@@ -123,7 +123,7 @@ export function convertDeclareClass(
 export function convertDeclareFunction(
   node: DeclareFunction,
   state: ConverterState,
-  declare: boolean = true,
+  declare = true,
 ): TSDeclareFunction {
   const { id } = node;
   let functionDec: TSDeclareFunction | null = null;
@@ -150,7 +150,7 @@ export function convertDeclareFunction(
 export function convertDeclareInterface(
   node: DeclareInterface,
   state: ConverterState,
-  declare: boolean = true,
+  declare = true,
 ): TSInterfaceDeclaration {
   const interfaceDec = convertInterfaceDeclaration(node, state);
   interfaceDec.declare = declare;
