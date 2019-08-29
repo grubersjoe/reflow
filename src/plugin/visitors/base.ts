@@ -12,7 +12,12 @@ import { convertClassDeclaration } from '../converters/class';
 import { convertImportDeclaration, convertImportSpecifier } from '../converters/module';
 import { convertOptionalFunctionParameters } from '../converters/function';
 
-export type BaseVisitorNode = ClassDeclaration & FunctionLike & ImportDeclaration & ImportSpecifier;
+export type BaseVisitorNodes = ArrowFunctionExpression &
+  ClassDeclaration &
+  FunctionDeclaration &
+  FunctionExpression &
+  ImportDeclaration &
+  ImportSpecifier;
 
 type FunctionLike = ArrowFunctionExpression | FunctionDeclaration | FunctionExpression;
 

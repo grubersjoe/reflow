@@ -3,7 +3,7 @@ import { NodePath, Scope, VisitNodeFunction } from '@babel/traverse';
 import { File, Flow, JSX, Program } from '@babel/types';
 
 import { ReflowOptions } from './index';
-import { BaseVisitorNode } from './visitors/base';
+import { BaseVisitorNodes } from './visitors/base';
 
 // Missing in @types/babel__core
 export interface PluginPass<T> {
@@ -25,6 +25,6 @@ export interface PluginPass<T> {
   opts: TransformOptions & ReflowOptions;
 }
 
-export type VisitorNodes = BaseVisitorNode & Flow & JSX & Program;
+export type VisitorNodes = BaseVisitorNodes & Flow & JSX & Program;
 export type VisitorFunction<T> = VisitNodeFunction<PluginPass<T>, T>;
-export type ConverterState = PluginPass<BaseVisitorNode | Flow>;
+export type ConverterState = PluginPass<BaseVisitorNodes | Flow>;
