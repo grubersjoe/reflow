@@ -1,7 +1,7 @@
 # Reflow
 
 > Babel plugin to transpile a [Flow](https://flow.org/) typed codebase to
-> [TypeScript](https://www.typescriptlang.org/).
+> [TypeScript](https://www.typescriptlang.org/) with CLI wrapper.
 
 [![CircleCI](https://circleci.com/gh/grubersjoe/reflow.svg?style=shield)](https://circleci.com/gh/grubersjoe/reflow)
 [![Coverage](https://coveralls.io/repos/github/grubersjoe/reflow/badge.svg?branch=master)](https://coveralls.io/github/grubersjoe/reflow?branch=master)
