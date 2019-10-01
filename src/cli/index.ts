@@ -21,7 +21,7 @@ export const DEFAULT_INCLUDE_PATTERN = '**/*.{js,jsx}';
 function collectArgs(program: Command): CommandLineArgs {
   return Object.assign({}, program.opts(), {
     sources: program.args,
-  }) as CommandLineArgs;
+  });
 }
 
 const help = {
@@ -53,7 +53,7 @@ program
 program.on('--help', () => {
   console.log('\nExamples:');
   console.log(`  $ reflow --replace src/`);
-  console.log(`  $ reflow -d -i '**/__tests__/**/*.{js,jsx} src/`);
+  console.log(`  $ reflow -d -i '**/__tests__/**/*.{js,jsx}' src/`);
   console.log(`  $ reflow -exclude-patterns '**/__tests__/**/*','fixtures/*.js' src/`);
 });
 

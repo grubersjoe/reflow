@@ -21,7 +21,7 @@ export function convertReactImports(path: NodePath<ImportDeclaration>): void {
       const { local, imported } = specifier;
 
       if (TYPE_IMPORT_MAP.has(local.name)) {
-        path.scope.rename(local.name, TYPE_IMPORT_MAP.get(local.name) as string);
+        path.scope.rename(local.name, TYPE_IMPORT_MAP.get(local.name));
         imported.name = local.name;
       } else if (TYPE_IMPORT_MAP.has(imported.name)) {
         imported.name = TYPE_IMPORT_MAP.get(imported.name) as string;
