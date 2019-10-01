@@ -1,6 +1,4 @@
 import {
-  BaseNode,
-  FlowType,
   GenericTypeAnnotation,
   TSIndexedAccessType,
   TSTypeAnnotation,
@@ -11,6 +9,8 @@ import {
   isIdentifier,
   tsTypeAnnotation,
   tsTypeReference,
+  TypeAnnotation,
+  FunctionTypeParam,
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
@@ -40,12 +40,8 @@ type TSGenericTypeAnnotation =
   | TSTypeQuery
   | TSTypeReference;
 
-interface TypeAnnotationWithFlowType extends BaseNode {
-  typeAnnotation: FlowType;
-}
-
 export function convertTypeAnnotation(
-  node: TypeAnnotationWithFlowType,
+  node: FunctionTypeParam | TypeAnnotation,
   state: ConverterState,
 ): TSTypeAnnotation {
   return tsTypeAnnotation(convertFlowType(node.typeAnnotation, state));

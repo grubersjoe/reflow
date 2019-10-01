@@ -7,5 +7,6 @@
   // Required to make Flow checks work
   "javascript.validate.enable": false,
   "typescript.tsdk": "node_modules/typescript/lib",
-  "cSpell.enabled": false
+  "cSpell.enabled": false,
+  "eslint.enable": true
 }

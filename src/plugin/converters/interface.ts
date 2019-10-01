@@ -1,17 +1,15 @@
 import {
-  BaseNode,
   DeclareInterface,
-  Identifier,
   InterfaceDeclaration,
   InterfaceExtends,
   InterfaceTypeAnnotation,
   TSExpressionWithTypeArguments,
-  TSInterfaceDeclaration,
-  TSTypeLiteral,
-  TypeParameterDeclaration,
   tsExpressionWithTypeArguments,
   tsInterfaceBody,
+  TSInterfaceDeclaration,
   tsInterfaceDeclaration,
+  TSTypeLiteral,
+  TypeAlias,
 } from '@babel/types';
 
 import { ConverterState } from '../types';
@@ -22,10 +20,7 @@ import {
   convertTypeParameterInstantiation,
 } from './type-parameter';
 
-export interface TypeAliasForInterfaceType extends BaseNode {
-  type: 'TypeAlias';
-  id: Identifier;
-  typeParameters: TypeParameterDeclaration | null;
+export interface TypeAliasForInterfaceType extends TypeAlias {
   right: InterfaceTypeAnnotation;
 }
 

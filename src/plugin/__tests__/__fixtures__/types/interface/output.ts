@@ -46,8 +46,8 @@ interface InterfaceWithVariance {
 }
 
 interface InterfaceWithCallable {
-  (x: number, y: number): string
-  <T>(p: Date): T
+  (x: number, y: number): string;
+  <T>(p: Date): T;
 }
 
 function functionWithInterfaceParameter(i: InterfaceSimple) {

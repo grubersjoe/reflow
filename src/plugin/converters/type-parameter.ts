@@ -15,9 +15,7 @@ import { WARNINGS, logWarning } from '../util/warnings';
 import { convertFlowType } from './flow-type';
 
 export function convertTypeParameter(node: TypeParameter, state: ConverterState): TSTypeParameter {
-  const typeParameter = tsTypeParameter();
-
-  typeParameter.name = node.name;
+  const typeParameter = tsTypeParameter(undefined, undefined, node.name || '');
 
   if (node.bound) {
     typeParameter.constraint = convertFlowType(node.bound.typeAnnotation, state);

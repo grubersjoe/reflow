@@ -1,4 +1,6 @@
 [ignore]
+<PROJECT_ROOT>/src/plugin/__tests__/__fixtures__/formatting/flow-directive/input.js
+<PROJECT_ROOT>/src/plugin/__tests__/__fixtures__/formatting/react/input.js
 
 [include]
 **/__fixtures__/**/*.js

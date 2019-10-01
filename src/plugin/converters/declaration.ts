@@ -76,7 +76,7 @@ function createClassBody(node: ObjectTypeAnnotation, state: ConverterState): Cla
         const method = tsDeclareMethod(null, key, typeParameters, params, returnType);
 
         method.optional = prop.optional;
-        method.static = prop.static;
+        method.static = Boolean(prop.static);
 
         return method;
       } else {
@@ -84,7 +84,7 @@ function createClassBody(node: ObjectTypeAnnotation, state: ConverterState): Cla
 
         classProp.typeAnnotation = tsTypeAnnotation(convertFlowType(prop.value, state));
         classProp.optional = prop.optional;
-        classProp.static = prop.static;
+        classProp.static = Boolean(prop.static);
 
         return classProp;
       }

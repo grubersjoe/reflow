@@ -1,10 +1,10 @@
 import {
   Flow,
+  isInterfaceTypeAnnotation,
   TSInterfaceDeclaration,
   TSTypeAliasDeclaration,
-  TypeAlias,
-  isInterfaceTypeAnnotation,
   tsTypeAliasDeclaration,
+  TypeAlias,
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
