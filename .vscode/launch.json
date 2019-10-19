@@ -8,7 +8,7 @@
       "args": [
         "--dry-run",
         "--replace-decorators",
-        "src/plugin/__tests__/__fixtures__/types/utility/element-type/input.js"
+        "src/plugin/__tests__/__fixtures__/types/utility/rest/input.js"
       ],
       "cwd": "${workspaceRoot}",
       "env": {

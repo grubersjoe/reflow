@@ -26,6 +26,7 @@ import {
   convertNonMaybeTypeUtil,
   convertPropertyTypeUtil,
   convertReadOnlyArrayUtil,
+  convertRestUtil,
   convertShapeUtil,
 } from './utility';
 import { replaceNonPrimitiveType } from '../optimizers/non-primitive-types';
@@ -85,6 +86,9 @@ export function convertGenericTypeAnnotation(
         case '$ReadOnlyArray':
           return convertReadOnlyArrayUtil(typeParameters);
 
+        case '$Rest':
+          return convertRestUtil(typeParameters);
+
         case '$Shape':
           return convertShapeUtil(typeParameters);
 
@@ -92,12 +96,11 @@ export function convertGenericTypeAnnotation(
           return convertClassUtil(typeParameters, path);
 
         // Unsupported utility types
-        case '$ObjMap':
         case '$ObjiMap':
-        case '$Rest':
-        case '$TupleMap':
+        case '$ObjMap':
         case '$Subtype':
-        case '$Supertype': {
+        case '$Supertype':
+        case '$TupleMap': {
           logWarning(
             {
               message: `The utility type ${id.name} is not supported by Reflow and will be retained in the output. Please fix this manually.`,

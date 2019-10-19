@@ -1,22 +1,27 @@
 import {
   Flow,
-  TSIndexedAccessType,
-  TSTypeLiteral,
-  TSTypeOperator,
-  TSTypeParameterInstantiation,
-  TSTypeQuery,
-  TSTypeReference,
   identifier,
   isGenericTypeAnnotation,
   isIdentifier,
+  isTSPropertySignature,
   isTSTypeLiteral,
   isTSTypeQuery,
   isTSTypeReference,
   isTypeAnnotation,
+  stringLiteral,
+  TSIndexedAccessType,
   tsIndexedAccessType,
+  tsLiteralType,
+  TSTypeLiteral,
+  TSTypeOperator,
   tsTypeOperator,
+  tsTypeParameterInstantiation,
+  TSTypeParameterInstantiation,
   tsTypeQuery,
+  TSTypeQuery,
   tsTypeReference,
+  TSTypeReference,
+  tsUnionType,
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
@@ -103,6 +108,26 @@ export const convertPropertyTypeUtil: UtilConvertor<TSIndexedAccessType> = typeP
 
 export const convertReadOnlyArrayUtil: UtilConvertor<TSTypeReference> = typeParameters =>
   tsTypeReference(identifier('ReadonlyArray'), typeParameters);
+
+export const convertRestUtil: UtilConvertor<TSTypeReference> = typeParameters => {
+  const [typeName, restArg] = typeParameters.params;
+
+  const omitArg = isTSTypeLiteral(restArg)
+    ? tsUnionType(
+        restArg.members.map(typeElem => {
+          return tsLiteralType(
+            stringLiteral(
+              isTSPropertySignature(typeElem) && isIdentifier(typeElem.key)
+                ? typeElem.key.name
+                : '',
+            ),
+          );
+        }),
+      )
+    : restArg;
+
+  return tsTypeReference(identifier('Omit'), tsTypeParameterInstantiation([typeName, omitArg]));
+};
 
 export const convertShapeUtil: UtilConvertor<TSTypeReference> = typeParameters =>
   tsTypeReference(identifier('Partial'), typeParameters);
