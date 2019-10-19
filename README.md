@@ -89,36 +89,36 @@ need to be handled while transpiling the types. A few types are not equivalently
 TypeScript and will result in a small loss of type information. See the list of unsupported Flow
 features in TypeScript below.
 
-| Type                    | Flow                           | TypeScript                          |
-| ----------------------- | ------------------------------ | ----------------------------------- |
-| Any type                | `any`                          | `any`                               |
-| Array type              | `Array<number>`                | `Array<number>`                     |
-| Boolean literal type    | `true`                         | `true`                              |
-| Boolean type            | `boolean`                      | `boolean`                           |
-| Empty type              | `empty`                        | `never`                             |
-| Exact object type       | `{\| p: number \|}`            | `{ p: number }`                     |
-| Function type           | `(string, {}) => number`       | `(p1: string, p2: {}) => number`    |
-| Generic type annotation | `let v: <FlowType>`            | `let v: <TSType>`                   |
-| Generics                | `type Generic<T: Super> = T`   | `type Generic<T extends Super> = T` |
-| Interface type          | `interface { +p: number }`     | `interface { readonly p: number }`  |
-| Intersection type       | `type Intersection = T1 & T2`  | `type Intersection = T1 & T2`       |
-| Mixed type              | `mixed`                        | `unknown`                           |
-| Null literal type       | `null`                         | `null`                              |
-| Nullable type (Maybe)   | `?number`                      | `number \| null \| undefined`       |
-| Number literal type     | `42`                           | `42`                                |
-| Number type             | `number`                       | `number`                            |
-| Object type             | `{ [string]: number }`         | `{ [key: string]: number }`         |
-| Opaque type             | `opaque type Opaque = number`  | `type Opaque = number`              |
-| String literal type     | `'literal'`                    | `'literal'`                         |
-| String type             | `string`                       | `string`                            |
-| This type               | `this`                         | `this`                              |
-| Tuple type              | `[Date, number]`               | `[Date, number]`                    |
-| Type alias              | `type Type = <FlowType>`       | `type Type = <TSType>`              |
-| Type casting            | `(t: T)`                       | `(t as T)`                          |
-| Type exports / imports  | `import type T from './types'` | `import T from './types`            |
-| Typeof type             | `typeof undefined`             | `undefined`                         |
-| Union type              | `number \| null`               | `number \| null`                    |
-| Void type               | `void`                         | `void`                              |
+| Type                    | Flow                           | TypeScript                           |
+| ----------------------- | ------------------------------ | ------------------------------------ |
+| Any type                | `any`                          | `any`                                |
+| Array type              | `Array<number>`                | `Array<number>`                      |
+| Boolean literal type    | `true`                         | `true`                               |
+| Boolean type            | `boolean`                      | `boolean`                            |
+| Empty type              | `empty`                        | `never`                              |
+| Exact object type       | `{\| p: number \|}`            | `{ p: number }`                      |
+| Function type           | `(string, {}) => number`       | `(p1: string, p2: {}) => number`     |
+| Generic type annotation | `let v: <FlowType>`            | `let v: <TSType>`                    |
+| Generics                | `type Generic<T: Super> = T`   | `type Generic<T extends Super> = T`  |
+| Interface type          | `interface I { +p: number }`   | `interface I { readonly p: number }` |
+| Intersection type       | `type Intersection = T1 & T2`  | `type Intersection = T1 & T2`        |
+| Mixed type              | `mixed`                        | `unknown`                            |
+| Null literal type       | `null`                         | `null`                               |
+| Nullable type (Maybe)   | `?number`                      | `number \| null \| undefined`        |
+| Number literal type     | `42`                           | `42`                                 |
+| Number type             | `number`                       | `number`                             |
+| Object type             | `{ [string]: number }`         | `{ [key: string]: number }`          |
+| Opaque type             | `opaque type Opaque = number`  | `type Opaque = number`               |
+| String literal type     | `'literal'`                    | `'literal'`                          |
+| String type             | `string`                       | `string`                             |
+| This type               | `this`                         | `this`                               |
+| Tuple type              | `[Date, number]`               | `[Date, number]`                     |
+| Type alias              | `type Type = <FlowType>`       | `type Type = <TSType>`               |
+| Type casting            | `(t: T)`                       | `(t as T)`                           |
+| Type exports / imports  | `import type T from './types'` | `import T from './types`             |
+| Typeof type             | `typeof undefined`             | `undefined`                          |
+| Union type              | `number \| null`               | `number \| null`                     |
+| Void type               | `void`                         | `void`                               |
 
 ### Utility types
 
