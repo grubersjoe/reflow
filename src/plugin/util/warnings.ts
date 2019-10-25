@@ -68,6 +68,6 @@ export const WARNINGS = {
     see: `https://github.com/Microsoft/TypeScript/issues/202`,
   },
   unsupportedUtility: {
-    message: `Flow's $ObjMap, $ObjMapi, $Rest, $TupleMap and the depcreated $Supertype and $Subtype are not supported by Reflow. These types will not be transpiled and need to be handled by hand.`,
+    message: `Flow's $ObjMap, $ObjMapi, $TupleMap and the depcreated $Supertype and $Subtype are not supported by Reflow. These types will not be transpiled and need to be handled by hand.`,
   },
 };
