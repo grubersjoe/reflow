@@ -29,6 +29,26 @@ tool:
 See this [repository](https://github.com/niieani/typescript-vs-flowtype) for an excellent overview
 of the differences and similarities of Flow and Typescript.
 
+## Why another plugin?
+
+Of course, I am aware that other approaches exist to translate flow to TypeScript. For instance,
+there is
+[Kiikurage/babel-plugin-flow-to-typescript](https://github.com/Kiikurage/babel-plugin-flow-to-typescript)
+and [Khan/flow-to-ts](https://github.com/Kiikurage/babel-plugin-flow-to-typescript). When I started
+this project in the course of my master thesis in February 2019, the development of the first plugin
+seemed inactive and the second one did not exist yet. Therefore this plugin was developed to solve
+the given problem of the thesis in practice.
+
+**Advantages of Reflow:**
+
+- can be used either as standalone Babel plugin or through the included CLI to transpile whole code
+  bases
+- well tested with high code coverage
+- proven to work with real React based projects (two code bases with 27 and 41 kLOC respectively
+  were successfully migrated)
+- generates well formatted output based on Prettier with focus on placing comments at the correct
+  position (Babel fails to do so)
+
 ## Installation
 
 ```
