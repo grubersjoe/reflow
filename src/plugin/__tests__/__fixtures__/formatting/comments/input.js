@@ -18,10 +18,26 @@ function m(x: number): ?number {
   return null;
 }
 
+if (
+  window && // bad comment
+  true &&
+  false /* bad comment */
+) {
+  console.log('foo');
+}
+
 // eslint-disable-next-line
 interface Interface {
   // http://www.w3.org/2000/svg
   p: boolean; //comment without space
+}
+
+function badFunction(
+  a: {},
+  b: ?number, // bad comment
+  c,
+) {
+  return c;
 }
 
 const StyledComponent = styled.div`

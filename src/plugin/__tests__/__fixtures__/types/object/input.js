@@ -117,6 +117,10 @@ type ObjectIndexerProperty = {
   [string]: number,
 };
 
+type ObjectIndexerPropertyWithName = {
+  [key: string]: number,
+};
+
 type ObjectIndexerPropertyWithUnsupportedKeyType = {
   [Date]: boolean,
 };

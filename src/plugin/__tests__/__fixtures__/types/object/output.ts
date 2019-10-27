@@ -96,6 +96,10 @@ type ObjectIndexerProperty = {
   [key: string]: number;
 };
 
+type ObjectIndexerPropertyWithName = {
+  [key: string]: number;
+};
+
 type ObjectIndexerPropertyWithUnsupportedKeyType = {
   [key: number]: boolean;
   [key: string]: boolean;
