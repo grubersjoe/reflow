@@ -1,4 +1,6 @@
 const path = require('path');
+
+const nodeExternals = require('webpack-node-externals');
 const BannerPlugin = require('webpack').BannerPlugin;
 
 module.exports = (env, argv) => {
@@ -44,5 +46,6 @@ module.exports = (env, argv) => {
       extensions: ['.tsx', '.ts', '.js'],
     },
     target: 'node',
+    externals: [nodeExternals()], // Exclude node_modules from bundle
   };
 };
