@@ -1,16 +1,18 @@
 import {
+  FunctionTypeParam,
   GenericTypeAnnotation,
+  isIdentifier,
+  TSAnyKeyword,
+  tsAnyKeyword,
   TSIndexedAccessType,
   TSTypeAnnotation,
+  tsTypeAnnotation,
   TSTypeLiteral,
   TSTypeOperator,
   TSTypeQuery,
-  TSTypeReference,
-  isIdentifier,
-  tsTypeAnnotation,
   tsTypeReference,
+  TSTypeReference,
   TypeAnnotation,
-  FunctionTypeParam,
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
@@ -35,6 +37,7 @@ import { convertIdentifier } from './identifier';
 import { convertTypeParameterInstantiation } from './type-parameter';
 
 type TSGenericTypeAnnotation =
+  | TSAnyKeyword
   | TSIndexedAccessType
   | TSTypeLiteral
   | TSTypeOperator
@@ -96,18 +99,20 @@ export function convertGenericTypeAnnotation(
           return convertClassUtil(typeParameters, path);
 
         // Unsupported utility types
-        case '$ObjiMap':
         case '$ObjMap':
+        case '$ObjMapi':
         case '$Subtype':
         case '$Supertype':
         case '$TupleMap': {
           logWarning(
             {
-              message: `The utility type ${id.name} is not supported by Reflow and will be retained in the output. Please fix this manually.`,
+              message: `The utility type ${id.name} is not supported by Reflow and will be replaced by 'any'. Please fix this type manually afterwards.`,
             },
             state.file.code,
             node.loc,
           );
+
+          return tsAnyKeyword();
         }
       }
     }

@@ -142,26 +142,26 @@ features in TypeScript below.
 
 ### Utility types
 
-| Utility Type        | Flow                  | TypeScript         |
-| ------------------- | --------------------- | ------------------ |
-| Call                | `$Call<F, T...>`      | `ReturnType<F>`    |
-| Class               | `Class<T>`            | `typeof T`         |
-| Difference          | `$Diff<A, B>`         | `Omit<A, keyof B>` |
-| Element type        | `$ElementType<T, K>`  | `T[k]`             |
-| Exact               | `$Exact<T>`           | `T`                |
-| Existential type    | `*`                   | `any`              |
-| Keys                | `$Keys<T>`            | `keyof T`          |
-| None maybe type     | `$NonMaybeType<T>`    | `NonNullable<T>`   |
-| Object map          | `$ObjMap<T, F>`       | –                  |
-| Object map with key | `$ObjMapi<T, F>`      | –                  |
-| Property type       | `$PropertyType<T, k>` | `T[k]`             |
-| ReadOnly            | `$ReadOnly<T>`        | `Readonly<T>`      |
-| Rest                | `$Rest<A, B>`         | –                  |
-| Shape               | `$Shape<T>`           | `Partial<T>`       |
-| Tuple map           | `$TupleMap<T, F>`     | –                  |
-| Values              | `$Values<T>`          | `T[keyof T]`       |
-| <s>Subtype</s>      | _deprecated_          | –                  |
-| <s>Supertype</s>    | _deprecated_          | –                  |
+| Utility Type               | Flow                  | TypeScript                |
+| -------------------------- | --------------------- | ------------------------- |
+| Call                       | `$Call<F, T...>`      | `ReturnType<F>`           |
+| Class                      | `Class<T>`            | `typeof T`                |
+| Difference                 | `$Diff<A, B>`         | `Omit<A, keyof B>`        |
+| Element type               | `$ElementType<T, K>`  | `T[k]`                    |
+| Exact                      | `$Exact<T>`           | `T`                       |
+| Existential type           | `*`                   | `any`                     |
+| Keys                       | `$Keys<T>`            | `keyof T`                 |
+| None maybe type            | `$NonMaybeType<T>`    | `NonNullable<T>`          |
+| <s>Object map</s>          | `$ObjMap<T, F>`       | `any`                     |
+| <s>Object map with key</s> | `$ObjMapi<T, F>`      | `any`                     |
+| Property type              | `$PropertyType<T, k>` | `T[k]`                    |
+| ReadOnly                   | `$ReadOnly<T>`        | `Readonly<T>`             |
+| Rest                       | `$Rest<A, B>`         | `Omit<A, Union<keyof B>>` |
+| Shape                      | `$Shape<T>`           | `Partial<T>`              |
+| <s>Tuple map</s>           | `$TupleMap<T, F>`     | `any`                     |
+| Values                     | `$Values<T>`          | `T[keyof T]`              |
+| <s>Subtype</s>             | _deprecated_          | `any`                     |
+| <s>Supertype</s>           | _deprecated_          | `any`                     |
 
 <small><sup>\*</sup></small>
 

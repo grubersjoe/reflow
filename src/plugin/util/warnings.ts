@@ -67,7 +67,4 @@ export const WARNINGS = {
     message: `Flow's Opaque type is not expressible in TypeScript and will be replaced with a type alias. Subtyping constraints will be lost!`,
     see: `https://github.com/Microsoft/TypeScript/issues/202`,
   },
-  unsupportedUtility: {
-    message: `Flow's $ObjMap, $ObjMapi, $TupleMap and the depcreated $Supertype and $Subtype are not supported by Reflow. These types will not be transpiled and need to be handled by hand.`,
-  },
 };

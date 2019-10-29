@@ -75,7 +75,7 @@ describe('logWarning()', () => {
   });
 
   test('should log a warning', () => {
-    logWarning(WARNINGS.unsupportedUtility, code, loc);
+    logWarning(WARNINGS.opaqueType, code, loc);
     expect(consoleLog).toBeCalledTimes(1);
   });
 
