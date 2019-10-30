@@ -106,7 +106,7 @@ function copyComments(
  * the source to the output. Comments are also handled here, because Babel does
  * not reliably retain their position in the generated code. This approach
  * naively assumes that all code transformations will result in (roughly) the
- * same amount of lines. It iss not perfect, but the best I came up with and it
+ * same amount of lines. It is not perfect, but the best I came up with and it
  * seems to work reasonably well in practice.
  */
 export function syncBlankLinesAndComments(
