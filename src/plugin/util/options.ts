@@ -15,7 +15,6 @@ export function getTransformOptions(
   const defaultOptions: TransformOptions = {
     babelrc: false,
     comments: false,
-    compact: true,
     configFile: false,
     plugins: [[reflowPlugin, overwrites.pluginOptions]],
   };

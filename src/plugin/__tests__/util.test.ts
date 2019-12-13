@@ -7,7 +7,6 @@ import { logWarning, WARNINGS } from '../util/warnings';
 const defaultOptions: TransformOptions = {
   babelrc: false,
   comments: false,
-  compact: true,
   configFile: false,
   plugins: [[reflowPlugin, undefined]],
 };

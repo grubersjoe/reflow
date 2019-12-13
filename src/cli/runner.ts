@@ -62,23 +62,23 @@ export function transpileFiles(args: CommandLineArgs): string[] {
             : inputFile.replace(extname(inputFile), FileTypes.get(inputFile) || '.ts');
 
           const originalCode = String(readFileSync(inputFile));
-          const formattedOutput = formatOutputCode(out.code, originalCode, pluginOptions);
+          const output = formatOutputCode(out.code, originalCode, pluginOptions);
 
-          if (formattedOutput instanceof Error) {
+          if (output instanceof Error) {
             logError(`${inputFile} could not be formatted. Skipping.`, 4);
-            logError(formattedOutput.message, 4);
+            logError(output.message, 4);
             return;
           }
 
           if (dryRun) {
-            console.log(formattedOutput);
+            console.log(output);
             printRuler();
           } else {
             if (replace) {
               unlinkSync(inputFile);
             }
 
-            writeFileSync(outputFile, formattedOutput);
+            writeFileSync(outputFile, output);
             writtenFiles.push(outputFile);
           }
         }
