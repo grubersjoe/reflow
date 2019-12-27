@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-reflow",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Babel plugin to transpile Flow code to TypeScript",
   "author": "Jonathan Gruber <gruberjonathan@gmail.com>",
   "license": "MIT",
@@ -31,29 +31,29 @@
     "babel-plugin-flow-to-ts"
   ],
   "devDependencies": {
-    "@babel/preset-env": "^7.7.6",
-    "@babel/preset-typescript": "^7.7.4",
+    "@babel/preset-env": "^7.7.7",
+    "@babel/preset-typescript": "^7.7.7",
     "@types/babel__core": "^7.1.3",
-    "@types/jest": "^24.0.23",
-    "@types/node": "^12.12.17",
-    "@types/react": "^16.9.16",
-    "@typescript-eslint/eslint-plugin": "^2.11.0",
-    "@typescript-eslint/parser": "^2.11.0",
+    "@types/jest": "^24.0.25",
+    "@types/node": "^13.1.1",
+    "@types/react": "^16.9.17",
+    "@typescript-eslint/eslint-plugin": "^2.13.0",
+    "@typescript-eslint/parser": "^2.13.0",
     "babel-loader": "^8.0.6",
     "coveralls": "^3.0.9",
-    "eslint": "^6.7.2",
-    "flow-bin": "^0.113.0",
+    "eslint": "^6.8.0",
+    "flow-bin": "^0.114.0",
     "husky": "^3.1.0",
     "jest": "^24.9.0",
     "ts-jest": "^24.2.0",
-    "typescript": "^3.7.3",
-    "webpack": "^4.41.2",
+    "typescript": "^3.7.4",
+    "webpack": "^4.41.4",
     "webpack-cli": "^3.3.10",
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
     "@babel/code-frame": "^7.5.5",
-    "@babel/core": "^7.7.5",
+    "@babel/core": "^7.7.7",
     "@babel/plugin-proposal-decorators": "^7.7.4",
     "@babel/plugin-syntax-class-properties": "^7.7.4",
     "@babel/plugin-syntax-decorators": "^7.7.4",
@@ -74,14 +74,14 @@
     "prettier-reflow": "^1.18.2-2"
   },
   "resolutions": {
-    "@babel/core": "^7.6.0",
-    "@babel/types": "^7.6.0"
+    "@babel/core": "^7.7.0",
+    "@babel/types": "^7.7.0"
   },
   "scripts": {
     "build": "node --max_old_space_size=4096 ./node_modules/.bin/webpack --mode=production --progress",
     "clean": "rm -f build/*",
     "dev": "webpack -w",
-    "format": "prettier --write 'src/**/*' './*.{js,json,md}'",
+    "format": "prettier-reflow --write 'src/**/*' './*.{js,json,md}'",
     "lint": "eslint --max-warnings=0 'src/**/*.ts'",
     "postbuild": "chmod +x build/reflow.js",
     "prebuild": "yarn clean",
