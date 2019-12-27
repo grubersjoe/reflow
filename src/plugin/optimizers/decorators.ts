@@ -11,9 +11,9 @@ import { NodePath } from '@babel/core';
  * This is an *optional* feature and has been created to meet our specific
  * requirements at TeamShirts: It can be enabled by passing the
  * --replaceDecorators to Reflow. While TypeScript supports decorators, it's
- * not an easy task to correctly type them. Therefore we decided to remove them
- * and to pass the exported class as argument to the decorator function. So
- * this example code would be transformed as follows:
+ * not an easy task to correctly type them. Therefore we decided to remove
+ * decorators and to pass the exported class as argument to the decorator
+ * function. So this example code would be transformed as follows:
  *
  * @decorator
  * class C {}           =>    class C {}
