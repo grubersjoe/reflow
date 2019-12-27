@@ -1,4 +1,4 @@
-image: node:11
+image: node:12
 
 cache:
   key: 'node_modules-reflow'
