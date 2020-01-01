@@ -1,37 +1,23 @@
 # Reflow
 
-> Babel plugin to transpile a [Flow](https://flow.org/) typed codebase to
+> Babel plugin to transpile [Flow](https://flow.org/) types to
 > [TypeScript](https://www.typescriptlang.org/) with CLI wrapper.
 
 [![CircleCI](https://circleci.com/gh/grubersjoe/reflow.svg?style=shield)](https://circleci.com/gh/grubersjoe/reflow)
 [![Coverage](https://coveralls.io/repos/github/grubersjoe/reflow/badge.svg?branch=master)](https://coveralls.io/github/grubersjoe/reflow?branch=master)
 
+#### I would love to receive feedback whether this plugin worked for you :)!
+
 Reflow enables you to migrate a whole Flow based project to TypeScript by transpiling the Flow type
 annotations to equivalent TypeScript code. While this reduces the effort to move a large code base
-to TypeScript drastically, it is still likely that you will need to _manually_ fix new type errors
-afterwards. This program helps you with the tedious task to convert Flow syntax to TypeScript, but
-it can not magically fix type errors which occur after the migration.
-
-<!-- There are many possible reasons why you will probably face new type errors after executing this
-tool:
-
-- TypeScript is in certain aspects per se stricter than Flow (e. g. TS handles all objects as _exact
-  objects_ per default, Flow does not).
-- [DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped) contains type definitions
-  for far more libraries and frameworks than [Flow Typed](https://github.com/flow-typed/flow-typed).
-  So when you install type definitions, it is likely that this will reveal previously undetected
-  errors.
-- We have experienced that TypeScript seems to be able to infer more types, when using certain
-  libraries and their external type definitions (e. g. React components in combination with
-  [Styled Components](https://www.styled-components.com/))
-- The previously used Flow types _may_ prove to be inaccurate -->
-
-See this [repository](https://github.com/niieani/typescript-vs-flowtype) for an excellent overview
-of the differences and similarities of Flow and Typescript.
+to TypeScript drastically, it is still very likely that you will face new type errors after the
+migration due to the differences between Flow and TypeScript. See this
+[repository](https://github.com/niieani/typescript-vs-flowtype) for an excellent overview of the
+differences and similarities of Flow and Typescript.
 
 ## Why another plugin?
 
-Of course, I am aware that other approaches exist to translate flow to TypeScript. For instance,
+Of course, I am aware that other approaches exist to translate Flow to TypeScript. For instance,
 there is
 [Kiikurage/babel-plugin-flow-to-typescript](https://github.com/Kiikurage/babel-plugin-flow-to-typescript)
 and [Khan/flow-to-ts](https://github.com/Kiikurage/babel-plugin-flow-to-typescript). When I started
@@ -39,7 +25,7 @@ this project in the course of my master thesis in February 2019, the development
 seemed inactive and the second one did not exist yet. Therefore this plugin was developed to solve
 the given problem of the thesis in practice.
 
-**Advantages of Reflow:**
+**Advantages of Reflow**
 
 - can be used either as standalone Babel plugin or through the included CLI to transpile whole code
   bases
@@ -59,9 +45,9 @@ yarn add --dev babel-plugin-reflow
 
 ### CLI
 
-This package includes a small CLI wrapper for the Babel plugin to recursively transpile a whole
-project directory. Install the package as project dependency and run `npx reflow` afterwards.
-Alternatively you might want to install Reflow globally so you can simply type `reflow`:
+This package includes a small CLI wrapper for the Babel plugin to recursively transpile whole
+directories or single files. Install the package as project dependency and run `npx reflow`
+afterwards. Alternatively you might want to install Reflow globally so you can simply type `reflow`:
 
 ```shell
 yarn global add babel-plugin-reflow
@@ -74,20 +60,20 @@ $ npx reflow --help
 
 Usage: reflow [OPTION]... <FILES OR DIRECTORIES ...>
 
-Reflow
+REFLOW - Flow to TypeScript converter
 
 Options:
-  -V, --version                    output the version number
-  -d, --dry-run                    Perform a trial run printing to stdout instead of writing a file
-  -e, --exclude-dirs <dirs ...>    List of recursively excluded directories (default: ["node_modules"])
-  -i, --include-pattern <pattern>  Set the glob pattern for input files (default: "**/*.{js,jsx}")
-  -r, --replace                    Process files in-place instead of creating new TS files next to the original JS files.
-  -D, --replace-decorators         Replace class @decorators with wrapped function calls to avoid TypeScript errors
-  -h, --help                       output usage information
+  -v                                Output the version number
+  -d, --dry-run                     Perform a trial run printing to stdout instead of writing a file
+  -e, --exclude-dirs <pattern ...>  Comma-separated list of directories to recursively exclude (default: ["node_modules"])
+  -i, --include-pattern <pattern>   Set the glob pattern for input files (default: "**/*.{js,jsx}")
+  -r, --replace                     Process files in-place instead of creating new TS files next to the original JS files
+  -D, --replace-decorators          Replace class @decorators with wrapped function calls to avoid TypeScript errors (default: false)
+  -h, --help                        Output ussage information
 
 Examples:
   $ reflow --replace src/
-  $ reflow -d -i '**/__tests__/**/*.{js,jsx} src/
+  $ reflow -d -i '**/__tests__/**/*.{js,jsx}' src/
   $ reflow -exclude-patterns '**/__tests__/**/*','fixtures/*.js' src/
 ```
 
@@ -95,7 +81,7 @@ Examples:
 
 TODO
 
-### As Babel plugin (not recommended)
+### As Babel plugin
 
 TODO
 
@@ -103,11 +89,8 @@ TODO
 
 ### Base types
 
-The following examples have been chosen to show some of the syntax differences between Flow and
-TypeScript. Most syntax is similiar, but there are differences and also certain edge cases, which
-need to be handled while transpiling the types. A few types are not equivalently expressible in
-TypeScript and will result in a small loss of type information. See the list of unsupported Flow
-features in TypeScript below.
+Some Flow types are not equivalently expressible in TypeScript. See the list of unsupported Flow
+features below.
 
 | Type                    | Flow                           | TypeScript                           |
 | ----------------------- | ------------------------------ | ------------------------------------ |
@@ -183,8 +166,7 @@ Unsupported: CommonJS export declarations.
 
 ### Unsupported Flow features / syntax
 
-The following Flow features are not equivalently expressible in TypeScript and need to be handled
-differently:
+The following Flow features are not equivalently expressible in TypeScript:
 
 - **[Constructor return types](https://github.com/Microsoft/TypeScript/issues/11588)**
 
@@ -262,13 +244,13 @@ differently:
 
 ## Supported syntax
 
-This Babel plugin has built-in support for
+This Babel plugin enables a few other plugins per default to support various kinds of syntax:
 
 - React
 - JSX
-- Class properties (proposal)
-- Dynamic imports (proposal)
-- Decorators (proposal)
+- Class properties (ES proposal)
+- Dynamic imports (ES proposal)
+- Decorators (ES proposal)
 
 ## Development
 
