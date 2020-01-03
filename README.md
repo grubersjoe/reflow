@@ -244,13 +244,15 @@ The following Flow features are not equivalently expressible in TypeScript:
 
 ## Supported syntax
 
-This Babel plugin enables a few other plugins per default to support various kinds of syntax:
+This Babel plugin enables a few other Babel plugins to support various kinds of syntax:
 
-- React
-- JSX
-- Class properties (ES proposal)
-- Dynamic imports (ES proposal)
-- Decorators (ES proposal)
+- [Class properties](https://github.com/tc39/proposal-class-fields)
+- [Decorators](https://github.com/tc39/proposal-decorators)
+- [Dynamic imports](https://github.com/tc39/proposal-dynamic-import)
+- [Nullish coalescence](https://github.com/tc39/proposal-nullish-coalescing)
+- [Optional chaining](https://github.com/tc39/proposal-optional-chaining)
+- [React](https://reactjs.org/)
+- [JSX](https://reactjs.org/docs/introducing-jsx.html)
 
 ## Development
 

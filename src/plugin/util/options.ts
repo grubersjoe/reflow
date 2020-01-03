@@ -38,6 +38,8 @@ export function getParserPlugins(typeSystem: 'flow' | 'typescript'): ParserPlugi
     'classProperties',
     'dynamicImport',
     'jsx',
+    'nullishCoalescingOperator',
+    'optionalChaining',
     [
       'decorators',
       {

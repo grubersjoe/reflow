@@ -11,6 +11,8 @@
 
 [options]
 esproposal.decorators=ignore
+esproposal.nullish_coalescing=enable
+esproposal.optional_chaining=enable
 
 [strict]
 nonstrict-import
