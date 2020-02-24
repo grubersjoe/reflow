@@ -131,3 +131,6 @@ export const convertRestUtil: UtilConvertor<TSTypeReference> = typeParameters =>
 
 export const convertShapeUtil: UtilConvertor<TSTypeReference> = typeParameters =>
   tsTypeReference(identifier('Partial'), typeParameters);
+
+export const convertReadOnlyUtil: UtilConvertor<TSTypeReference> = typeParameters =>
+  tsTypeReference(identifier('Readonly'), typeParameters);

@@ -28,6 +28,7 @@ import {
   convertNonMaybeTypeUtil,
   convertPropertyTypeUtil,
   convertReadOnlyArrayUtil,
+  convertReadOnlyUtil,
   convertRestUtil,
   convertShapeUtil,
 } from './utility';
@@ -97,6 +98,9 @@ export function convertGenericTypeAnnotation(
 
         case 'Class':
           return convertClassUtil(typeParameters, path);
+
+        case '$ReadOnly':
+          return convertReadOnlyUtil(typeParameters);
 
         // Unsupported utility types
         case '$ObjMap':
