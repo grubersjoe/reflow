@@ -53,45 +53,6 @@ export type ComplexObject = {
   readonly p25: null | (() => void);
 };
 
-type ObjectWithSpread = {
-  a: string;
-  b: boolean;
-  c: null;
-};
-
-type ObjectWithSpreadInBetween = {
-  a: string;
-  d: null;
-  e: number;
-  b: boolean;
-  c: null;
-};
-
-type ObjectWithSpreadOverwrite = {
-  a: string | number;
-  c: false | true;
-  b: "literal";
-};
-
-type ObjectWithSpreadOverwriteInBetween = {
-  a: string | number;
-  c: true | false;
-  b: "literal";
-};
-
-type ObjectWithSpreadOverwriteAndStringLiteralKey = {
-  "a": "foo" | "bar";
-  "b": string | number;
-  c: number | null;
-};
-
-type ExactObjectWithSpread = {
-  a: number;
-  c: string;
-  d: boolean;
-  b: "literal";
-};
-
 type ObjectIndexerProperty = {
   [key: string]: number;
 };

@@ -166,7 +166,8 @@ Unsupported: CommonJS export declarations.
 
 ### Unsupported Flow features / syntax
 
-The following Flow features are not equivalently expressible in TypeScript:
+Some Flow features are not equivalently expressible in TypeScript. The Reflow CLI will output a
+warning with the source code location, whenever one of the following cases are encountered:
 
 - **[Constructor return types](https://github.com/Microsoft/TypeScript/issues/11588)**
 
@@ -206,6 +207,25 @@ The following Flow features are not equivalently expressible in TypeScript:
     [key: number]: number;
     [key: string]: number;
   }
+  ```
+
+- **[Object type spread](https://flow.org/en/docs/types/objects/#toc-exact-object-types)**
+
+  Object types can be spread into other object types in Flow. Unfortunately this syntax is not
+  supported in TypeScript at the moment. Therefore, these properties will be ommited in output.
+  Please fix affected object types manually.
+
+  ```
+  // Flow
+  type ObjectWithSpread = {
+    prop: mixed;
+    ...ObjectType;
+  };
+
+  // TypeScript
+  type ObjectWithSpread = {
+    prop: unknown;
+  };
   ```
 
 - **[Opaque Type](https://github.com/Microsoft/TypeScript/issues/14520)**

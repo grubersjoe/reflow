@@ -58,10 +58,14 @@ export const WARNINGS = {
   },
   objectTypeProperty: {
     variance: {
-      message: `TypeScript doesn't support contravariance (-T). All properties will be changed to
+      message: `TypeScript does not support contravariance (-T). All properties will be changed to
       ordinary ones.`,
       see: `https://github.com/Microsoft/TypeScript/issues/10717`,
     },
+  },
+  objectTypeSpreadProperty: {
+    message: `TypeScript does not support object type spread (...T). Such properties will be ommited in output. Please fix affected object types manually.`,
+    see: `https://github.com/microsoft/TypeScript/issues/10727`,
   },
   opaqueType: {
     message: `Flow's Opaque type is not expressible in TypeScript and will be replaced with a type alias. Subtyping constraints will be lost!`,
