@@ -26,7 +26,7 @@ export function convertTypeParameter(node: TypeParameter, state: ConverterState)
   }
 
   if (node.variance) {
-    logWarning(WARNINGS.genericTypeAnnotation.variance, state.file.code, node.loc);
+    logWarning(WARNINGS.genericTypeAnnotation.variance, state.file.code, node.variance.loc);
   }
 
   return typeParameter;
