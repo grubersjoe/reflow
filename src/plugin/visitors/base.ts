@@ -5,11 +5,16 @@ import {
   FunctionExpression,
   ImportDeclaration,
   ImportSpecifier,
+  ExportDeclaration,
 } from '@babel/types';
 
 import { VisitorFunction, ConverterState } from '../types';
 import { convertClassDeclaration } from '../converters/class';
-import { convertImportDeclaration, convertImportSpecifier } from '../converters/module';
+import {
+  convertImportDeclaration,
+  convertImportSpecifier,
+  convertExportDeclaration,
+} from '../converters/module';
 import { convertOptionalFunctionParameters } from '../converters/function';
 
 export type BaseVisitorNodes = ArrowFunctionExpression &
@@ -35,4 +40,8 @@ export const importDeclarationVisitor: VisitorFunction<ImportDeclaration> = path
 
 export const importSpecifierVisitor: VisitorFunction<ImportSpecifier> = path => {
   path.replaceWith(convertImportSpecifier(path));
+};
+
+export const exportDeclarationVisitor: VisitorFunction<ExportDeclaration> = path => {
+  path.replaceWith(convertExportDeclaration(path));
 };

@@ -7,6 +7,7 @@ import {
   importSpecifierVisitor,
   importDeclarationVisitor,
   functionVisitor,
+  exportDeclarationVisitor,
 } from './visitors/base';
 import { flowVisitor } from './visitors/flow';
 import { jsxVisitor } from './visitors/jsx';
@@ -25,6 +26,7 @@ const reflowPlugin = {
     FunctionExpression: functionVisitor,
     ImportDeclaration: importDeclarationVisitor,
     ImportSpecifier: importSpecifierVisitor,
+    ExportDeclaration: exportDeclarationVisitor,
     Flow: flowVisitor,
     JSX: jsxVisitor,
     Program: programVisitor,

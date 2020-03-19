@@ -38,3 +38,6 @@ export const exportedConstMaybe2: string | null | undefined = 'string';
 export function exportedFunction2(x: number): void {}
 export interface ExportedInterface2 {}
 export type ExportedAliasType2<T> = ReadonlyArray<T>;
+
+type NamedExport = string;
+export { NamedExport };
