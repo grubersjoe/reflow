@@ -5,6 +5,9 @@ import {
   isFlowType,
   isImportDeclaration,
   typeofTypeAnnotation,
+  ExportDeclaration,
+  isExportNamedDeclaration,
+  isFlow,
 } from '@babel/types';
 
 import { convertReactImports } from './react/imports';
@@ -45,6 +48,18 @@ export function convertImportSpecifier(path: NodePath<ImportSpecifier>): ImportS
 
   // Strip Flow's `type` and `typeof` keywords in import declarations.
   path.node.importKind = null;
+
+  return path.node;
+}
+
+export function convertExportDeclaration(path: NodePath<ExportDeclaration>): ExportDeclaration {
+  // Strip Flow's `type` keyword in export declarations.
+  const { node } = path;
+  if (isExportNamedDeclaration(node)) {
+    if (node.exportKind === 'type' && !isFlow(node.declaration)) {
+      node.exportKind = null;
+    }
+  }
 
   return path.node;
 }
