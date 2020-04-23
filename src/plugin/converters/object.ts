@@ -25,10 +25,16 @@ import { convertFlowType } from './flow-type';
 import { UnexpectedError } from '../../util/error';
 import { ConverterState } from '../types';
 import { WARNINGS, logWarning } from '../util/warnings';
-import { functionTypeParametersToIdentifiers, convertFunctionTypeAnnotation } from './function';
+import {
+  functionTypeParametersToIdentifiers,
+  convertFunctionTypeAnnotation,
+} from './function';
 import { convertTypeParameterDeclaration } from './type-parameter';
 
-function createMethodSignature(prop: ObjectTypeProperty, state: ConverterState): TSMethodSignature {
+function createMethodSignature(
+  prop: ObjectTypeProperty,
+  state: ConverterState,
+): TSMethodSignature {
   const { key, optional, value } = prop;
 
   if (!isFunctionTypeAnnotation(value)) {
@@ -64,7 +70,11 @@ function createPropertySignature(
   // TypeScript doesn't suppport write-only properties. So Flow's
   // variance.kind === 'minus' must be ignored.
   if (variance && variance.kind === 'minus') {
-    logWarning(WARNINGS.objectTypeProperty.variance, state.file.code, variance.loc);
+    logWarning(
+      WARNINGS.objectTypeProperty.variance,
+      state.file.code,
+      variance.loc,
+    );
   }
 
   return propSignature;
@@ -85,11 +95,19 @@ function convertObjectTypeCallProperties(
 
       const { value } = callProp;
 
-      const typeParameters = convertTypeParameterDeclaration(value.typeParameters, state);
-      const params = functionTypeParametersToIdentifiers(value.params, state) || [];
-      const typeAnnotation = tsTypeAnnotation(convertFlowType(value.returnType, state));
+      const typeParameters = convertTypeParameterDeclaration(
+        value.typeParameters,
+        state,
+      );
+      const params =
+        functionTypeParametersToIdentifiers(value.params, state) || [];
+      const typeAnnotation = tsTypeAnnotation(
+        convertFlowType(value.returnType, state),
+      );
 
-      signatures.push(tsCallSignatureDeclaration(typeParameters, params, typeAnnotation));
+      signatures.push(
+        tsCallSignatureDeclaration(typeParameters, params, typeAnnotation),
+      );
     });
   }
 
@@ -106,11 +124,14 @@ function convertObjectTypeIndexers(
   if (indexers) {
     indexers.forEach(indexer => {
       const { id, key } = indexer;
-      const typeAnnotation = tsTypeAnnotation(convertFlowType(indexer.value, state));
+      const typeAnnotation = tsTypeAnnotation(
+        convertFlowType(indexer.value, state),
+      );
 
       // TypeScript only allows number or string as key type. Add both index
       // signatures if another type is used in Flow.
-      const isValidKeyType = isNumberTypeAnnotation(key) || isStringTypeAnnotation(key);
+      const isValidKeyType =
+        isNumberTypeAnnotation(key) || isStringTypeAnnotation(key);
 
       if (isValidKeyType) {
         const tsKey = identifier(id ? id.name : 'key');
@@ -126,7 +147,11 @@ function convertObjectTypeIndexers(
           }),
         );
 
-        logWarning(WARNINGS.indexSignatures.invalidKey, state.file.code, indexer.loc);
+        logWarning(
+          WARNINGS.indexSignatures.invalidKey,
+          state.file.code,
+          indexer.loc,
+        );
       }
     });
   }
@@ -152,7 +177,11 @@ export function convertObjectTypeAnnotation(
     }
 
     if (isObjectTypeSpreadProperty(prop)) {
-      logWarning(WARNINGS.objectTypeSpreadProperty, state.file.code, prop.argument.loc);
+      logWarning(
+        WARNINGS.objectTypeSpreadProperty,
+        state.file.code,
+        prop.argument.loc,
+      );
     }
   });
 

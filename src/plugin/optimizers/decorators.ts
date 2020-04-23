@@ -45,7 +45,9 @@ export function replaceClassDecorators(
             const { declaration } = defaultExport;
 
             if (isIdentifier(declaration) || isCallExpression(declaration)) {
-              defaultExport.declaration = callExpression(decorator.expression, [declaration]);
+              defaultExport.declaration = callExpression(decorator.expression, [
+                declaration,
+              ]);
             }
           });
         }

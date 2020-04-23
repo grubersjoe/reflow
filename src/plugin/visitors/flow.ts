@@ -1,7 +1,9 @@
 import {
+  Flow,
   isDeclareClass,
   isDeclareFunction,
   isDeclareInterface,
+  isDeclareModule,
   isDeclareOpaqueType,
   isDeclareTypeAlias,
   isInterfaceDeclaration,
@@ -10,8 +12,6 @@ import {
   isTypeAnnotation,
   isTypeCastExpression,
   isTypeParameterDeclaration,
-  isDeclareModule,
-  Flow,
 } from '@babel/types';
 
 import { VisitorFunction } from '../types';
@@ -21,12 +21,15 @@ import { WARNINGS, logWarning } from '../util/warnings';
 import {
   convertDeclareClass,
   convertDeclareFunction,
-  convertDeclareModule,
   convertDeclareInterface,
+  convertDeclareModule,
   convertDeclareTypeAlias,
 } from '../converters/declaration';
 import { convertInterfaceDeclaration } from '../converters/interface';
-import { convertDeclareOpaqueType, convertOpaqueType } from '../converters/opaque';
+import {
+  convertDeclareOpaqueType,
+  convertOpaqueType,
+} from '../converters/opaque';
 import { convertTypeAlias } from '../converters/type-alias';
 import { convertTypeAnnotation } from '../converters/type-annotation';
 import { convertTypeCastExpression } from '../converters/type-cast';

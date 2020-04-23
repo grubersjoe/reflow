@@ -60,20 +60,33 @@ function isConstructor(key: Identifier | StringLiteral): boolean {
   return methodName === 'constructor';
 }
 
-function createClassBody(node: ObjectTypeAnnotation, state: ConverterState): ClassBody {
+function createClassBody(
+  node: ObjectTypeAnnotation,
+  state: ConverterState,
+): ClassBody {
   const body = node.properties.map(prop => {
     if (isObjectTypeProperty(prop)) {
       if (prop.method && isFunctionTypeAnnotation(prop.value)) {
         const { value, key } = prop;
 
-        const typeParameters = convertTypeParameterDeclaration(value.typeParameters, state);
-        const params = functionTypeParametersToIdentifiers(value.params, state) || [];
+        const typeParameters = convertTypeParameterDeclaration(
+          value.typeParameters,
+          state,
+        );
+        const params =
+          functionTypeParametersToIdentifiers(value.params, state) || [];
 
         const returnType = isConstructor(key)
           ? null
           : tsTypeAnnotation(convertFlowType(value.returnType, state));
 
-        const method = tsDeclareMethod(null, key, typeParameters, params, returnType);
+        const method = tsDeclareMethod(
+          null,
+          key,
+          typeParameters,
+          params,
+          returnType,
+        );
 
         method.optional = prop.optional;
         method.static = Boolean(prop.static);
@@ -82,14 +95,18 @@ function createClassBody(node: ObjectTypeAnnotation, state: ConverterState): Cla
       } else {
         const classProp = classProperty(prop.key);
 
-        classProp.typeAnnotation = tsTypeAnnotation(convertFlowType(prop.value, state));
+        classProp.typeAnnotation = tsTypeAnnotation(
+          convertFlowType(prop.value, state),
+        );
         classProp.optional = prop.optional;
         classProp.static = Boolean(prop.static);
 
         return classProp;
       }
     } else {
-      throw new UnexpectedError(`Unexpected element in class declaration: ${prop.type}`);
+      throw new UnexpectedError(
+        `Unexpected element in class declaration: ${prop.type}`,
+      );
     }
   });
 
@@ -101,10 +118,17 @@ export function convertDeclareClass(
   state: ConverterState,
   declare = true,
 ): ClassDeclaration {
-  const classDec = classDeclaration(node.id, null, createClassBody(node.body, state));
+  const classDec = classDeclaration(
+    node.id,
+    null,
+    createClassBody(node.body, state),
+  );
 
   classDec.declare = declare;
-  classDec.typeParameters = convertTypeParameterDeclaration(node.typeParameters, state);
+  classDec.typeParameters = convertTypeParameterDeclaration(
+    node.typeParameters,
+    state,
+  );
 
   node.extends &&
     node.extends.forEach(_extend => {
@@ -133,9 +157,15 @@ export function convertDeclareFunction(
     isFunctionTypeAnnotation(id.typeAnnotation.typeAnnotation)
   ) {
     const { typeAnnotation } = id.typeAnnotation;
-    const typeParameters = convertTypeParameterDeclaration(typeAnnotation.typeParameters, state);
-    const returnType = tsTypeAnnotation(convertFlowType(typeAnnotation.returnType, state));
-    const params = functionTypeParametersToIdentifiers(typeAnnotation.params, state) || [];
+    const typeParameters = convertTypeParameterDeclaration(
+      typeAnnotation.typeParameters,
+      state,
+    );
+    const returnType = tsTypeAnnotation(
+      convertFlowType(typeAnnotation.returnType, state),
+    );
+    const params =
+      functionTypeParametersToIdentifiers(typeAnnotation.params, state) || [];
 
     functionDec = tsDeclareFunction(id, typeParameters, params, returnType);
   } else {
@@ -158,7 +188,10 @@ export function convertDeclareInterface(
   return interfaceDec;
 }
 
-function convertModuleStatement(statement: Statement | Flow, state: ConverterState): Declaration {
+function convertModuleStatement(
+  statement: Statement | Flow,
+  state: ConverterState,
+): Declaration {
   if (isDeclareClass(statement)) {
     return convertDeclareClass(statement, state, false);
   }
@@ -203,13 +236,18 @@ export function convertDeclareModule(
           ? tsTypeAnnotation(defaultExport)
           : null;
 
-        const defaultProp = variableDeclaration('const', [variableDeclarator(defaultPropId)]);
+        const defaultProp = variableDeclaration('const', [
+          variableDeclarator(defaultPropId),
+        ]);
 
         acc.push(defaultProp);
         acc.push(exportDefaultDeclaration(identifier('_default')));
       } else {
         acc.push(
-          exportNamedDeclaration(convertModuleStatement(declaration, state), specifiers || []),
+          exportNamedDeclaration(
+            convertModuleStatement(declaration, state),
+            specifiers || [],
+          ),
         );
       }
     } else {
@@ -229,7 +267,10 @@ export function convertDeclareTypeAlias(
   node: DeclareTypeAlias,
   state: ConverterState,
 ): TSTypeAliasDeclaration {
-  const typeParameters = convertTypeParameterDeclaration(node.typeParameters, state);
+  const typeParameters = convertTypeParameterDeclaration(
+    node.typeParameters,
+    state,
+  );
   const typeAliasDec = tsTypeAliasDeclaration(
     node.id,
     typeParameters,

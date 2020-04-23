@@ -2,7 +2,7 @@
  * The non-primitive types Boolean, Number, Object and String should not be
  * used, but their primitive counterpart (or `object`):
  *
- * https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html
+ * https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html#general-types
  */
 export function replaceNonPrimitiveType(type: string): string {
   switch (type) {

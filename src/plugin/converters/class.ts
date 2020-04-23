@@ -23,11 +23,17 @@ export function convertClassDeclaration(
   const { body, superTypeParameters, typeParameters } = node;
 
   if (isTypeParameterInstantiation(superTypeParameters)) {
-    node.superTypeParameters = convertTypeParameterInstantiation(superTypeParameters, state);
+    node.superTypeParameters = convertTypeParameterInstantiation(
+      superTypeParameters,
+      state,
+    );
   }
 
   if (isTypeParameterDeclaration(typeParameters)) {
-    node.typeParameters = convertTypeParameterDeclaration(typeParameters, state);
+    node.typeParameters = convertTypeParameterDeclaration(
+      typeParameters,
+      state,
+    );
   }
 
   body.body.forEach(node => {
@@ -38,7 +44,11 @@ export function convertClassDeclaration(
       // Flow allows to specify the return type of constructor functions. This is
       // forbidden in TypeScript. So the the type annotation needs to be removed.
       if (node.kind === 'constructor' && node.returnType) {
-        logWarning(WARNINGS.class.constructorReturnType, state.file.code, node.loc);
+        logWarning(
+          WARNINGS.class.constructorReturnType,
+          state.file.code,
+          node.loc,
+        );
         node.returnType = null;
       }
     }

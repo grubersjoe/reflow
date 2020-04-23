@@ -4,10 +4,10 @@ import { getParserPlugins } from './util/options';
 
 import {
   classDeclarationVisitor,
-  importSpecifierVisitor,
-  importDeclarationVisitor,
-  functionVisitor,
   exportDeclarationVisitor,
+  functionVisitor,
+  importDeclarationVisitor,
+  importSpecifierVisitor,
 } from './visitors/base';
 import { flowVisitor } from './visitors/flow';
 import { jsxVisitor } from './visitors/jsx';
@@ -22,12 +22,12 @@ const reflowPlugin = {
   visitor: {
     ArrowFunctionExpression: functionVisitor,
     ClassDeclaration: classDeclarationVisitor,
+    ExportDeclaration: exportDeclarationVisitor,
+    Flow: flowVisitor,
     FunctionDeclaration: functionVisitor,
     FunctionExpression: functionVisitor,
     ImportDeclaration: importDeclarationVisitor,
     ImportSpecifier: importSpecifierVisitor,
-    ExportDeclaration: exportDeclarationVisitor,
-    Flow: flowVisitor,
     JSX: jsxVisitor,
     Program: programVisitor,
   },

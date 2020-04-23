@@ -3,7 +3,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "jsx": "preserve",
-    "lib": ["dom", "es2018"],
+    "lib": ["dom", "ES2020"],
     "module": "ESNext",
     "moduleResolution": "node",
     "noEmit": true,

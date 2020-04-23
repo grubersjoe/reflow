@@ -14,11 +14,17 @@ import { ConverterState } from '../types';
 import { WARNINGS, logWarning } from '../util/warnings';
 import { convertFlowType } from './flow-type';
 
-export function convertTypeParameter(node: TypeParameter, state: ConverterState): TSTypeParameter {
+export function convertTypeParameter(
+  node: TypeParameter,
+  state: ConverterState,
+): TSTypeParameter {
   const typeParameter = tsTypeParameter(undefined, undefined, node.name || '');
 
   if (node.bound) {
-    typeParameter.constraint = convertFlowType(node.bound.typeAnnotation, state);
+    typeParameter.constraint = convertFlowType(
+      node.bound.typeAnnotation,
+      state,
+    );
   }
 
   if (node.default) {
@@ -26,7 +32,11 @@ export function convertTypeParameter(node: TypeParameter, state: ConverterState)
   }
 
   if (node.variance) {
-    logWarning(WARNINGS.genericTypeAnnotation.variance, state.file.code, node.variance.loc);
+    logWarning(
+      WARNINGS.genericTypeAnnotation.variance,
+      state.file.code,
+      node.variance.loc,
+    );
   }
 
   return typeParameter;
@@ -40,7 +50,9 @@ export function convertTypeParameterDeclaration(
     return null;
   }
 
-  return tsTypeParameterDeclaration(node.params.map(node => convertTypeParameter(node, state)));
+  return tsTypeParameterDeclaration(
+    node.params.map(node => convertTypeParameter(node, state)),
+  );
 }
 
 export function convertTypeParameterInstantiation(
@@ -51,5 +63,7 @@ export function convertTypeParameterInstantiation(
     return null;
   }
 
-  return tsTypeParameterInstantiation(node.params.map(param => convertFlowType(param, state)));
+  return tsTypeParameterInstantiation(
+    node.params.map(param => convertFlowType(param, state)),
+  );
 }

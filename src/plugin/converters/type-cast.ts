@@ -1,4 +1,8 @@
-import { TypeCastExpression, TSAsExpression, tsAsExpression } from '@babel/types';
+import {
+  TSAsExpression,
+  TypeCastExpression,
+  tsAsExpression,
+} from '@babel/types';
 
 import { ConverterState } from '../types';
 import { convertFlowType } from './flow-type';

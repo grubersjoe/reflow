@@ -14,7 +14,9 @@ export function logWarning(
   location: SourceLocation | null,
 ): void {
   if (!location) {
-    throw new UnexpectedError(`No source location given for warning ${warning.message}`);
+    throw new UnexpectedError(
+      `No source location given for warning ${warning.message}`,
+    );
   }
 
   let message = `\n  ${chalk.bold.yellowBright('Warning')}: ${warning.message}`;
@@ -47,7 +49,8 @@ export const WARNINGS = {
   indexSignatures: {
     invalidKey: {
       message: `TypeScript requires 'string' or 'number' as index signature key type. Reflow will add signatures for both types.`,
-      see: 'https://www.typescriptlang.org/docs/handbook/interfaces.html#indexable-types',
+      see:
+        'https://www.typescriptlang.org/docs/handbook/interfaces.html#indexable-types',
     },
   },
   genericTypeAnnotation: {

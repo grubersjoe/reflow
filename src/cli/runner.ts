@@ -10,9 +10,16 @@ import { getTransformOptions } from '../plugin/util/options';
 
 import { ReflowOptions } from '../plugin';
 import { isValidSource } from './util';
-import { CommandLineArgs, DEFAULT_EXCLUDE_DIRECTORIES, DEFAULT_INCLUDE_PATTERN } from '.';
+import {
+  CommandLineArgs,
+  DEFAULT_EXCLUDE_DIRECTORIES,
+  DEFAULT_INCLUDE_PATTERN,
+} from '.';
 
-function getGlobOptions(options: GlobOptions, excludeDirs: string[]): GlobOptions {
+function getGlobOptions(
+  options: GlobOptions,
+  excludeDirs: string[],
+): GlobOptions {
   const defaults = {
     absolute: true,
     strict: true,
@@ -41,7 +48,9 @@ export function transpileFiles(args: CommandLineArgs): string[] {
     const globOptions = getGlobOptions({ cwd: source }, excludeDirs);
 
     // Create a list of to be transpiled files
-    const inputFiles = isDir ? glob.sync(includePattern, globOptions) : [resolve(source)];
+    const inputFiles = isDir
+      ? glob.sync(includePattern, globOptions)
+      : [resolve(source)];
 
     inputFiles.forEach(inputFile => {
       // Skip all invalid sources (files that match the include glob pattern, but are not JS)
@@ -59,10 +68,17 @@ export function transpileFiles(args: CommandLineArgs): string[] {
         } else {
           const outputFile = process.env.DEBUG
             ? inputFile
-            : inputFile.replace(extname(inputFile), FileTypes.get(inputFile) || '.ts');
+            : inputFile.replace(
+                extname(inputFile),
+                FileTypes.get(inputFile) || '.ts',
+              );
 
           const originalCode = String(readFileSync(inputFile));
-          const output = formatOutputCode(out.code, originalCode, pluginOptions);
+          const output = formatOutputCode(
+            out.code,
+            originalCode,
+            pluginOptions,
+          );
 
           if (output instanceof Error) {
             logError(`${inputFile} could not be formatted. Skipping.`, 4);

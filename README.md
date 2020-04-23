@@ -8,32 +8,35 @@
 
 #### I would love to receive feedback whether this plugin worked for you :)!
 
-Reflow enables you to migrate a whole Flow based project to TypeScript by transpiling the Flow type
-annotations to equivalent TypeScript code. While this reduces the effort to move a large code base
-to TypeScript drastically, it is still very likely that you will face new type errors after the
-migration due to the differences between Flow and TypeScript. See this
-[repository](https://github.com/niieani/typescript-vs-flowtype) for an excellent overview of the
-differences and similarities of Flow and Typescript.
+Reflow enables you to migrate a whole Flow based project to TypeScript by
+transpiling the Flow type annotations to equivalent TypeScript code. While this
+reduces the effort to move a large code base to TypeScript drastically, it is
+still very likely that you will face new type errors after the migration due to
+the differences between Flow and TypeScript. See this
+[repository](https://github.com/niieani/typescript-vs-flowtype) for an excellent
+overview of the differences and similarities of Flow and Typescript.
 
 ## Why another plugin?
 
-Of course, I am aware that other approaches exist to translate Flow to TypeScript. For instance,
-there is
+Of course, I am aware that other approaches exist to translate Flow to
+TypeScript. For instance, there is
 [Kiikurage/babel-plugin-flow-to-typescript](https://github.com/Kiikurage/babel-plugin-flow-to-typescript)
-and [Khan/flow-to-ts](https://github.com/Kiikurage/babel-plugin-flow-to-typescript). When I started
-this project in the course of my master thesis in February 2019, the development of the first plugin
-seemed inactive and the second one did not exist yet. Therefore this plugin was developed to solve
-the given problem of the thesis in practice.
+and
+[Khan/flow-to-ts](https://github.com/Kiikurage/babel-plugin-flow-to-typescript).
+When I started this project in the course of my master thesis in February 2019,
+the development of the first plugin seemed inactive and the second one did not
+exist yet. Therefore this plugin was developed to solve the given problem of the
+thesis in practice.
 
 **Advantages of Reflow**
 
-- can be used either as standalone Babel plugin or through the included CLI to transpile whole code
-  bases
+- can be used either as standalone Babel plugin or through the included CLI to
+  transpile whole code bases
 - well tested with high code coverage
-- proven to work with real React based projects (two code bases with 27 and 41 kLOC respectively
-  were successfully migrated)
-- generates well formatted output based on Prettier with focus on placing comments at the correct
-  position (Babel fails to do so)
+- proven to work with real React based projects (two code bases with 27 and 41
+  kLOC respectively were successfully migrated)
+- generates well formatted output based on Prettier with focus on placing
+  comments at the correct position (Babel fails to do so)
 
 ## Installation
 
@@ -45,9 +48,10 @@ yarn add --dev babel-plugin-reflow
 
 ### CLI
 
-This package includes a small CLI wrapper for the Babel plugin to recursively transpile whole
-directories or single files. Install the package as project dependency and run `npx reflow`
-afterwards. Alternatively you might want to install Reflow globally so you can simply type `reflow`:
+This package includes a small CLI wrapper for the Babel plugin to recursively
+transpile whole directories or single files. Install the package as project
+dependency and run `npx reflow` afterwards. Alternatively you might want to
+install Reflow globally so you can simply type `reflow`:
 
 ```shell
 yarn global add babel-plugin-reflow
@@ -89,8 +93,8 @@ TODO
 
 ### Base types
 
-Some Flow types are not equivalently expressible in TypeScript. See the list of unsupported Flow
-features below.
+Some Flow types are not equivalently expressible in TypeScript. See the list of
+unsupported Flow features below.
 
 | Type                    | Flow                           | TypeScript                           |
 | ----------------------- | ------------------------------ | ------------------------------------ |
@@ -166,23 +170,27 @@ Unsupported: CommonJS export declarations.
 
 ### Unsupported Flow features / syntax
 
-Some Flow features are not equivalently expressible in TypeScript. The Reflow CLI will output a
-warning with the source code location, whenever one of the following cases are encountered:
+Some Flow features are not equivalently expressible in TypeScript. The Reflow
+CLI will output a warning with the source code location, whenever one of the
+following cases are encountered:
 
 - **[Constructor return types](https://github.com/Microsoft/TypeScript/issues/11588)**
 
-  TypeScript intentionally doesn't support return types for constructor functions. These will be
-  removed by Reflow.
+  TypeScript intentionally doesn't support return types for constructor
+  functions. These will be removed by Reflow.
 
 - **[Existential Type](https://github.com/Microsoft/TypeScript/issues/14466)**
 
-  Flow's [existential type](https://flow.org/en/docs/types/utilities/#toc-existential-type) has been
-  deprecated and should be avoided. Still Reflow supports it and will transform it to `any`.
+  Flow's
+  [existential type](https://flow.org/en/docs/types/utilities/#toc-existential-type)
+  has been deprecated and should be avoided. Still Reflow supports it and will
+  transform it to `any`.
 
 - **[Function types with unnamed parameters](https://flow.org/en/docs/types/functions/#toc-function-types)**
 
-  In contrast to TypeScript, parameter names can be omitted in Flow. Therefore Reflow inserts
-  parameter names automatically (`p` for a single parameter and `p{i}` for multiple ones).
+  In contrast to TypeScript, parameter names can be omitted in Flow. Therefore
+  Reflow inserts parameter names automatically (`p` for a single parameter and
+  `p{i}` for multiple ones).
 
   ```
   type FunctionType = ({}, Date) => string;             // Flow
@@ -191,9 +199,9 @@ warning with the source code location, whenever one of the following cases are e
 
 - **[Index signatures](https://flow.org/en/docs/types/objects/#toc-objects-as-maps)**
 
-  Flow allows any type for keys in index signatures, but Typescript only accepts `string` or
-  `number`. Reflow will add index signatures both for `string` and `number` if a different type is
-  specified in Flow.
+  Flow allows any type for keys in index signatures, but Typescript only accepts
+  `string` or `number`. Reflow will add index signatures both for `string` and
+  `number` if a different type is specified in Flow.
 
   ```
   // Flow
@@ -211,9 +219,10 @@ warning with the source code location, whenever one of the following cases are e
 
 - **[Object type spread](https://flow.org/en/docs/types/objects/#toc-exact-object-types)**
 
-  Object types can be spread into other object types in Flow. Unfortunately this syntax is not
-  supported in TypeScript at the moment. Therefore, these properties will be ommited in output.
-  Please fix affected object types manually.
+  Object types can be spread into other object types in Flow. Unfortunately this
+  syntax is not supported in TypeScript at the moment. Therefore, these
+  properties will be ommited in output. Please fix affected object types
+  manually.
 
   ```
   // Flow
@@ -230,7 +239,8 @@ warning with the source code location, whenever one of the following cases are e
 
 - **[Opaque Type](https://github.com/Microsoft/TypeScript/issues/14520)**
 
-  Opaque types are not supported in TypeScript and are transformed to an ordinary type alias.
+  Opaque types are not supported in TypeScript and are transformed to an
+  ordinary type alias.
 
   ```
   opaque type T = number;  // Flow
@@ -239,8 +249,9 @@ warning with the source code location, whenever one of the following cases are e
 
 - **[Variance](https://github.com/Microsoft/TypeScript/issues/1394)**
 
-  Flow's contravariance sigil `-` is not expressible in Typescript and will be omitted. However,
-  TypeScript does support covariance for certain types (`+` becomes `readonly`).
+  Flow's contravariance sigil `-` is not expressible in Typescript and will be
+  omitted. However, TypeScript does support covariance for certain types (`+`
+  becomes `readonly`).
 
   ```
   // Flow
@@ -258,13 +269,15 @@ warning with the source code location, whenever one of the following cases are e
 
 - **\$Call<F, T...>**
 
-  The `$Call<F, T...>` utility type is transformed to TypeScript's `ReturnType<F>`. Since this type
-  only accepts the function type and not the function argument types, it is impossible to infer the
-  return type of polymorphic functions. TypeScript will assume an `unknown` type then.
+  The `$Call<F, T...>` utility type is transformed to TypeScript's
+  `ReturnType<F>`. Since this type only accepts the function type and not the
+  function argument types, it is impossible to infer the return type of
+  polymorphic functions. TypeScript will assume an `unknown` type then.
 
 ## Supported syntax
 
-This Babel plugin enables a few other Babel plugins to support various kinds of syntax:
+This Babel plugin enables a few other Babel plugins to support various kinds of
+syntax:
 
 - [Class properties](https://github.com/tc39/proposal-class-fields)
 - [Decorators](https://github.com/tc39/proposal-decorators)

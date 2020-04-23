@@ -30,7 +30,8 @@ const help = {
   includePattern: 'Set the glob pattern for input files',
   replaceDecorators:
     'Replace class @decorators with wrapped function calls to avoid TypeScript errors',
-  replace: 'Process files in-place instead of creating new TS files next to the original JS files',
+  replace:
+    'Process files in-place instead of creating new TS files next to the original JS files',
 };
 
 // Define the CLI interface
@@ -46,7 +47,11 @@ program
     toArray,
     DEFAULT_EXCLUDE_DIRECTORIES,
   )
-  .option('-i, --include-pattern <pattern>', help.includePattern, DEFAULT_INCLUDE_PATTERN)
+  .option(
+    '-i, --include-pattern <pattern>',
+    help.includePattern,
+    DEFAULT_INCLUDE_PATTERN,
+  )
   .option('-r, --replace', help.replace)
   .option('-D, --replace-decorators', help.replaceDecorators, false);
 
@@ -54,10 +59,14 @@ program.on('--help', () => {
   console.log('\nExamples:');
   console.log(`  $ reflow --replace src/`);
   console.log(`  $ reflow -d -i '**/__tests__/**/*.{js,jsx}' src/`);
-  console.log(`  $ reflow -exclude-patterns '**/__tests__/**/*','fixtures/*.js' src/`);
+  console.log(
+    `  $ reflow -exclude-patterns '**/__tests__/**/*','fixtures/*.js' src/`,
+  );
 });
 
 if (process.env.NODE_ENV !== 'test') {
   program.parse(process.argv);
-  validateArgs(program.args) ? transpileFiles(collectArgs(program)) : program.help();
+  validateArgs(program.args)
+    ? transpileFiles(collectArgs(program))
+    : program.help();
 }

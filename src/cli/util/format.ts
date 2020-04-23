@@ -5,6 +5,7 @@ import prettier, { Options as PrettierOptions } from 'prettier-reflow';
 
 import { ReflowOptions } from '../../plugin';
 import { getParserPlugins } from '../../plugin/util/options';
+import { FLOW_DIRECTIVE } from '../../plugin/visitors/program';
 
 export const BLANK_LINE = /^[ \t]*$/;
 export const LINE_BREAK = /\r?\n/;
@@ -12,8 +13,6 @@ export const LINE_BREAK = /\r?\n/;
 const BLOCK_COMMENT_AT_BEGINNING_OF_LINE = /^\s*\/\*/;
 const JSX_COMMENT = /\{\s*\/\*.*\*\/\s*\}/;
 const LINE_COMMENT_AT_BEGINNING_OF_LINE = /^\s*\/\/.*$/;
-
-const FLOW_DIRECTIVE = /(@flow(\s+(strict(-local)?|weak))?|@noflow)/;
 
 function getPrettierConfig(overrides?: PrettierOptions): PrettierOptions {
   const defaults: PrettierOptions = {
@@ -109,7 +108,7 @@ function copyComments(
  * same amount of lines. It is not perfect, but the best I came up with and it
  * seems to work reasonably well in practice.
  */
-export function syncBlankLinesAndComments(
+function syncBlankLinesAndComments(
   outputCode: string,
   originalCode: Buffer | string,
   pluginOptions: ReflowOptions,
@@ -125,7 +124,10 @@ export function syncBlankLinesAndComments(
   let outputLines = outputCode.split(LINE_BREAK);
 
   originalLines.forEach((flowLine, lineNumber) => {
-    if (outputLines[lineNumber] === undefined || flowLine === outputLines[lineNumber]) {
+    if (
+      outputLines[lineNumber] === undefined ||
+      flowLine === outputLines[lineNumber]
+    ) {
       return;
     }
 
@@ -191,7 +193,11 @@ export function formatOutputCode(
       }),
     );
 
-    outputCode = syncBlankLinesAndComments(outputCode, originalCode, pluginOptions);
+    outputCode = syncBlankLinesAndComments(
+      outputCode,
+      originalCode,
+      pluginOptions,
+    );
 
     // Run Prettier one more time to iron out any remaining bad formatting.
     outputCode = prettier.format(outputCode, getPrettierConfig());

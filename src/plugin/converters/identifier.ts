@@ -17,7 +17,9 @@ export function convertIdentifier(
   const { qualification } = node;
 
   return tsQualifiedName(
-    isQualifiedTypeIdentifier(qualification) ? convertIdentifier(qualification) : qualification,
+    isQualifiedTypeIdentifier(qualification)
+      ? convertIdentifier(qualification)
+      : qualification,
     node.id,
   );
 }

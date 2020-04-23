@@ -1,18 +1,20 @@
 import { NodePath } from '@babel/traverse';
 import {
+  ExportDeclaration,
   ImportDeclaration,
   ImportSpecifier,
+  isExportNamedDeclaration,
+  isFlow,
   isFlowType,
   isImportDeclaration,
   typeofTypeAnnotation,
-  ExportDeclaration,
-  isExportNamedDeclaration,
-  isFlow,
 } from '@babel/types';
 
 import { convertReactImports } from './react/imports';
 
-function convertImportSpecifiers(path: NodePath<ImportDeclaration | ImportSpecifier>): void {
+function convertImportSpecifiers(
+  path: NodePath<ImportDeclaration | ImportSpecifier>,
+): void {
   const { node } = path;
   const specifiers = isImportDeclaration(node) ? node.specifiers : [node];
 
@@ -33,7 +35,9 @@ function convertImportSpecifiers(path: NodePath<ImportDeclaration | ImportSpecif
   }
 }
 
-export function convertImportDeclaration(path: NodePath<ImportDeclaration>): ImportDeclaration {
+export function convertImportDeclaration(
+  path: NodePath<ImportDeclaration>,
+): ImportDeclaration {
   convertImportSpecifiers(path);
   convertReactImports(path);
 
@@ -43,7 +47,9 @@ export function convertImportDeclaration(path: NodePath<ImportDeclaration>): Imp
   return path.node;
 }
 
-export function convertImportSpecifier(path: NodePath<ImportSpecifier>): ImportSpecifier {
+export function convertImportSpecifier(
+  path: NodePath<ImportSpecifier>,
+): ImportSpecifier {
   convertImportSpecifiers(path);
 
   // Strip Flow's `type` and `typeof` keywords in import declarations.
@@ -52,7 +58,9 @@ export function convertImportSpecifier(path: NodePath<ImportSpecifier>): ImportS
   return path.node;
 }
 
-export function convertExportDeclaration(path: NodePath<ExportDeclaration>): ExportDeclaration {
+export function convertExportDeclaration(
+  path: NodePath<ExportDeclaration>,
+): ExportDeclaration {
   // Strip Flow's `type` keyword in export declarations.
   const { node } = path;
   if (isExportNamedDeclaration(node)) {

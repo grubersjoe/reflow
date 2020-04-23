@@ -63,7 +63,11 @@ export function convertFlowType(
       return convertFunctionTypeAnnotation(node, state);
 
     case 'GenericTypeAnnotation':
-      return convertGenericTypeAnnotation(node, state, path as NodePath<GenericTypeAnnotation>);
+      return convertGenericTypeAnnotation(
+        node,
+        state,
+        path as NodePath<GenericTypeAnnotation>,
+      );
 
     case 'InterfaceTypeAnnotation':
       return convertInterfaceTypeAnnotation(node, state);
@@ -111,6 +115,8 @@ export function convertFlowType(
       return tsVoidKeyword();
 
     default:
-      throw new NotImplementedError(`${(node as FlowType).type} is not implemented.`);
+      throw new NotImplementedError(
+        `${(node as FlowType).type} is not implemented.`,
+      );
   }
 }

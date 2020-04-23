@@ -36,7 +36,9 @@ export function validateArgs(source: string[]): boolean {
 
   if (!validSource) {
     const fileTypes = VALID_SOURCE_FILETYPES.join(' and ');
-    logError(`Invalid source file type. Only ${fileTypes} files are allowed as input!`);
+    logError(
+      `Invalid source file type. Only ${fileTypes} files are allowed as input!`,
+    );
   }
 
   return allSourcesExist && validSource;

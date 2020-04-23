@@ -37,7 +37,9 @@ test('splitFixtureLines() with default arguments', () => {
   ];
 
   expect(output).toHaveLength(expectedLines.length);
-  expectedLines.forEach((expectedLine, i) => expect(output[i]).toEqual(expectedLine));
+  expectedLines.forEach((expectedLine, i) =>
+    expect(output[i]).toEqual(expectedLine),
+  );
 });
 
 test('splitFixtureLines() with format', () => {
@@ -69,5 +71,7 @@ test('splitFixtureLines() with format', () => {
   ];
 
   expect(output).toHaveLength(expectedLines.length - 1); // Last line is trimmed
-  expectedLines.forEach((expectedLine, i) => expect(output[i]).toEqual(expectedLine));
+  expectedLines.forEach((expectedLine, i) =>
+    expect(output[i]).toEqual(expectedLine),
+  );
 });

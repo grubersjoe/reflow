@@ -21,14 +21,16 @@ import { convertFlowType } from './flow-type';
 import { convertTypeParameterDeclaration } from './type-parameter';
 import { convertTypeAnnotation } from './type-annotation';
 
-export function functionTypeParamToIdentifier(
+function functionTypeParamToIdentifier(
   param: FunctionTypeParam,
   fallbackName: string,
   state: ConverterState,
 ): Identifier {
   // In contrast to TypeScript, parameter names in function types are optional
   // in Flow.
-  const id = identifier(isIdentifier(param.name) ? param.name.name : fallbackName);
+  const id = identifier(
+    isIdentifier(param.name) ? param.name.name : fallbackName,
+  );
 
   id.optional = param.optional;
   id.typeAnnotation = convertTypeAnnotation(param, state);
@@ -45,7 +47,11 @@ export function functionTypeParametersToIdentifiers(
   }
 
   return params.map((param, i) => {
-    return functionTypeParamToIdentifier(param, params.length > 1 ? `p${i + 1}` : `p`, state);
+    return functionTypeParamToIdentifier(
+      param,
+      params.length > 1 ? `p${i + 1}` : `p`,
+      state,
+    );
   });
 }
 
@@ -65,20 +71,38 @@ export function convertFunctionTypeAnnotation(
   node: FunctionTypeAnnotation,
   state: ConverterState,
 ): TSFunctionType {
-  const typeParameters = convertTypeParameterDeclaration(node.typeParameters, state);
-  const functionParameters = functionTypeParametersToIdentifiers(node.params, state) || [];
-  const restParameters = node.rest ? [convertFunctionTypeRestParam(node.rest, state)] : [];
+  const typeParameters = convertTypeParameterDeclaration(
+    node.typeParameters,
+    state,
+  );
+  const functionParameters =
+    functionTypeParametersToIdentifiers(node.params, state) || [];
+  const restParameters = node.rest
+    ? [convertFunctionTypeRestParam(node.rest, state)]
+    : [];
   const returnType = tsTypeAnnotation(convertFlowType(node.returnType, state));
 
-  return tsFunctionType(typeParameters, [...functionParameters, ...restParameters], returnType);
+  return tsFunctionType(
+    typeParameters,
+    [...functionParameters, ...restParameters],
+    returnType,
+  );
 }
 
 // Flow allows *optional* parameters to be initialized - TypeScript does not.
 export function convertOptionalFunctionParameters<
-  Fn extends ArrowFunctionExpression | ClassMethod | FunctionDeclaration | FunctionExpression
+  Fn extends
+    | ArrowFunctionExpression
+    | ClassMethod
+    | FunctionDeclaration
+    | FunctionExpression
 >(node: Fn): Fn {
   node.params = node.params.map(param => {
-    if (isAssignmentPattern(param) && isIdentifier(param.left) && param.left.optional) {
+    if (
+      isAssignmentPattern(param) &&
+      isIdentifier(param.left) &&
+      param.left.optional
+    ) {
       param.left.optional = false;
     }
 

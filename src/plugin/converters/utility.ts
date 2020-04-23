@@ -1,5 +1,11 @@
 import {
   Flow,
+  TSIndexedAccessType,
+  TSTypeLiteral,
+  TSTypeOperator,
+  TSTypeParameterInstantiation,
+  TSTypeQuery,
+  TSTypeReference,
   identifier,
   isGenericTypeAnnotation,
   isIdentifier,
@@ -9,18 +15,12 @@ import {
   isTSTypeReference,
   isTypeAnnotation,
   stringLiteral,
-  TSIndexedAccessType,
   tsIndexedAccessType,
   tsLiteralType,
-  TSTypeLiteral,
-  TSTypeOperator,
   tsTypeOperator,
   tsTypeParameterInstantiation,
-  TSTypeParameterInstantiation,
   tsTypeQuery,
-  TSTypeQuery,
   tsTypeReference,
-  TSTypeReference,
   tsUnionType,
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
@@ -59,7 +59,9 @@ export function convertClassUtil(
     }
   }
 
-  throw new UnexpectedError(`Unknown type parameter for Class<T> utility: ${typeParam.type}.`);
+  throw new UnexpectedError(
+    `Unknown type parameter for Class<T> utility: ${typeParam.type}.`,
+  );
 }
 
 export const convertDiffUtil: UtilConvertor<TSTypeReference> = typeParameters => {
@@ -83,14 +85,18 @@ export const convertDiffUtil: UtilConvertor<TSTypeReference> = typeParameters =>
 export const convertElementTypeUtil: UtilConvertor<TSIndexedAccessType> = typeParameters =>
   tsIndexedAccessType(typeParameters.params[0], typeParameters.params[1]);
 
-export const convertExactUtil: UtilConvertor<TSTypeReference | TSTypeLiteral> = typeParameters => {
+export const convertExactUtil: UtilConvertor<
+  TSTypeReference | TSTypeLiteral
+> = typeParameters => {
   const typeParam = typeParameters.params[0];
 
   if (isTSTypeReference(typeParam) || isTSTypeLiteral(typeParam)) {
     return typeParam;
   }
 
-  throw new UnexpectedError(`Unexpected type parameter for $Exact<T>: ${typeParam.type}`);
+  throw new UnexpectedError(
+    `Unexpected type parameter for $Exact<T>: ${typeParam.type}`,
+  );
 };
 
 export const convertKeysUtil: UtilConvertor<TSTypeOperator> = typeParameters => {
@@ -126,7 +132,10 @@ export const convertRestUtil: UtilConvertor<TSTypeReference> = typeParameters =>
       )
     : restArg;
 
-  return tsTypeReference(identifier('Omit'), tsTypeParameterInstantiation([typeName, omitArg]));
+  return tsTypeReference(
+    identifier('Omit'),
+    tsTypeParameterInstantiation([typeName, omitArg]),
+  );
 };
 
 export const convertShapeUtil: UtilConvertor<TSTypeReference> = typeParameters =>

@@ -1,11 +1,11 @@
 import {
   ArrowFunctionExpression,
   ClassDeclaration,
+  ExportDeclaration,
   FunctionDeclaration,
   FunctionExpression,
   ImportDeclaration,
   ImportSpecifier,
-  ExportDeclaration,
 } from '@babel/types';
 
 import { VisitorFunction, ConverterState } from '../types';
@@ -24,9 +24,15 @@ export type BaseVisitorNodes = ArrowFunctionExpression &
   ImportDeclaration &
   ImportSpecifier;
 
-type FunctionLike = ArrowFunctionExpression | FunctionDeclaration | FunctionExpression;
+type FunctionLike =
+  | ArrowFunctionExpression
+  | FunctionDeclaration
+  | FunctionExpression;
 
-export const classDeclarationVisitor: VisitorFunction<ClassDeclaration> = (path, state) => {
+export const classDeclarationVisitor: VisitorFunction<ClassDeclaration> = (
+  path,
+  state,
+) => {
   path.replaceWith(convertClassDeclaration(path, state as ConverterState));
 };
 

@@ -8,7 +8,11 @@ import startCase from 'lodash/startCase';
 
 import { ReflowOptions } from '..';
 import { relativePath as relPath } from '../util/file';
-import { BLANK_LINE, LINE_BREAK, formatOutputCode } from '../../cli/util/format';
+import {
+  BLANK_LINE,
+  LINE_BREAK,
+  formatOutputCode,
+} from '../../cli/util/format';
 import { getParserPlugins } from '../util/options';
 
 const INPUT_FIXTURE_GLOB = 'input.js';
@@ -68,10 +72,16 @@ export function runFixtureTests(
         .map(startCase)
         .join(' › ');
 
-      const inputGlob = glob.sync(INPUT_FIXTURE_GLOB, { absolute: true, cwd: dir });
+      const inputGlob = glob.sync(INPUT_FIXTURE_GLOB, {
+        absolute: true,
+        cwd: dir,
+      });
       const inputFile = inputGlob.length === 1 ? inputGlob[0] : null;
 
-      const outputGlob = glob.sync(OUTPUT_FIXTURE_GLOB, { absolute: true, cwd: dir });
+      const outputGlob = glob.sync(OUTPUT_FIXTURE_GLOB, {
+        absolute: true,
+        cwd: dir,
+      });
       const outputFile = outputGlob.length === 1 ? outputGlob[0] : null;
 
       if (inputFile && outputFile) {
@@ -93,32 +103,54 @@ export function runFixtureTests(
 
           if (babelOutput.code) {
             const outputCode = testFormatting
-              ? formatOutputCode(babelOutput.code, String(readFileSync(inputFile)), pluginOptions)
+              ? formatOutputCode(
+                  babelOutput.code,
+                  String(readFileSync(inputFile)),
+                  pluginOptions,
+                )
               : babelOutput.code;
 
             if (outputCode instanceof Error) {
               throw new Error('Code generation or formatting failed.');
             }
 
-            splitFixtureLines(outputCode, 'typescript', !testFormatting).forEach((line, i) => {
-              const padLength = Math.max(String(expectedLines.length).length, 2);
+            splitFixtureLines(
+              outputCode,
+              'typescript',
+              !testFormatting,
+            ).forEach((line, i) => {
+              const padLength = Math.max(
+                String(expectedLines.length).length,
+                2,
+              );
               const testNumber = String(i + 1).padStart(padLength, '0');
 
-              test(`${testName}:${testNumber}`.padEnd(30) + formattedExpectedLines[i], () => {
-                expect(line).toEqual(expectedLines[i]);
-              });
+              test(
+                `${testName}:${testNumber}`.padEnd(30) +
+                  formattedExpectedLines[i],
+                () => {
+                  expect(line).toEqual(expectedLines[i]);
+                },
+              );
             });
           } else {
-            console.warn(chalk.yellow(`Input file ${inputFile} seems to be empty.`));
+            console.warn(
+              chalk.yellow(`Input file ${inputFile} seems to be empty.`),
+            );
           }
         });
       } else if (inputFile) {
-        throw new TestError(`Fixture output file ${outputFile} does not exist.`);
+        throw new TestError(
+          `Fixture output file ${outputFile} does not exist.`,
+        );
       } else if (outputFile) {
         throw new TestError(`Fixture input file ${inputFile} does not exist.`);
       } else {
         // Call recursively for next directory level
-        runFixtureTests(dir, babelOptions, pluginOptions, testFormatting, [...parentDirs, testDir]);
+        runFixtureTests(dir, babelOptions, pluginOptions, testFormatting, [
+          ...parentDirs,
+          testDir,
+        ]);
       }
     }
   });

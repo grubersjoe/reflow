@@ -1,18 +1,18 @@
 import {
   FunctionTypeParam,
   GenericTypeAnnotation,
-  isIdentifier,
   TSAnyKeyword,
-  tsAnyKeyword,
   TSIndexedAccessType,
   TSTypeAnnotation,
-  tsTypeAnnotation,
   TSTypeLiteral,
   TSTypeOperator,
   TSTypeQuery,
-  tsTypeReference,
   TSTypeReference,
   TypeAnnotation,
+  isIdentifier,
+  tsAnyKeyword,
+  tsTypeAnnotation,
+  tsTypeReference,
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
