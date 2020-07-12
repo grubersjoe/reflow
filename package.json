@@ -1,6 +1,6 @@
 {
   "name": "babel-plugin-reflow",
-  "version": "0.4.4",
+  "version": "0.5.0",
   "description": "Babel plugin to transpile Flow code to TypeScript",
   "author": "Jonathan Gruber <gruberjonathan@gmail.com>",
   "license": "MIT",
@@ -83,7 +83,7 @@
     "clean": "rm -f build/*",
     "dev": "webpack -w",
     "format": "prettier-reflow --write 'src/**/*' './*.{js,json,md}'",
-    "lint": "eslint --max-warnings=0 'src/**/*.ts'",
+    "lint": "eslint --max-warnings=0 'src/**/*.{js,ts}'",
     "postbuild": "chmod +x build/reflow.js",
     "prebuild": "yarn clean",
     "prepublishOnly": "yarn tsc && yarn lint && yarn test",

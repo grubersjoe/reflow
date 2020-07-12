@@ -8,6 +8,7 @@ import {
   TSInterfaceDeclaration,
   TSTypeLiteral,
   TypeAlias,
+  isTSTypeLiteral,
   tsExpressionWithTypeArguments,
   tsInterfaceBody,
   tsInterfaceDeclaration,
@@ -45,8 +46,10 @@ export function convertInterfaceDeclaration(
     node.typeParameters,
     state,
   );
+
+  const bodyMembers = convertObjectTypeAnnotation(node.body, state);
   const body = tsInterfaceBody(
-    convertObjectTypeAnnotation(node.body, state).members,
+    isTSTypeLiteral(bodyMembers) ? bodyMembers.members : [],
   );
 
   const _extends =
@@ -69,8 +72,9 @@ export function convertInterfaceTypeAlias(
     node.typeParameters,
     state,
   );
+  const bodyMembers = convertObjectTypeAnnotation(_interface.body, state);
   const body = tsInterfaceBody(
-    convertObjectTypeAnnotation(_interface.body, state).members,
+    isTSTypeLiteral(bodyMembers) ? bodyMembers.members : [],
   );
 
   const _extends =
@@ -87,5 +91,5 @@ export function convertInterfaceTypeAnnotation(
   node: InterfaceTypeAnnotation,
   state: PluginPass,
 ): TSTypeLiteral {
-  return convertObjectTypeAnnotation(node.body, state);
+  return convertObjectTypeAnnotation(node.body, state) as TSTypeLiteral;
 }

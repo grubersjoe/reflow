@@ -12,4 +12,4 @@ type DiffType = Omit<A, keyof B>;
 
 type DiffTypeLiteral = Omit<{
   p: null;
-}, keyof {}>;
+}, keyof object>;

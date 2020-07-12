@@ -16,7 +16,7 @@ function functionWithUnionParam(p: string | number) {}
 function functionWithUnionParamAndReturn(p: boolean | null): boolean {
   return Boolean(p);
 }
-function functionWithUnionReturnType(p1: {}, p2: string): string | boolean {
+function functionWithUnionReturnType(p1: object, p2: string): string | boolean {
   return "string";
 }
 

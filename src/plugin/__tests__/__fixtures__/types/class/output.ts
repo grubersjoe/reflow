@@ -53,6 +53,6 @@ class ClassWithGenerics<T1, T2> {
 }
 
 class Component<T1, T2> {}
-class ClassWithGenericExactObject extends Component<{}, Date | null | undefined> {}
+class ClassWithGenericExactObject extends Component<object, Date | null | undefined> {}
 
 new ClassWithGenerics<string, Date>('string', new Date());

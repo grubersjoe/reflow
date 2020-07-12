@@ -10,5 +10,11 @@
     "project": "./tsconfig.json",
     "sourceType": "module"
   },
-  "plugins": ["@typescript-eslint"]
+  "plugins": ["@typescript-eslint"],
+  "overrides": [
+    {
+      "files": "./**/*.{js,ts}",
+      "excludedFiles": "__fixtures__/**/*"
+    }
+  ]
 }

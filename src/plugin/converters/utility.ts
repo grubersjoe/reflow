@@ -9,6 +9,7 @@ import {
   identifier,
   isGenericTypeAnnotation,
   isIdentifier,
+  isTSObjectKeyword,
   isTSPropertySignature,
   isTSTypeLiteral,
   isTSTypeQuery,
@@ -72,8 +73,8 @@ export const convertDiffUtil: UtilConvertor<TSTypeReference> = typeParameters =>
     secondParam.typeName.name = `keyof ${secondParam.typeName.name}`;
   }
 
-  // Literals need to be wrapped in a TypeOperator
-  if (isTSTypeLiteral(secondParam)) {
+  // Literals and `object` keyword need to be wrapped in a TypeOperator
+  if (isTSTypeLiteral(secondParam) || isTSObjectKeyword(secondParam)) {
     const typeOperator = tsTypeOperator(secondParam);
     typeOperator.operator = 'keyof';
     typeParameters.params[1] = typeOperator;

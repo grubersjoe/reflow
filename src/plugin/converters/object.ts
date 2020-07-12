@@ -3,6 +3,7 @@ import {
   ObjectTypeAnnotation,
   ObjectTypeProperty,
   TSMethodSignature,
+  TSObjectKeyword,
   TSPropertySignature,
   TSTypeElement,
   TSTypeLiteral,
@@ -16,6 +17,7 @@ import {
   tsIndexSignature,
   tsMethodSignature,
   tsNumberKeyword,
+  tsObjectKeyword,
   tsPropertySignature,
   tsStringKeyword,
   tsTypeAnnotation,
@@ -30,6 +32,11 @@ import {
   convertFunctionTypeAnnotation,
 } from './function';
 import { convertTypeParameterDeclaration } from './type-parameter';
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+function propIsEmpty(prop: object[] | null) {
+  return prop === null || prop.length === 0;
+}
 
 function createMethodSignature(
   prop: ObjectTypeProperty,
@@ -162,8 +169,17 @@ function convertObjectTypeIndexers(
 export function convertObjectTypeAnnotation(
   node: ObjectTypeAnnotation,
   state: PluginPass,
-): TSTypeLiteral {
-  const { properties } = node;
+): TSObjectKeyword | TSTypeLiteral {
+  const { callProperties, indexers, internalSlots, properties } = node;
+
+  if (
+    propIsEmpty(callProperties) &&
+    propIsEmpty(indexers) &&
+    propIsEmpty(internalSlots) &&
+    propIsEmpty(properties)
+  ) {
+    return tsObjectKeyword();
+  }
 
   let signatures: TSTypeElement[] = [];
 

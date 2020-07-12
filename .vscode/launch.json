@@ -8,15 +8,13 @@
       "args": [
         "--dry-run",
         "--replace-decorators",
-        "src/plugin/__tests__/__fixtures__/types/utility/rest/input.js"
+        "src/plugin/__tests__/__fixtures__/types/interface/input.js"
       ],
       "cwd": "${workspaceRoot}",
       "env": {
         "NODE_ENV": "development"
       },
-      "outFiles": [
-        "${workspaceFolder}/build/**/*.js",
-      ],
+      "outFiles": ["${workspaceFolder}/build/**/*.js"],
       "program": "${workspaceRoot}/src/cli/index.ts",
       "sourceMaps": true,
       "stopOnEntry": false

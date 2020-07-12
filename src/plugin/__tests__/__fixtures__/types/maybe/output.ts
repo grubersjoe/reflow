@@ -14,8 +14,8 @@ type MaybeNumberArray = number[] | null | undefined;
 type MaybeNull = null | undefined;
 type MaybeNullArray = null[] | null | undefined;
 
-type MaybeObject = {} | null | undefined;
-type MaybeObjectArray = {}[] | null | undefined;
+type MaybeObject = object | null | undefined;
+type MaybeObjectArray = object[] | null | undefined;
 type MaybeObjectWithProps = {
   key: number;
 } | null | undefined;

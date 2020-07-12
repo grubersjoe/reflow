@@ -15,8 +15,8 @@ const castExpressionNumbers = ((2 + 3) * 4 as number);
 const castExpressionArray = (['a', 'b', 'c'] as unknown);
 
 // @ts-ignore
-function doubleCast(p): {} {
-  return ((p as any) as {});
+function doubleCast(p): object {
+  return ((p as any) as object);
 }
 
 // @ts-ignore

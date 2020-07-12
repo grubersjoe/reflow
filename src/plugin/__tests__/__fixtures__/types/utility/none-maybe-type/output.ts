@@ -1,6 +1,6 @@
 
 type Maybe = string | null | undefined;
-type Union = {} | null;
+type Union = object | null;
 
 type NonMaybeTypeMaybe = NonNullable<Maybe>;
 type NonMaybeTypeUnion = NonNullable<Union>;

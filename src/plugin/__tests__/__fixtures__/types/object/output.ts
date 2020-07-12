@@ -1,6 +1,6 @@
 
-type EmptyObject = {};
-type EmptyExactObject = {};
+type EmptyObject = object;
+type EmptyExactObject = object;
 
 type SealedObject = {
   p1: "string";
@@ -49,7 +49,7 @@ type ObjectWithStringLiteralKey = {
 export type ComplexObject = {
   p22: string | null | undefined;
   readonly p23: string;
-  readonly p24: {};
+  readonly p24: object;
   readonly p25: null | (() => void);
 };
 
@@ -72,7 +72,7 @@ type ObjectIndexerPropertyWithNamedUnsupportedKeyType = {
 };
 
 type ObjectNamedIndexerProperty = {
-  [id: number]: {};
+  [id: number]: object;
 };
 
 type ReadOnlyObject = {
@@ -83,5 +83,5 @@ type WriteOnlyObject = {
   prop: () => void;
 };
 
-function functionWithObjectParameter(obj: {}): void {}
+function functionWithObjectParameter(obj: object): void {}
 function functionWithObjectInitializer(p: any, obj = {}): void {}

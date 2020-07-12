@@ -15,7 +15,7 @@ type ArrayMixed = unknown[];
 type ArrayGenericMaybe = Array<string> | null | undefined;
 type ArrayMaybe = string[] | null | undefined;
 
-type ArrayGenericUnion = Array<{}> | Array<Date> | null;
-type ArrayUnion = {}[] | Date[] | null;
+type ArrayGenericUnion = Array<object> | Array<Date> | null;
+type ArrayUnion = object[] | Date[] | null;
 
 type ArrayReadOnly = ReadonlyArray<number>;

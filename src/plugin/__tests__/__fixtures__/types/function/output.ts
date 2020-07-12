@@ -2,11 +2,11 @@
 type FunctionVoid = () => void;
 type FunctionSimple = (p1: number[], p2: boolean) => number;
 type FunctionMaybeParam = (p1: number, p2?: boolean) => number;
-type FunctionWithOptionalParams = (p1: string, p2?: {}, p3?: boolean) => void;
+type FunctionWithOptionalParams = (p1: string, p2?: object, p3?: boolean) => void;
 type FunctionWithUnnamedParam = (p1: string, p2: number) => boolean;
 type FunctionWithUnnamedParamMaybe = (p1: Array<string>, p2: number | null | undefined) => boolean;
-type FunctionWithUnnamedParamMaybeReturn = (p1: {}, p2: number) => boolean | null | undefined;
-type FunctionWithUnnamedParamUnion = (p1: string, p2: number | {}) => boolean | null;
+type FunctionWithUnnamedParamMaybeReturn = (p1: object, p2: number) => boolean | null | undefined;
+type FunctionWithUnnamedParamUnion = (p1: string, p2: number | object) => boolean | null;
 type FunctionWithRestParam = (p: string, ...numbers: number[]) => number;
 type FunctionWithUnnamedRestParam = (p: string, ...rest: number[]) => number;
 type FunctionWithFunctionParams = (f: (p: number) => boolean) => void;
@@ -32,6 +32,6 @@ async function functionAsync(): Promise<number> {
 }
 
 const arrowFunctionEmpty = () => {};
-const arrowFunctionWithParams = (p1: {}, p2: boolean) => {};
+const arrowFunctionWithParams = (p1: object, p2: boolean) => {};
 const arrowFunctionWithOptionalParam: (x: number, y?: number) => number = x => x;
 const arrowFunctionWithFunctionrAsReturn = () => (p: Date = new Date()) => p;

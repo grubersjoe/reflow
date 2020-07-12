@@ -1,5 +1,5 @@
 
-type O = {};
+type O = object;
 type F = () => void;
 type T = [boolean, number | null | undefined];
 

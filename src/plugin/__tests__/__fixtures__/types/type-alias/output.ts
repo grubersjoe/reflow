@@ -10,7 +10,7 @@ type AliasObjectLiteral = {
 type AliasString = string;
 type AliasStringLiteral = "literal";
 type AliasUndefined = undefined;
-type AliasUnsealedObject = {};
+type AliasUnsealedObject = object;
 
 type AliasGenericSimple<T> = T;
 type AliasGeneric<T1, T2> = Map<T1, T2>;

@@ -33,7 +33,7 @@ interface Interface {
 }
 
 function badFunction(
-  a: {},
+  a: object,
   b: number | null | undefined, // bad comment
   c,
 ) {
