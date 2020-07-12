@@ -1,3 +1,4 @@
+import { PluginPass } from '@babel/core';
 import {
   FunctionTypeParam,
   GenericTypeAnnotation,
@@ -16,7 +17,6 @@ import {
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
-import { ConverterState } from '../types';
 import { logWarning } from '../util/warnings';
 import {
   convertCallUtility,
@@ -47,14 +47,14 @@ type TSGenericTypeAnnotation =
 
 export function convertTypeAnnotation(
   node: FunctionTypeParam | TypeAnnotation,
-  state: ConverterState,
+  state: PluginPass,
 ): TSTypeAnnotation {
   return tsTypeAnnotation(convertFlowType(node.typeAnnotation, state));
 }
 
 export function convertGenericTypeAnnotation(
   node: GenericTypeAnnotation,
-  state: ConverterState,
+  state: PluginPass,
   path: NodePath<GenericTypeAnnotation>,
 ): TSGenericTypeAnnotation {
   const id = convertIdentifier(node.id);

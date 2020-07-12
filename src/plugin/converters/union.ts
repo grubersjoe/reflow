@@ -1,3 +1,4 @@
+import { PluginPass } from '@babel/core';
 import {
   TSUnionType,
   UnionTypeAnnotation,
@@ -6,12 +7,11 @@ import {
   tsUnionType,
 } from '@babel/types';
 
-import { ConverterState } from '../types';
 import { convertFlowType } from './flow-type';
 
 export function convertUnionTypeAnnotation(
   node: UnionTypeAnnotation,
-  state: ConverterState,
+  state: PluginPass,
 ): TSUnionType {
   return tsUnionType(
     node.types.map(type => {

@@ -1,3 +1,4 @@
+import { PluginPass } from '@babel/core';
 import {
   NullableTypeAnnotation,
   TSUnionType,
@@ -9,12 +10,11 @@ import {
   tsUnionType,
 } from '@babel/types';
 
-import { ConverterState } from '../types';
 import { convertFlowType } from './flow-type';
 
 export function convertNullableTypeAnnotation(
   node: NullableTypeAnnotation,
-  state: ConverterState,
+  state: PluginPass,
 ): TSUnionType {
   const tsType = convertFlowType(node.typeAnnotation, state);
 

@@ -1,3 +1,4 @@
+import { PluginPass } from '@babel/core';
 import {
   ClassBody,
   ClassDeclaration,
@@ -45,7 +46,6 @@ import {
 } from '@babel/types';
 
 import { UnexpectedError, NotImplementedError } from '../../util/error';
-import { ConverterState } from '../types';
 import { convertFlowType } from './flow-type';
 import { functionTypeParametersToIdentifiers } from './function';
 import { convertInterfaceDeclaration } from './interface';
@@ -62,7 +62,7 @@ function isConstructor(key: Identifier | StringLiteral): boolean {
 
 function createClassBody(
   node: ObjectTypeAnnotation,
-  state: ConverterState,
+  state: PluginPass,
 ): ClassBody {
   const body = node.properties.map(prop => {
     if (isObjectTypeProperty(prop)) {
@@ -115,7 +115,7 @@ function createClassBody(
 
 export function convertDeclareClass(
   node: DeclareClass,
-  state: ConverterState,
+  state: PluginPass,
   declare = true,
 ): ClassDeclaration {
   const classDec = classDeclaration(
@@ -146,7 +146,7 @@ export function convertDeclareClass(
 
 export function convertDeclareFunction(
   node: DeclareFunction,
-  state: ConverterState,
+  state: PluginPass,
   declare = true,
 ): TSDeclareFunction {
   const { id } = node;
@@ -179,7 +179,7 @@ export function convertDeclareFunction(
 
 export function convertDeclareInterface(
   node: DeclareInterface,
-  state: ConverterState,
+  state: PluginPass,
   declare = true,
 ): TSInterfaceDeclaration {
   const interfaceDec = convertInterfaceDeclaration(node, state);
@@ -190,7 +190,7 @@ export function convertDeclareInterface(
 
 function convertModuleStatement(
   statement: Statement | Flow,
-  state: ConverterState,
+  state: PluginPass,
 ): Declaration {
   if (isDeclareClass(statement)) {
     return convertDeclareClass(statement, state, false);
@@ -217,7 +217,7 @@ function convertModuleStatement(
 
 export function convertDeclareModule(
   node: DeclareModule,
-  state: ConverterState,
+  state: PluginPass,
 ): TSModuleDeclaration {
   const statements = node.body.body.reduce<Statement[]>((acc, statement) => {
     if (isDeclareExportDeclaration(statement) && statement.declaration) {
@@ -265,7 +265,7 @@ export function convertDeclareModule(
 
 export function convertDeclareTypeAlias(
   node: DeclareTypeAlias,
-  state: ConverterState,
+  state: PluginPass,
 ): TSTypeAliasDeclaration {
   const typeParameters = convertTypeParameterDeclaration(
     node.typeParameters,

@@ -8,7 +8,7 @@ import {
   ImportSpecifier,
 } from '@babel/types';
 
-import { VisitorFunction, ConverterState } from '../types';
+import { VisitorFunction } from '../types';
 import { convertClassDeclaration } from '../converters/class';
 import {
   convertImportDeclaration,
@@ -33,7 +33,7 @@ export const classDeclarationVisitor: VisitorFunction<ClassDeclaration> = (
   path,
   state,
 ) => {
-  path.replaceWith(convertClassDeclaration(path, state as ConverterState));
+  path.replaceWith(convertClassDeclaration(path, state));
 };
 
 export const functionVisitor: VisitorFunction<FunctionLike> = path => {

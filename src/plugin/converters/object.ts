@@ -1,3 +1,4 @@
+import { PluginPass } from '@babel/core';
 import {
   ObjectTypeAnnotation,
   ObjectTypeProperty,
@@ -23,7 +24,6 @@ import {
 import { convertFlowType } from './flow-type';
 
 import { UnexpectedError } from '../../util/error';
-import { ConverterState } from '../types';
 import { WARNINGS, logWarning } from '../util/warnings';
 import {
   functionTypeParametersToIdentifiers,
@@ -33,7 +33,7 @@ import { convertTypeParameterDeclaration } from './type-parameter';
 
 function createMethodSignature(
   prop: ObjectTypeProperty,
-  state: ConverterState,
+  state: PluginPass,
 ): TSMethodSignature {
   const { key, optional, value } = prop;
 
@@ -56,7 +56,7 @@ function createMethodSignature(
 
 function createPropertySignature(
   prop: ObjectTypeProperty,
-  state: ConverterState,
+  state: PluginPass,
 ): TSPropertySignature {
   const { key, optional, variance } = prop;
   const propSignature = tsPropertySignature(
@@ -83,7 +83,7 @@ function createPropertySignature(
 function convertObjectTypeCallProperties(
   signatures: TSTypeElement[],
   node: ObjectTypeAnnotation,
-  state: ConverterState,
+  state: PluginPass,
 ): TSTypeElement[] {
   const { callProperties } = node;
 
@@ -117,7 +117,7 @@ function convertObjectTypeCallProperties(
 function convertObjectTypeIndexers(
   signatures: TSTypeElement[],
   node: ObjectTypeAnnotation,
-  state: ConverterState,
+  state: PluginPass,
 ): TSTypeElement[] {
   const { indexers } = node;
 
@@ -161,7 +161,7 @@ function convertObjectTypeIndexers(
 
 export function convertObjectTypeAnnotation(
   node: ObjectTypeAnnotation,
-  state: ConverterState,
+  state: PluginPass,
 ): TSTypeLiteral {
   const { properties } = node;
 

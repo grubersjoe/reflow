@@ -1,3 +1,4 @@
+import { PluginPass } from '@babel/core';
 import {
   Flow,
   TSInterfaceDeclaration,
@@ -8,7 +9,6 @@ import {
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
-import { ConverterState } from '../types';
 import { convertFlowType } from './flow-type';
 import {
   convertInterfaceTypeAlias,
@@ -19,7 +19,7 @@ import { convertTypeParameterDeclaration } from './type-parameter';
 export function convertTypeAlias(
   node: TypeAlias,
   path: NodePath<Flow>,
-  state: ConverterState,
+  state: PluginPass,
 ): TSTypeAliasDeclaration | TSInterfaceDeclaration {
   const typeParameters = convertTypeParameterDeclaration(
     node.typeParameters,

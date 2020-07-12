@@ -1,29 +1,4 @@
-import { TransformOptions } from '@babel/core';
-import { NodePath, Scope, VisitNodeFunction } from '@babel/traverse';
-import { File, Flow } from '@babel/types';
+import { PluginPass } from '@babel/core';
+import { VisitNodeFunction } from '@babel/traverse';
 
-import { ReflowOptions } from './index';
-import { BaseVisitorNodes } from './visitors/base';
-
-// Missing in @types/babel__core
-interface PluginPass<T> {
-  cwd: string;
-  file: {
-    ast: File;
-    code: string;
-    declarations: object;
-    hub: object;
-    inputMap?: object;
-    metadata: object;
-    opts: TransformOptions;
-    path: NodePath<T>;
-    scope: Scope;
-    shebang: string;
-  };
-  filename?: string;
-  key: string;
-  opts: TransformOptions & ReflowOptions;
-}
-
-export type VisitorFunction<T> = VisitNodeFunction<PluginPass<T>, T>;
-export type ConverterState = PluginPass<BaseVisitorNodes | Flow>;
+export type VisitorFunction<T> = VisitNodeFunction<PluginPass, T>;

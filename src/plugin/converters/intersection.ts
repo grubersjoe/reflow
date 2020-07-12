@@ -1,3 +1,4 @@
+import { PluginPass } from '@babel/core';
 import {
   IntersectionTypeAnnotation,
   TSIntersectionType,
@@ -6,12 +7,11 @@ import {
   tsParenthesizedType,
 } from '@babel/types';
 
-import { ConverterState } from '../types';
 import { convertFlowType } from './flow-type';
 
 export function convertIntersectionTypeAnnotation(
   node: IntersectionTypeAnnotation,
-  state: ConverterState,
+  state: PluginPass,
 ): TSIntersectionType {
   return tsIntersectionType(
     node.types.map(type => {

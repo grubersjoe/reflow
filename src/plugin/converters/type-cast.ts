@@ -1,15 +1,15 @@
+import { PluginPass } from '@babel/core';
 import {
   TSAsExpression,
   TypeCastExpression,
   tsAsExpression,
 } from '@babel/types';
 
-import { ConverterState } from '../types';
 import { convertFlowType } from './flow-type';
 
 export function convertTypeCastExpression(
   node: TypeCastExpression,
-  state: ConverterState,
+  state: PluginPass,
 ): TSAsExpression {
   return tsAsExpression(
     node.expression,

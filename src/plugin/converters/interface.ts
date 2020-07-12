@@ -1,3 +1,4 @@
+import { PluginPass } from '@babel/core';
 import {
   DeclareInterface,
   InterfaceDeclaration,
@@ -12,7 +13,6 @@ import {
   tsInterfaceDeclaration,
 } from '@babel/types';
 
-import { ConverterState } from '../types';
 import { convertIdentifier } from './identifier';
 import { convertObjectTypeAnnotation } from './object';
 import {
@@ -26,7 +26,7 @@ export interface TypeAliasForInterfaceType extends TypeAlias {
 
 export function convertInterfaceExtends(
   node: InterfaceExtends,
-  state: ConverterState,
+  state: PluginPass,
 ): TSExpressionWithTypeArguments {
   const id = convertIdentifier(node.id);
   const typeParameters = convertTypeParameterInstantiation(
@@ -39,7 +39,7 @@ export function convertInterfaceExtends(
 
 export function convertInterfaceDeclaration(
   node: InterfaceDeclaration | DeclareInterface,
-  state: ConverterState,
+  state: PluginPass,
 ): TSInterfaceDeclaration {
   const typeParameters = convertTypeParameterDeclaration(
     node.typeParameters,
@@ -61,7 +61,7 @@ export function convertInterfaceDeclaration(
 
 export function convertInterfaceTypeAlias(
   node: TypeAliasForInterfaceType,
-  state: ConverterState,
+  state: PluginPass,
 ): TSInterfaceDeclaration {
   const { right: _interface } = node;
 
@@ -85,7 +85,7 @@ export function convertInterfaceTypeAlias(
 
 export function convertInterfaceTypeAnnotation(
   node: InterfaceTypeAnnotation,
-  state: ConverterState,
+  state: PluginPass,
 ): TSTypeLiteral {
   return convertObjectTypeAnnotation(node.body, state);
 }

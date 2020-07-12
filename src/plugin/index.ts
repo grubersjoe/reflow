@@ -31,7 +31,7 @@ const reflowPlugin = {
     JSX: jsxVisitor,
     Program: programVisitor,
   },
-  manipulateOptions(opts: TransformOptions, parserOpts: ParserOptions) {
+  manipulateOptions(opts: TransformOptions, parserOpts: ParserOptions): void {
     parserOpts.plugins = getParserPlugins('flow');
   },
 };

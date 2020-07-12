@@ -32,6 +32,6 @@ type IntersectionWithFunctionType = null & (() => number);
 
 function functionWithIntersectionParameter(p: T1 & {
   x: null;
-}): number | null {
-  return p.x;
+}) {
+  return p;
 }

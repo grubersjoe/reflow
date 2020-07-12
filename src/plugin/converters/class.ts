@@ -1,4 +1,4 @@
-import { NodePath } from '@babel/core';
+import { NodePath, PluginPass } from '@babel/core';
 import {
   ClassDeclaration,
   isClassMethod,
@@ -6,7 +6,6 @@ import {
   isTypeParameterInstantiation,
 } from '@babel/types';
 
-import { ConverterState } from '../types';
 import { replaceClassDecorators } from '../optimizers/decorators';
 import { WARNINGS, logWarning } from '../util/warnings';
 import { convertOptionalFunctionParameters } from './function';
@@ -14,10 +13,11 @@ import {
   convertTypeParameterInstantiation,
   convertTypeParameterDeclaration,
 } from './type-parameter';
+import { ReflowOptions } from '..';
 
 export function convertClassDeclaration(
   path: NodePath<ClassDeclaration>,
-  state: ConverterState,
+  state: PluginPass,
 ): NodePath<ClassDeclaration> {
   const { node } = path;
   const { body, superTypeParameters, typeParameters } = node;
@@ -54,7 +54,7 @@ export function convertClassDeclaration(
     }
   });
 
-  if (state.opts.replaceDecorators) {
+  if ((state.opts as ReflowOptions).replaceDecorators) {
     path.replaceWith(replaceClassDecorators(path));
   }
 

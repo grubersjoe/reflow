@@ -1,3 +1,4 @@
+import { PluginPass } from '@babel/core';
 import {
   DeclareOpaqueType,
   OpaqueType,
@@ -6,13 +7,12 @@ import {
   tsTypeAliasDeclaration,
 } from '@babel/types';
 
-import { ConverterState } from '../types';
 import { convertFlowType } from './flow-type';
 import { convertTypeParameterDeclaration } from './type-parameter';
 
 export function convertOpaqueType(
   node: OpaqueType,
-  state: ConverterState,
+  state: PluginPass,
 ): TSTypeAliasDeclaration {
   // Supertype must be ignored (node.supertype).
   const typeParameters = convertTypeParameterDeclaration(
@@ -29,7 +29,7 @@ export function convertOpaqueType(
 
 export function convertDeclareOpaqueType(
   node: DeclareOpaqueType,
-  state: ConverterState,
+  state: PluginPass,
 ): TSTypeAliasDeclaration {
   // Supertype must be ignored (node.supertype).
   const typeParameters = convertTypeParameterDeclaration(

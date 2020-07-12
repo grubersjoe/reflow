@@ -1,3 +1,4 @@
+import { PluginPass } from '@babel/core';
 import {
   TSTypeParameter,
   TSTypeParameterDeclaration,
@@ -10,13 +11,12 @@ import {
   tsTypeParameterInstantiation,
 } from '@babel/types';
 
-import { ConverterState } from '../types';
 import { WARNINGS, logWarning } from '../util/warnings';
 import { convertFlowType } from './flow-type';
 
 export function convertTypeParameter(
   node: TypeParameter,
-  state: ConverterState,
+  state: PluginPass,
 ): TSTypeParameter {
   const typeParameter = tsTypeParameter(undefined, undefined, node.name || '');
 
@@ -44,7 +44,7 @@ export function convertTypeParameter(
 
 export function convertTypeParameterDeclaration(
   node: TypeParameterDeclaration | null,
-  state: ConverterState,
+  state: PluginPass,
 ): TSTypeParameterDeclaration | null {
   if (node === null) {
     return null;
@@ -57,7 +57,7 @@ export function convertTypeParameterDeclaration(
 
 export function convertTypeParameterInstantiation(
   node: TypeParameterInstantiation | null,
-  state: ConverterState,
+  state: PluginPass,
 ): TSTypeParameterInstantiation | null {
   if (node === null) {
     return null;

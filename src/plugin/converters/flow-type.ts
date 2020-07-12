@@ -1,3 +1,4 @@
+import { PluginPass } from '@babel/core';
 import {
   Flow,
   FlowType,
@@ -24,7 +25,6 @@ import { NodePath } from '@babel/traverse';
 import { NotImplementedError } from '../../util/error';
 import { WARNINGS, logWarning } from '../util/warnings';
 
-import { ConverterState } from '../types';
 import { convertFunctionTypeAnnotation } from './function';
 import { convertInterfaceTypeAnnotation } from './interface';
 import { convertIntersectionTypeAnnotation } from './intersection';
@@ -36,7 +36,7 @@ import { convertUnionTypeAnnotation } from './union';
 
 export function convertFlowType(
   node: FlowType,
-  state: ConverterState,
+  state: PluginPass,
   path?: NodePath<Flow>,
 ): TSType {
   switch (node.type) {

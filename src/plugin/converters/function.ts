@@ -1,3 +1,4 @@
+import { PluginPass } from '@babel/core';
 import {
   ArrowFunctionExpression,
   ClassMethod,
@@ -16,7 +17,6 @@ import {
   tsTypeAnnotation,
 } from '@babel/types';
 
-import { ConverterState } from '../types';
 import { convertFlowType } from './flow-type';
 import { convertTypeParameterDeclaration } from './type-parameter';
 import { convertTypeAnnotation } from './type-annotation';
@@ -24,7 +24,7 @@ import { convertTypeAnnotation } from './type-annotation';
 function functionTypeParamToIdentifier(
   param: FunctionTypeParam,
   fallbackName: string,
-  state: ConverterState,
+  state: PluginPass,
 ): Identifier {
   // In contrast to TypeScript, parameter names in function types are optional
   // in Flow.
@@ -40,7 +40,7 @@ function functionTypeParamToIdentifier(
 
 export function functionTypeParametersToIdentifiers(
   params: FunctionTypeParam[] | null,
-  state: ConverterState,
+  state: PluginPass,
 ): Identifier[] | null {
   if (params === null) {
     return null;
@@ -57,7 +57,7 @@ export function functionTypeParametersToIdentifiers(
 
 export function convertFunctionTypeRestParam(
   param: FunctionTypeParam,
-  state: ConverterState,
+  state: PluginPass,
 ): RestElement {
   const id = identifier(isIdentifier(param.name) ? param.name.name : 'rest');
   const restElem = restElement(id);
@@ -69,7 +69,7 @@ export function convertFunctionTypeRestParam(
 
 export function convertFunctionTypeAnnotation(
   node: FunctionTypeAnnotation,
-  state: ConverterState,
+  state: PluginPass,
 ): TSFunctionType {
   const typeParameters = convertTypeParameterDeclaration(
     node.typeParameters,
