@@ -3,7 +3,7 @@
 > Babel plugin to transpile [Flow](https://flow.org/) types to
 > [TypeScript](https://www.typescriptlang.org/) with CLI wrapper.
 
-[![CircleCI](https://circleci.com/gh/grubersjoe/reflow.svg?style=shield)](https://circleci.com/gh/grubersjoe/reflow)
+![Tests](https://github.com/grubersjoe/reflow/workflows/Tests/badge.svg)
 [![Coverage](https://coveralls.io/repos/github/grubersjoe/reflow/badge.svg?branch=master)](https://coveralls.io/github/grubersjoe/reflow?branch=master)
 
 #### I would love to receive feedback whether this plugin worked for you :)!
