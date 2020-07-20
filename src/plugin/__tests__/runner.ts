@@ -2,7 +2,7 @@ import { TransformOptions, transformFileSync } from '@babel/core';
 import { parse } from '@babel/parser';
 import { Comment } from '@babel/types';
 import chalk from 'chalk';
-import { readdirSync, readFileSync, statSync } from 'fs';
+import { readFileSync, readdirSync, statSync } from 'fs';
 import glob from 'glob';
 import startCase from 'lodash/startCase';
 

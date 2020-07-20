@@ -45,7 +45,7 @@ import {
   variableDeclarator,
 } from '@babel/types';
 
-import { UnexpectedError, NotImplementedError } from '../../util/error';
+import { NotImplementedError, UnexpectedError } from '../../util/error';
 import { convertFlowType } from './flow-type';
 import { functionTypeParametersToIdentifiers } from './function';
 import { convertInterfaceDeclaration } from './interface';

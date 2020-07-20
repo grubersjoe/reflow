@@ -11,9 +11,9 @@ import {
 import { VisitorFunction } from '../types';
 import { convertClassDeclaration } from '../converters/class';
 import {
+  convertExportDeclaration,
   convertImportDeclaration,
   convertImportSpecifier,
-  convertExportDeclaration,
 } from '../converters/module';
 import { convertOptionalFunctionParameters } from '../converters/function';
 

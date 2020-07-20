@@ -11,8 +11,8 @@ import { NodePath } from '@babel/traverse';
 
 import { convertFlowType } from './flow-type';
 import {
-  convertInterfaceTypeAlias,
   TypeAliasForInterfaceType,
+  convertInterfaceTypeAlias,
 } from './interface';
 import { convertTypeParameterDeclaration } from './type-parameter';
 

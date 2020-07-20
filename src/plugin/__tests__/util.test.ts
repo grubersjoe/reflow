@@ -2,7 +2,7 @@ import { TransformOptions } from '@babel/core';
 
 import { getTransformOptions } from '../util/options';
 import reflowPlugin from '..';
-import { logWarning, WARNINGS } from '../util/warnings';
+import { WARNINGS, logWarning } from '../util/warnings';
 
 const defaultOptions: TransformOptions = {
   babelrc: false,

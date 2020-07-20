@@ -28,8 +28,8 @@ import { convertFlowType } from './flow-type';
 import { UnexpectedError } from '../../util/error';
 import { WARNINGS, logWarning } from '../util/warnings';
 import {
-  functionTypeParametersToIdentifiers,
   convertFunctionTypeAnnotation,
+  functionTypeParametersToIdentifiers,
 } from './function';
 import { convertTypeParameterDeclaration } from './type-parameter';
 

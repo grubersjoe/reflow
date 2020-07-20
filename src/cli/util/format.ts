@@ -1,6 +1,6 @@
 import { traverse } from '@babel/core';
 import { parse } from '@babel/parser';
-import { File, Comment, Decorator } from '@babel/types';
+import { Comment, Decorator, File } from '@babel/types';
 import prettier, { Options as PrettierOptions } from 'prettier-reflow';
 
 import { ReflowOptions } from '../../plugin';

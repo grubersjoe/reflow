@@ -1,6 +1,6 @@
 import { resolve } from 'path';
 
-import { isValidSource, validateArgs, toArray } from '../util';
+import { isValidSource, toArray, validateArgs } from '../util';
 
 const baseDir = resolve('src/cli/__tests__/__fixtures__/');
 

@@ -10,8 +10,8 @@ import { replaceClassDecorators } from '../optimizers/decorators';
 import { WARNINGS, logWarning } from '../util/warnings';
 import { convertOptionalFunctionParameters } from './function';
 import {
-  convertTypeParameterInstantiation,
   convertTypeParameterDeclaration,
+  convertTypeParameterInstantiation,
 } from './type-parameter';
 import { ReflowOptions } from '..';
 
