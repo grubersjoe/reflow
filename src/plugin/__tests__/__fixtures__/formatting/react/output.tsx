@@ -20,7 +20,7 @@ export type OrientationX = 'left' | 'center' | 'right';
 export type OrientationY = 'top' | 'center' | 'bottom';
 
 type Props = {
-  children?: ReactNode | null | undefined;
+  children?: ReactNode | null;
   position?: Position;
   orientationX?: OrientationX;
   orientationY?: OrientationY;
@@ -39,8 +39,8 @@ type Props = {
   contentMaxWidth?: string;
   /** spans content to available height inside outer container */
   growContent?: boolean;
-  backdropTheme?: BackdropTheme | null | undefined;
-  onBackdropClick?: (() => void) | null | undefined;
+  backdropTheme?: BackdropTheme | null;
+  onBackdropClick?: (() => void) | null;
   zIndex?: number | string;
 
   initialStyle: {

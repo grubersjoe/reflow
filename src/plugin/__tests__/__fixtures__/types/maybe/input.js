@@ -35,3 +35,7 @@ function functionMaybeParameter(p: ?number) {}
 function functionMaybeReturn(): ?string[] {
   return undefined;
 }
+
+type ObjectWithOptionalMaybeProp = {
+  value?: ?string;
+};

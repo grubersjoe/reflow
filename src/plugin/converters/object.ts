@@ -9,6 +9,7 @@ import {
   TSTypeLiteral,
   identifier,
   isFunctionTypeAnnotation,
+  isNullableTypeAnnotation,
   isNumberTypeAnnotation,
   isObjectTypeProperty,
   isObjectTypeSpreadProperty,
@@ -31,10 +32,10 @@ import {
   convertFunctionTypeAnnotation,
   functionTypeParametersToIdentifiers,
 } from './function';
+import { convertNullableTypeAnnotation } from './nullable';
 import { convertTypeParameterDeclaration } from './type-parameter';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-function propIsEmpty(prop: object[] | null) {
+function propIsEmpty(prop: unknown[] | null) {
   return prop === null || prop.length === 0;
 }
 
@@ -66,10 +67,17 @@ function createPropertySignature(
   state: PluginPass,
 ): TSPropertySignature {
   const { key, optional, variance } = prop;
-  const propSignature = tsPropertySignature(
-    key,
-    tsTypeAnnotation(convertFlowType(prop.value, state)),
-  );
+
+  const typeAnnotation =
+    isNullableTypeAnnotation(prop.value) && optional
+      ? tsTypeAnnotation(
+          convertNullableTypeAnnotation(prop.value, state, {
+            skipUndefined: true,
+          }),
+        )
+      : tsTypeAnnotation(convertFlowType(prop.value, state));
+
+  const propSignature = tsPropertySignature(key, typeAnnotation);
 
   propSignature.optional = optional;
   propSignature.readonly = variance && variance.kind === 'plus';
