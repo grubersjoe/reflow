@@ -2,6 +2,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "incremental": true,
     "jsx": "preserve",
     "lib": ["dom", "ES2020"],
     "module": "ESNext",

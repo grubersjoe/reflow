@@ -6,3 +6,4 @@ node_modules/
 build/
 .coverage/
 junit.xml
+tsconfig.tsbuildinfo
