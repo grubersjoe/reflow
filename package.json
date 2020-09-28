@@ -86,7 +86,7 @@
     "lint": "eslint --max-warnings=0 'src/**/*.{js,ts}'",
     "postbuild": "chmod +x build/reflow.js",
     "prebuild": "yarn clean",
-    "prepublishOnly": "yarn tsc && yarn lint && yarn test",
+    "prepublishOnly": "yarn tsc && yarn lint && yarn test && yarn build",
     "test": "jest -i --silent",
     "test:ci": "yarn test --ci",
     "test:coverage": "yarn test --coverage && xdg-open .coverage/lcov-report/index.html"
