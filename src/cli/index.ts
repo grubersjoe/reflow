@@ -1,4 +1,4 @@
-import program, { Command } from 'commander';
+import program, { CommanderStatic } from 'commander';
 
 import pkg from '../../package.json';
 
@@ -18,7 +18,7 @@ export const DEFAULT_EXCLUDE_DIRECTORIES = ['node_modules'];
 export const DEFAULT_INCLUDE_PATTERN = '**/*.{js,jsx}';
 
 // Create the desired argument data structure for the Runner
-function collectArgs(program: Command): CommandLineArgs {
+function collectArgs(program: CommanderStatic): CommandLineArgs {
   return Object.assign({}, program.opts(), {
     sources: program.args,
   });
@@ -39,7 +39,7 @@ program
   .version(pkg.version, '-v', 'Output the version number')
   .description('REFLOW - Flow to TypeScript converter')
   .usage('[OPTION]... <FILES OR DIRECTORIES ...>')
-  .helpOption('-h, --help', 'Output ussage information')
+  .helpOption('-h, --help', 'Output usage information')
   .option('-d, --dry-run', help.dryRun)
   .option(
     '-e, --exclude-dirs <pattern ...>',
