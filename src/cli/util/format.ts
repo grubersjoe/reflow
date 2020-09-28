@@ -17,9 +17,8 @@ const LINE_COMMENT_AT_BEGINNING_OF_LINE = /^\s*\/\/.*$/;
 function getPrettierConfig(overrides?: PrettierOptions): PrettierOptions {
   const defaults: PrettierOptions = {
     parser: 'typescript',
-    semi: true,
+    arrowParens: 'avoid',
     singleQuote: true,
-    tabWidth: 2,
     trailingComma: 'all',
   };
 

@@ -67,10 +67,7 @@ export function runFixtureTests(
     const dir = relPath(rootDir, testDir);
 
     if (statSync(dir).isDirectory()) {
-      const testName = parentDirs
-        .concat(testDir)
-        .map(startCase)
-        .join(' › ');
+      const testName = parentDirs.concat(testDir).map(startCase).join(' › ');
 
       const inputGlob = glob.sync(INPUT_FIXTURE_GLOB, {
         absolute: true,
