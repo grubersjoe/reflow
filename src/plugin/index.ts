@@ -1,4 +1,4 @@
-import { ParserOptions, TransformOptions } from '@babel/core';
+import { ParserOptions, PluginItem, TransformOptions } from '@babel/core';
 
 import { getParserPlugins } from './util/options';
 
@@ -17,7 +17,7 @@ export interface ReflowOptions {
   replaceDecorators?: boolean;
 }
 
-const reflowPlugin = {
+const reflowPlugin: PluginItem = {
   name: 'reflow',
   visitor: {
     ArrowFunctionExpression: functionVisitor,
