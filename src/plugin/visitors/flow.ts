@@ -1,5 +1,6 @@
 import {
   Flow,
+  TSTypeParameterDeclaration,
   isDeclareClass,
   isDeclareFunction,
   isDeclareInterface,
@@ -84,7 +85,12 @@ export const flowVisitor: VisitorFunction<Flow> = (path, state) => {
   }
 
   if (isTypeParameterDeclaration(node)) {
-    path.replaceWith(convertTypeParameterDeclaration(node, state) || path);
+    path.replaceWith(
+      convertTypeParameterDeclaration(
+        node,
+        state,
+      ) as TSTypeParameterDeclaration,
+    );
   }
 
   // Declaration files need to get the ".d.ts" file extension

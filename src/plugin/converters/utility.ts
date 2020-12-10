@@ -1,5 +1,5 @@
 import {
-  Flow,
+  GenericTypeAnnotation,
   TSIndexedAccessType,
   TSTypeLiteral,
   TSTypeOperator,
@@ -36,7 +36,7 @@ export const convertCallUtility: UtilConvertor<TSTypeReference> = typeParameters
 
 export function convertClassUtil(
   typeParameters: TSTypeParameterInstantiation,
-  path: NodePath<Flow>,
+  path: NodePath<GenericTypeAnnotation>,
 ): TSTypeQuery {
   // Class<T> has exactly one type parameter
   const typeParam = typeParameters.params[0];

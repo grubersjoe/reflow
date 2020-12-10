@@ -96,11 +96,11 @@ export function convertGenericTypeAnnotation(
         case '$Shape':
           return convertShapeUtil(typeParameters);
 
-        case 'Class':
-          return convertClassUtil(typeParameters, path);
-
         case '$ReadOnly':
           return convertReadOnlyUtil(typeParameters);
+
+        case 'Class':
+          return convertClassUtil(typeParameters, path);
 
         // Unsupported utility types
         case '$ObjMap':

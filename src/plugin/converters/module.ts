@@ -13,7 +13,7 @@ import {
 import { convertReactImports } from './react/imports';
 
 function convertImportSpecifiers(
-  path: NodePath<ImportDeclaration | ImportSpecifier>,
+  path: NodePath<ImportDeclaration> | NodePath<ImportSpecifier>,
 ): void {
   const { node } = path;
   const specifiers = isImportDeclaration(node) ? node.specifiers : [node];

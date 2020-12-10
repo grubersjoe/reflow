@@ -1,5 +1,10 @@
 import { NodePath } from '@babel/traverse';
-import { ImportDeclaration, isImportSpecifier } from '@babel/types';
+import {
+  ImportDeclaration,
+  isIdentifier,
+  isImportSpecifier,
+  isStringLiteral,
+} from '@babel/types';
 
 // See https://flow.org/en/docs/react/types/ and https://www.npmjs.com/package/@types/react
 const TYPE_IMPORT_MAP: Map<string, string> = new Map(
@@ -20,11 +25,22 @@ export function convertReactImports(path: NodePath<ImportDeclaration>): void {
     if (isImportSpecifier(specifier) && specifier.importKind === 'type') {
       const { local, imported } = specifier;
 
-      if (TYPE_IMPORT_MAP.has(local.name)) {
-        path.scope.rename(local.name, TYPE_IMPORT_MAP.get(local.name));
-        imported.name = local.name;
-      } else if (TYPE_IMPORT_MAP.has(imported.name)) {
-        imported.name = TYPE_IMPORT_MAP.get(imported.name) as string;
+      if (isIdentifier(imported)) {
+        if (TYPE_IMPORT_MAP.has(local.name)) {
+          path.scope.rename(local.name, TYPE_IMPORT_MAP.get(local.name));
+          imported.name = local.name;
+        } else if (TYPE_IMPORT_MAP.has(imported.name)) {
+          imported.name = TYPE_IMPORT_MAP.get(imported.name) as string;
+        }
+      }
+
+      if (isStringLiteral(imported)) {
+        if (TYPE_IMPORT_MAP.has(local.name)) {
+          path.scope.rename(local.name, TYPE_IMPORT_MAP.get(local.name));
+          imported.value = local.name;
+        } else if (TYPE_IMPORT_MAP.has(imported.value)) {
+          imported.value = TYPE_IMPORT_MAP.get(imported.value) as string;
+        }
       }
     }
 

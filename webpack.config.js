@@ -7,7 +7,7 @@ module.exports = (env, argv) => {
   const mode = argv.mode || 'development';
 
   return {
-    devtool: mode === 'development' ? 'sourcemap' : undefined,
+    devtool: mode === 'development' ? 'source-map' : undefined,
     entry: {
       reflow: './src/cli/index.ts',
       plugin: './src/plugin/index.ts',
