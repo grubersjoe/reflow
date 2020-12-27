@@ -22,7 +22,7 @@ function getPrettierConfig(overrides?: PrettierOptions): PrettierOptions {
     trailingComma: 'all',
   };
 
-  return Object.assign({}, defaults, overrides);
+  return { ...defaults, ...overrides };
 }
 
 function parseAst(code: string): File {

@@ -1,22 +1,8 @@
 import { resolve } from 'path';
 
-import { isValidSource, toArray, validateArgs } from '../util';
+import { isValidSource, validateArgs } from '../util';
 
 const baseDir = resolve('src/cli/__tests__/__fixtures__/');
-
-describe('toArray()', () => {
-  test('should return empty array if no arguments are given', () => {
-    expect(toArray()).toEqual([]);
-  });
-
-  test('should return only string values', () => {
-    expect(toArray('a', 3, 'b', false, null)).toEqual(['a', 'b']);
-  });
-
-  test('should return empty array for only non string arguments', () => {
-    expect(toArray(0, true)).toEqual([]);
-  });
-});
 
 describe('isValidSource()', () => {
   test('should return true for valid sources', () => {

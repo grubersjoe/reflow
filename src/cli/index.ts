@@ -3,7 +3,7 @@ import program, { CommanderStatic } from 'commander';
 import pkg from '../../package.json';
 
 import { ReflowOptions } from '../plugin';
-import { toArray, validateArgs } from './util';
+import { validateArgs } from './util';
 import { transpileFiles } from './runner';
 
 export interface CommandLineArgs extends ReflowOptions {
@@ -19,9 +19,10 @@ export const DEFAULT_INCLUDE_PATTERN = '**/*.{js,jsx}';
 
 // Create the desired argument data structure for the Runner
 function collectArgs(program: CommanderStatic): CommandLineArgs {
-  return Object.assign({}, program.opts(), {
-    sources: program.args,
-  });
+  return {
+    ...program.opts(),
+    ...{ sources: program.args },
+  };
 }
 
 const help = {
@@ -44,7 +45,7 @@ program
   .option(
     '-e, --exclude-dirs <pattern ...>',
     help.excludeDirs,
-    toArray,
+    (dirs: string) => dirs.split(',').map(dir => dir.trim()),
     DEFAULT_EXCLUDE_DIRECTORIES,
   )
   .option(

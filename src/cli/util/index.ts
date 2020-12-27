@@ -5,10 +5,6 @@ import { logError } from '../../util/log';
 
 const VALID_SOURCE_FILETYPES = ['.js', '.jsx'];
 
-export function toArray(...values: unknown[]): string[] {
-  return values.filter(val => typeof val === 'string') as string[];
-}
-
 export function isValidSource(...source: string[]): boolean {
   try {
     return source
@@ -26,10 +22,11 @@ export function validateArgs(source: string[]): boolean {
     return false;
   }
 
-  const allSourcesExist = source.every(source => existsSync(source));
+  const allSourcesExist = source.every(existsSync);
 
   if (!allSourcesExist) {
     logError('Not all input directories or files exist');
+    return false;
   }
 
   const validSource = isValidSource(...source);
@@ -39,7 +36,8 @@ export function validateArgs(source: string[]): boolean {
     logError(
       `Invalid source file type. Only ${fileTypes} files are allowed as input!`,
     );
+    return false;
   }
 
-  return allSourcesExist && validSource;
+  return true;
 }

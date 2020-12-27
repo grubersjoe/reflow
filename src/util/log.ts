@@ -12,6 +12,6 @@ export function logError(message: string, indent = 0): void {
   console.error(
     `${blank(indent)}⚠️ ${chalk.bold.redBright('Error')}: ${chalk.reset(
       message,
-    )}`,
+    )}\n`,
   );
 }

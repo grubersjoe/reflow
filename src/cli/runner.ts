@@ -20,20 +20,32 @@ function getGlobOptions(
   options: GlobOptions,
   excludeDirs: string[],
 ): GlobOptions {
-  const defaults = {
+  const defaults: GlobOptions = {
     absolute: true,
     strict: true,
   };
 
-  if (excludeDirs.length > 0) {
-    options.ignore = `**/*(${excludeDirs.join('|')})/**/*`;
-  }
+  console.log({
+    ...defaults,
+    ...options,
+    ...(excludeDirs.length > 0 && {
+      ignore: `**/*(${excludeDirs.join('|')})/**/*`,
+    }),
+  });
 
-  return Object.assign(defaults, options);
+  return {
+    ...defaults,
+    ...options,
+    ...(excludeDirs.length > 0 && {
+      ignore: `**/*(${excludeDirs.join('|')})/**/*`,
+    }),
+  };
 }
 
 export function transpileFiles(args: CommandLineArgs): string[] {
   const { dryRun, replace, replaceDecorators, sources } = args;
+
+  console.log(args);
 
   const excludeDirs = args.excludeDirs || DEFAULT_EXCLUDE_DIRECTORIES;
   const includePattern = args.includePattern || DEFAULT_INCLUDE_PATTERN;

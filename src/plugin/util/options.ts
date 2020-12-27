@@ -19,7 +19,7 @@ export function getTransformOptions(
     plugins: [[reflowPlugin, overwrites.pluginOptions]],
   };
 
-  return Object.assign({}, defaultOptions, overwrites.transformOptions);
+  return { ...defaultOptions, ...overwrites.transformOptions };
 }
 
 /**

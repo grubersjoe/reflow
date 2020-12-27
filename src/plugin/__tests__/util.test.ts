@@ -17,16 +17,19 @@ describe('getTransformOptions()', () => {
   });
 
   test('should return correct options when plugin options are set', () => {
-    const expected = Object.assign({}, defaultOptions, {
-      plugins: [
-        [
-          reflowPlugin,
-          {
-            replaceDecorators: true,
-          },
+    const expected = {
+      ...defaultOptions,
+      ...{
+        plugins: [
+          [
+            reflowPlugin,
+            {
+              replaceDecorators: true,
+            },
+          ],
         ],
-      ],
-    });
+      },
+    };
 
     const actual = getTransformOptions({
       pluginOptions: {
@@ -38,10 +41,13 @@ describe('getTransformOptions()', () => {
   });
 
   test('should return correct options when transform options are set', () => {
-    const expected = Object.assign({}, defaultOptions, {
-      comments: true,
-      compact: false,
-    });
+    const expected = {
+      ...defaultOptions,
+      ...{
+        comments: true,
+        compact: false,
+      },
+    };
 
     const actual = getTransformOptions({
       transformOptions: {
