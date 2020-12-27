@@ -35,8 +35,8 @@ import {
 import { convertNullableTypeAnnotation } from './nullable';
 import { convertTypeParameterDeclaration } from './type-parameter';
 
-function propIsEmpty(prop: unknown[] | null) {
-  return prop === null || prop.length === 0;
+function propIsEmpty(prop?: unknown[] | null) {
+  return !prop || prop.length === 0;
 }
 
 function createMethodSignature(

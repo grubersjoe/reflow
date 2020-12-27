@@ -43,10 +43,10 @@ export function convertTypeParameter(
 }
 
 export function convertTypeParameterDeclaration(
-  node: TypeParameterDeclaration | null,
+  node: TypeParameterDeclaration | null | undefined,
   state: PluginPass,
 ): TSTypeParameterDeclaration | null {
-  if (node === null) {
+  if (!node) {
     return null;
   }
 
@@ -56,10 +56,10 @@ export function convertTypeParameterDeclaration(
 }
 
 export function convertTypeParameterInstantiation(
-  node: TypeParameterInstantiation | null,
+  node: TypeParameterInstantiation | null | undefined,
   state: PluginPass,
 ): TSTypeParameterInstantiation | null {
-  if (node === null) {
+  if (!node) {
     return null;
   }
 
