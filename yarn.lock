@@ -4350,10 +4350,10 @@ prelude-ls@~1.1.2:
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
   integrity sha1-IZMqVJ9eUv/ZqCf1cOBL5iqX2lQ=
 
-prettier-reflow@^2.1.2:
-  version "2.1.2"
-  resolved "https://registry.yarnpkg.com/prettier-reflow/-/prettier-reflow-2.1.2.tgz#79753e2ab5895302e8f95c69f14a7aceadae85f9"
-  integrity sha512-8iUjyQemJQblJFsnaX/06zxQvs6m+glk5Tsql5JmI7WabJ8/JPMs5QTU0qOPNnUUc3xlU4l5dv+uw2b1M78cJA==
+prettier-reflow@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/prettier-reflow/-/prettier-reflow-2.2.1.tgz#cd40d2d16471c5c062035f88bce14e44437828d2"
+  integrity sha512-rj5Y8ZMIlpSn0qfJqdsx+8zLgsIniv+EvC6KxbFaIA+2F+xoTqM4vHn923V2rWy1+mFCnCK77lRZQShSYSBQhg==
 
 pretty-format@^26.0.0, pretty-format@^26.6.2:
   version "26.6.2"
