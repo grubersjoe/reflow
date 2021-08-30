@@ -112,7 +112,9 @@ export function transpileFiles(args: CommandLineArgs): string[] {
         }
       } catch (error) {
         logError(`${inputFile} could not be transpiled. Skipping.`, 4);
-        logError(error.message, 4);
+        if (error instanceof Error) {
+          logError(error.message, 4);
+        }
       }
     });
   });

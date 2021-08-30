@@ -1,4 +1,4 @@
-import program, { CommanderStatic } from 'commander';
+import { Command, program } from 'commander';
 
 import pkg from '../../package.json';
 
@@ -18,7 +18,7 @@ export const DEFAULT_EXCLUDE_DIRECTORIES = ['node_modules'];
 export const DEFAULT_INCLUDE_PATTERN = '**/*.{js,jsx}';
 
 // Create the desired argument data structure for the Runner
-function collectArgs(program: CommanderStatic): CommandLineArgs {
+function collectArgs(program: Command): CommandLineArgs {
   return {
     ...program.opts(),
     ...{ sources: program.args },
