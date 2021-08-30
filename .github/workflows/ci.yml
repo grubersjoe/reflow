@@ -1,33 +1,26 @@
 name: Tests
-on: [push]
+on: [push, pull_request]
 
 jobs:
   test:
-    name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
-          node-version: '12'
-      - name: Cache node modules
+          node-version: '14'
+
+      - name: Cache dependencies
         uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
         with:
-          path: ~/.cache/yarn
-          key:
-            ${{ runner.os }}-build-${{ env.cache-name }}-${{
-            hashFiles('**/yarn.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
       - name: Install dependencies
-        run: yarn install
-      - name: Check types
-        run: yarn tsc
-      - name: Run ESLint
-        run: yarn lint
+        run: yarn install --frozen-lockfile
+
       - name: Run unit tests
         run: yarn test
+
+      - name: Run type checks (TypeScript)
+        run: yarn tsc
